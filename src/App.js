@@ -51,7 +51,7 @@ function App() {
                   <Route exact path="/CuestionariosAdmin" element={<privateRoute roles = {["admin"]}><CuestionariosAdmin/></privateRoute>}/>
                   <Route exact path="/CuestionariosCreacionAdmin" element={<privateRoute roles = {["admin"]}><CuestionariosCreacionAdmin/></privateRoute>}/>
                   <Route exact path="/CuestionariosEdicionAdmin" element={<privateRoute roles = {["admin"]}><CuestionariosEdicionAdmin/></privateRoute>}/>
-                  <Route exact path="/CuestionariosResponderAdmin" element={<privateRoute roles = {["admin"]}><CuestionariosResponderAdmin/></privateRoute>}/>
+                  <Route exact path="/CuestionariosResponderAdmin/:id" element={<privateRoute roles = {["admin"]}><CuestionariosResponderAdmin/></privateRoute>}/>
 
                   <Route exact path="/PerfilSeleccionAdmin" element={<privateRoute roles = {["admin"]}><PerfilSeleccionAdmin/></privateRoute>}/>
                   <Route exact path="/PerfilCrearPerfil" element={<privateRoute roles = {["admin"]}><PerfilCrearPerfil/></privateRoute>}/>

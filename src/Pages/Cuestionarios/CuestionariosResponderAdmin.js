@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'
+import { Accordion, Button } from "react-bootstrap";
+import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
+import AccordionItem from "react-bootstrap/esm/AccordionItem";
+import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import "./cuestionarios.css";
 import axios from '../../axios/axios'
+import { usePreviousProps } from '@mui/utils';
 const GET_QUESTIONNAIRES_URL = '/questionnaires/getquestionnaires'
 const UPLOAD_QUESTIONNAIRES_URL = '/questionnaires/uploadquestionnaire'
+const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 
 function Respuesta () {
 
@@ -10,28 +17,38 @@ function Respuesta () {
     const [msg, setMsg] = useState("");
     const [preguntaActual, setPreguntaActual] = useState(0);
     const [puntaje, setPuntaje] = useState(0);
+    const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(0);
+    const [isSelectedQuestionnaire, setIsSelectedQuestionnaire] = useState(true);
     const [isDone, setIsDone] = useState(false);
-    const [isStart, setIsStart] = useState(true);
+    const [isStart, setIsStart] = useState(false);
     const [isFinished, setIsFinished] = useState(false);
     const [comment, setComment] = useState("");
     const [respuestas, setRespuestas] = useState([]);
     const [legitrespuesta, setLegitRespuestas] = useState([]);
     const [answers, setAnswers] = useState([]);
-    const [cuestionario, setCuestionario] = useState([]);
+    const [cuestionariosList, setCuestionariosList] = useState([]);
+    const {idAlumno} = useParams();
 
     useEffect (() => {
         getQuestionnaires()
+        getCuestionarios()
     }, [])
 
-    useEffect (() => {
+    /* useEffect (() => {
        //setLegitRespuestas(respuestas)
        console.log(preguntaActual)
        console.log(preguntasList[preguntaActual])
-    }, [preguntaActual])
+    }, [preguntaActual]) */
 
     const getQuestionnaires = () => {
         axios.get(GET_QUESTIONNAIRES_URL).then((response) => {
             setPreguntasList(response.data)
+        })
+    }
+
+    const getCuestionarios = () => {
+        axios.get(GET_CUESTIONARIOS_URL).then((response) => {
+            setCuestionariosList(response.data)
         })
     }
 
@@ -41,6 +58,13 @@ function Respuesta () {
         setAnswers(opc)
         setIsStart(false)
         console.log(preguntasList)
+    }
+
+    const handleSelectedQuestionnaire = (idcuestionario) => {
+        console.log(idcuestionario)
+        setSelectedQuestionnaire(idcuestionario)
+        setIsSelectedQuestionnaire(false)
+        setIsStart(true)
     }
 
     const handleRespuestasArray = (answer, preguntaActual) => {
@@ -100,6 +124,31 @@ function Respuesta () {
             setComment("")
         }
     }
+
+    if(isSelectedQuestionnaire)
+    return (
+        <div>
+            {cuestionariosList.map(values => (
+                    <div key={values.idCuestionario}>
+                            <Accordion>
+                                <AccordionItem>
+                                    <AccordionHeader>
+                                        Cuestionario #{values.idCuestionario}
+                                        <h1>{values.nombre}</h1>
+                                        Materia: {values.materia}
+                                    </AccordionHeader>
+                                    <AccordionBody>
+                                        <Button
+                                        onClick = {() => handleSelectedQuestionnaire(values.idCuestionario)}>
+                                            elegir cuestionario
+                                        </Button>
+                                    </AccordionBody>
+                                </AccordionItem>
+                            </Accordion>
+                    </div>  
+            ))}
+        </div>
+    );
 
     if (isStart)
     return (

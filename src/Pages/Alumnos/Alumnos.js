@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Alert, Accordion, Button, ButtonGroup, ToggleButton, ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
@@ -11,6 +12,7 @@ const GET_ALUMNOS_URL = '/profiles/getalumnos'
 
 function Alumnos() {
     const [alumnosList, setAlumnosList] = useState([]);
+    const [alumnSelect, setAlumnSelect] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [show, setShow] = useState(false);
@@ -91,14 +93,14 @@ function Alumnos() {
             </Modal>
             </div>
             {alumnosList.map(values => (
-                    <div className='admin' key={values.idAdministrador}>
+                    <div className='admin' key={values.idAlumno}>
                         <div>
                             <Accordion flush>
                                 <AccordionHeader>{values.nombre}</AccordionHeader>
                                     <AccordionBody>
                                     <ButtonGroup>
                                         <Button className="btnBancoPreguntas" onClick={handleShowM}>Reportar Hito</Button>
-                                        <Button className="btnBancoPreguntas" onClick={() => (window.location.href = "/CuestionariosResponderAdmin")}>Contestar cuestionario</Button>
+                                        <Link to={`/CuestionariosResponderAdmin/${values.idAlumno}`}>Contestar cuestionario</Link>
                                     </ButtonGroup>
                                     </AccordionBody>
                             </Accordion>
