@@ -1,0 +1,14 @@
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+
+}
+.color-nav{
+  background-color: rgb(29,63,148);
+  font:Times; 
+}
+.color-nav-hover{
+  color: rgb(234, 250, 7)
+
+}

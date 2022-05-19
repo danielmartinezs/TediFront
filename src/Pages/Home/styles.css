@@ -1,0 +1,11 @@
+.buttons{
+    background-color:rgb(29,63,148);
+    color: white;
+    padding: 15px 32px;
+  
+  }
+  .text{
+    color:rgb(29,63,148);
+    text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+
+  }

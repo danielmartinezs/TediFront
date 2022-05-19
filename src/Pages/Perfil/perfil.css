@@ -1,0 +1,196 @@
+  .float-parent-element { 
+      width: 50%; 
+  } 
+  .float-child-element { 
+      float: left; 
+      width: 50%; 
+  } 
+*, ::before, ::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background: #e0e3f0;
+  }
+  
+  .bloc-tabs {
+    display: flex;
+  }
+  .tabs {
+  
+    padding: 15px;
+    text-align: center;
+    width: 50%;
+    background: rgba(128, 128, 128, 0.075);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.274);
+    box-sizing: content-box;
+    position: relative;
+    outline: none;
+  }
+  .tabs:not(:last-child){
+    border-right: 1px solid rgba(0, 0, 0, 0.274);
+  }
+  
+  .active-tabs  {
+    background: darkgoldenrod;
+    border-bottom: 1px solid transparent;
+  }
+  
+  .active-tabs::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% + 2px);
+    height: 3px;
+    background: #FE9000;
+  }
+  
+  .admin-details__info{
+    padding: 21px;
+  }
+
+  .admin-details__close{
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin-bottom: 21px;
+  }
+  
+  .admin-details__box{
+    justify-content: space-between;
+    padding: 21px;
+    background-color: rgb(54, 42, 183);
+    color: white;
+    border-radius: 5px;
+    margin-bottom: 21px;
+  }
+  
+  .admin-details__img{
+    height: 100%;
+    max-width: 100%;
+    object-fit: cover;
+  }
+
+  .btnCrear {
+    border: none;
+    background-color: #0B7A75;
+    width: 100%;
+    align-self: center;
+  }
+  .content-tabs {
+    flex-grow : 1;
+  }
+  .content {
+    background: #e0e3f0;
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+    display: none;
+  }
+  .content h2 {
+    padding: 0px 0 5px 0px;
+  }
+  .content hr {
+    width: 100px;
+    height: 2px;
+    background: #222;
+    margin-bottom: 5px;
+  }
+  .content p {
+    width: 100%;
+    height: 100%;
+  }
+  .active-content {
+    display: block;
+  }
+
+  .button-icon{
+    background-color:transparent;
+    border-radius: 10px;
+    border: transparent;
+  }
+
+  .button-icon:hover{
+    background-color: #252d4a;
+    border: #252d4a;
+    border-radius: 20%;
+    outline: #252d4a;
+  }
+
+  .button-icon:focus{
+    outline: auto;
+  }
+
+  .registroForm {
+    background-color: #e0e3f0;
+    height: min-content;
+    min-height: 500px;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 10px 10px 42px 0px rgba(68, 83, 167, 0.75);
+    justify-content: space-evenly;
+  }
+
+  .btnRegistroNuevo{
+    outline: none;
+    cursor: pointer;
+    border-radius: 7px;
+    background-color: #FE9000;
+    display: flex;
+  }
+
+  .button-edit{
+    background-color: #0B7A75;
+    width: 100%;
+    font-size: 16px;
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 5px;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .button-edit:hover{
+    background-color: rgb(19, 148, 64);
+  }
+
+  .button-delete{
+    background-color: #FE9000;
+    width: 100%;
+    font-size: 16px;
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 5px;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .button-delete:hover{
+    background-color: red;
+  }
+
+  .button-delete:focus {
+    outline: none;
+  }
+  
+  .custom-file-upload {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+
+  .custom-file-upload:hover{
+    background-color: white;
+    color: black;
+  }

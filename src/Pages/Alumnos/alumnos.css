@@ -1,0 +1,9 @@
+
+.btnOpcionesAlumnos {
+    outline: none;
+    cursor: pointer;
+    border-radius: 7px;
+    background-color: #FE9000;
+    width: fit-content;
+    display: flex;
+  }
