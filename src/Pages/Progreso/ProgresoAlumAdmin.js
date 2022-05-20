@@ -144,7 +144,9 @@ function ProgresoAlumAdmin() {
                             </Form.Control>
                             </Form.Group>
                         </Form>
-                        <Button variant="danger" onClick={() => {setShowO(false)}}>
+                        <Button variant="danger" onClick={() => {
+                            setShowO(false)
+                            setDescripcion('')}}>
                             Cerrar
                         </Button>
                         <Button variant="success" onClick={handleSubmitHito}>

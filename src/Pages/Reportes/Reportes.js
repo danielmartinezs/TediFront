@@ -14,7 +14,7 @@ function Reportes() {
 
     return (
         <div>
-            <h1>Pagina de reportes</h1>
+            <h1>Página de reportes</h1>
             <Accordion defaultActiveKey={['0']} alwaysOpen>
                 <Accordion.Item eventKey="3">
                 <Accordion.Item eventKey="0">
@@ -37,9 +37,9 @@ function Reportes() {
                     </Accordion.Item>
                 </Accordion.Item>
                 </Accordion>
-        <Button
+        {/* <Button
             onClick={handleDescarga}>
-        </Button>
+        </Button> */}
 
         </div>
     )
