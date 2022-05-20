@@ -7,3 +7,19 @@
     width: fit-content;
     display: flex;
   }
+
+  .containerInput{
+    align-items: end;
+    right: 0;
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 25px;
+  }
+
+  .inputBuscar{
+    height: 35px;
+    padding: 7px;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid rgb(220, 220, 220);
+  }

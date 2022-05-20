@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Alert, Accordion, Button, ButtonGroup, Modal } from 'react-bootstrap';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
+import { AiOutlineSearch } from 'react-icons/ai';
 import axios from '../../axios/axios';
 import Form from 'react-bootstrap/Form';
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
@@ -11,6 +12,8 @@ const INGRESA_HITO_URL = '/profiles/newhito';
 function Alumnos() {
     const [alumnosList, setAlumnosList] = useState([]);
     const [alumnSelect, setAlumnSelect] = useState(0);
+    const [alumnSearch, setAlumnSearch] = useState([]);
+    const [busqueda, setBusqueda] = useState("");
     const [descripcion, setDescripcion] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
@@ -61,7 +64,23 @@ function Alumnos() {
     const handleNewHito = (ida) => {
         setShowM(true)
         setAlumnSelect(ida);
+    }
 
+    const filtrar = (terminoBusqueda) => {
+        var resultadosBusqueda = alumnosList.filter( (elemento) => {
+            if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            {
+                return elemento;
+            }
+        });
+        setAlumnSearch(resultadosBusqueda);
+    }
+
+    const handleChange = (e) => {
+        e.preventDefault()
+        setBusqueda(e.target.value);
+        console.log(e.target.value)
+        filtrar(e.target.value);
     }
 
     return (
@@ -77,6 +96,17 @@ function Alumnos() {
                 </Alert.Heading>
             </Alert>
             <div>
+                <div className="containerInput">
+                <input
+                    className="inputBuscar"
+                    value={busqueda}
+                    placeholder="Buscar Alumno"
+                    onChange={(e) => handleChange(e)}
+                />
+                <button className="btn">
+                    <AiOutlineSearch/>
+                </button>
+            </div>
             <Modal 
                 show={showM}
             >
@@ -106,7 +136,7 @@ function Alumnos() {
                 </Modal.Footer>
             </Modal>
             </div>
-            {alumnosList.map(values => (
+            {alumnSearch && alumnSearch.map(values => (
                     <div className='admin' key={values.idAlumno}>
                         <div>
                             <Accordion flush>
