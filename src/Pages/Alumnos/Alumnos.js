@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Alert, Accordion, Button, ButtonGroup, ToggleButton, ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
+import { Alert, Accordion, Button, ButtonGroup, Modal } from 'react-bootstrap';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
-import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
-import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from '../../axios/axios';
 import Form from 'react-bootstrap/Form';
-const GET_ALUMNOS_URL = '/profiles/getalumnos'
+const GET_ALUMNOS_URL = '/profiles/getalumnos';
+const INGRESA_HITO_URL = '/profiles/newhito';
 
 function Alumnos() {
     const [alumnosList, setAlumnosList] = useState([]);
-    const [alumnSelect, setAlumnSelect] = useState("");
+    const [alumnSelect, setAlumnSelect] = useState(0);
+    const [descripcion, setDescripcion] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [show, setShow] = useState(false);
     const [showM, setShowM] = useState(false);
-    const [timeStamp, setTimeStamp] = useState();
 
     useEffect (() => {
         getAlumnos()
@@ -29,21 +28,42 @@ function Alumnos() {
         })
     }
 
-    const handleShowM = () => {
-        setShowM(true)
-    }
-
     const handleCloseM = () => {
         setShowM(false)
+        setDescripcion("")
     }
 
-    const handleTimeStamp = () => {
-        const currentDate = new Date();
-        const timestamp = currentDate.getTime();
-        const fecha = new Date();
-        fecha.setTime(timestamp);
-        console.log(fecha);
-        setTimeStamp(fecha);
+    const handleSubmitHito = async (e) => {
+        e.preventDefault()
+        setShowM(false)
+        try{
+            const response = await axios.post(INGRESA_HITO_URL, {
+                ida: alumnSelect,
+                desc: descripcion
+            })
+            if(response.status === 200){
+                setShow(true)
+                setVariante('success')
+                setMsg(response.data.message)
+            }
+        }
+        catch(error){
+            setShow(true)
+          if(!error?.response){
+            setMsg('No hay respuesta del servidor');
+            setVariante('danger');
+          } else if(error.response?.status === 400){
+            setMsg(error.response.data.message);
+            setVariante('danger');
+          }
+        }
+
+    }
+
+    const handleNewHito = (ida) => {
+        setShowM(true)
+        setAlumnSelect(ida);
+
     }
 
     return (
@@ -52,7 +72,7 @@ function Alumnos() {
             <Alert 
                 show={show}
                 variant={variante}
-                onClose={() => setShowM(false)}
+                onClose={() => setShow(false)}
                 dismissible>
                 <Alert.Heading>
                     {msg}
@@ -60,8 +80,7 @@ function Alumnos() {
             </Alert>
             <div>
             <Modal 
-                show={showM} 
-                onHide={handleCloseM}
+                show={showM}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>Reportar Hito</Modal.Title>
@@ -73,21 +92,18 @@ function Alumnos() {
                     controlId="exampleForm.ControlTextarea1"
                     >
                     <Form.Label>Detalles</Form.Label>
-                    <Form.Control as="textarea" rows={4}>
-                        {timeStamp}
+                    <Form.Control as="textarea" rows={4} onChange={(e) => setDescripcion(e.target.value)}>
+                        {descripcion}
                     </Form.Control>
                     </Form.Group>
                 </Form>
-                <Button variant="success" onClick={handleTimeStamp}>
-                    Generar fecha de hoy
-                </Button>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseM}>
-                    Close
+                <Button variant="danger" onClick={handleCloseM}>
+                    Cerrar
                 </Button>
-                <Button variant="primary" onClick={handleCloseM}>
-                    Save Changes
+                <Button variant="success" onClick={handleSubmitHito}>
+                    Guardar
                 </Button>
                 </Modal.Footer>
             </Modal>
@@ -99,8 +115,10 @@ function Alumnos() {
                                 <AccordionHeader>{values.nombre}</AccordionHeader>
                                     <AccordionBody>
                                     <ButtonGroup>
-                                        <Button className="btnBancoPreguntas" onClick={handleShowM}>Reportar Hito</Button>
-                                        <Link to={`/CuestionariosResponderAdmin/${values.idAlumno}`}>Contestar cuestionario</Link>
+                                        <Button className="btnBancoPreguntas" onClick={() => handleNewHito(values.idAlumno)}>Reportar Hito</Button>
+                                        <Link to={`/CuestionariosResponderAdmin/${values.idAlumno}`}>
+                                            <Button className="btnBancoPreguntas" >Contestar cuestionario</Button>
+                                        </Link>
                                     </ButtonGroup>
                                     </AccordionBody>
                             </Accordion>

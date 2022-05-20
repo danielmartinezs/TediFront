@@ -7,7 +7,7 @@ import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import "./cuestionarios.css";
 import axios from '../../axios/axios'
 import { usePreviousProps } from '@mui/utils';
-const GET_QUESTIONNAIRES_URL = '/questionnaires/getquestionnaires'
+const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetailss'
 const UPLOAD_QUESTIONNAIRES_URL = '/questionnaires/uploadquestionnaire'
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 
@@ -30,18 +30,18 @@ function Respuesta () {
     const {idAlumno} = useParams();
 
     useEffect (() => {
-        getQuestionnaires()
+        getQuestionnairesDetails()
         getCuestionarios()
     }, [])
 
-    /* useEffect (() => {
+    useEffect (() => {
        //setLegitRespuestas(respuestas)
        console.log(preguntaActual)
        console.log(preguntasList[preguntaActual])
-    }, [preguntaActual]) */
+    }, [preguntaActual])
 
-    const getQuestionnaires = () => {
-        axios.get(GET_QUESTIONNAIRES_URL).then((response) => {
+    const getQuestionnairesDetails = () => {
+        axios.get(GET_QUESTIONNAIRES_DETAILS_URL).then((response) => {
             setPreguntasList(response.data)
         })
     }
@@ -53,7 +53,6 @@ function Respuesta () {
     }
 
     const formatQuestions = () => {
-        //console.log(preguntasList)
         const opc = preguntasList.map((lis) => JSON.parse(JSON.parse(JSON.stringify(lis.opciones))));
         setAnswers(opc)
         setIsStart(false)
