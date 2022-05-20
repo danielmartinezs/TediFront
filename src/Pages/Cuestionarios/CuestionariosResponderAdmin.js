@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'
-import { Accordion, Button } from "react-bootstrap";
+import { useParams } from 'react-router';
+import { Accordion, Alert, Button } from "react-bootstrap";
 import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
 import AccordionItem from "react-bootstrap/esm/AccordionItem";
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import "./cuestionarios.css";
 import axios from '../../axios/axios'
-import { usePreviousProps } from '@mui/utils';
-const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetailss'
+const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const UPLOAD_QUESTIONNAIRES_URL = '/questionnaires/uploadquestionnaire'
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
+const GET_RECENTLY_QUESTIONNAIRE_URL = ''
 
 function Respuesta () {
 
     const [preguntasList, setPreguntasList] = useState([])
     const [msg, setMsg] = useState("");
+    const [variante, setVariante] = useState('');
+    const [show, setShow] = useState(false);
     const [preguntaActual, setPreguntaActual] = useState(0);
     const [puntaje, setPuntaje] = useState(0);
     const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(0);
@@ -24,24 +26,21 @@ function Respuesta () {
     const [isFinished, setIsFinished] = useState(false);
     const [comment, setComment] = useState("");
     const [respuestas, setRespuestas] = useState([]);
-    const [legitrespuesta, setLegitRespuestas] = useState([]);
+    const [comentarios, setComentarios] = useState([]);
     const [answers, setAnswers] = useState([]);
     const [cuestionariosList, setCuestionariosList] = useState([]);
     const {idAlumno} = useParams();
 
     useEffect (() => {
-        getQuestionnairesDetails()
         getCuestionarios()
     }, [])
 
     useEffect (() => {
-       //setLegitRespuestas(respuestas)
-       console.log(preguntaActual)
-       console.log(preguntasList[preguntaActual])
-    }, [preguntaActual])
+       getQuestionnairesDetails()
+    }, [selectedQuestionnaire])
 
     const getQuestionnairesDetails = () => {
-        axios.get(GET_QUESTIONNAIRES_DETAILS_URL).then((response) => {
+        axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+selectedQuestionnaire).then((response) => {
             setPreguntasList(response.data)
         })
     }
@@ -60,7 +59,7 @@ function Respuesta () {
     }
 
     const handleSelectedQuestionnaire = (idcuestionario) => {
-        console.log(idcuestionario)
+        console.log("cuestionario elegido "+idcuestionario)
         setSelectedQuestionnaire(idcuestionario)
         setIsSelectedQuestionnaire(false)
         setIsStart(true)
@@ -70,19 +69,30 @@ function Respuesta () {
         const newAnswer = 
         {
             id: preguntasList[preguntaActual].idPregunta,
-            value: answer,
-            comment: comment
+            value: answer
         }
         setRespuestas([...respuestas, newAnswer])
+        const newComment = 
+        {
+            comment: comment
+        }
+        setComentarios([...comentarios, newComment])
     }
 
     const handleUploadCuestionario = async (respuestas) => {
         try{
             const response = await axios.post(UPLOAD_QUESTIONNAIRES_URL, {
-                idc: preguntasList[preguntaActual]?.idCuestionario,
-                respuestas: respuestas 
+                ida: idAlumno,
+                idc: selectedQuestionnaire,
+                respuestas: JSON.stringify(respuestas),
+                comentarios: JSON.stringify(comentarios)
             })
-            console.log(response)
+            if(response.status === 200){
+                setShow(true)
+                setVariante('success')
+                setMsg(response.data.message)
+            }
+            
         }catch(error){
             if(!error?.response){
                 setMsg('No hay respuesta del servidor');
@@ -92,6 +102,8 @@ function Respuesta () {
                 setMsg('Usuario sin autorización');
               } else if(error.response?.status === 403){
                 setMsg(error.response.data.message);
+              } else if(error.response?.status === 500){
+                setMsg("Algo salió mal al cargar los datos");
               }
         }
     }
@@ -111,10 +123,14 @@ function Respuesta () {
             const newAnswer = 
             {
                 id: preguntasList[preguntaActual].idPregunta,
-                value: answer,
-                comment: comment
+                value: answer
             }
             setRespuestas([...respuestas, newAnswer])
+            const newComment = 
+            {
+                comment: comment
+            }
+            setComentarios([...comentarios, newComment])
             setIsDone(true)
         }
         else{
@@ -167,6 +183,15 @@ function Respuesta () {
     if (isFinished)
     return (
       <main className="cuestionario">
+          <Alert 
+                show={show}
+                variant={variante}
+                onClose={() => setShow(false)}
+                dismissible>
+                <Alert.Heading>
+                    {msg}
+                </Alert.Heading>
+            </Alert>
         <div className="fin">
             Has concluido con el cuestionario ¡Felicidades!
             <span>
@@ -198,7 +223,7 @@ function Respuesta () {
                 <div>
                     {isDone? 
                     <button className='button-previous'
-                    onClick = {(e) => WrapItUp()}>
+                    onClick = {() => WrapItUp()}>
                         Enviar
                     </button>
                     : 

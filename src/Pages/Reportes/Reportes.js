@@ -1,8 +1,17 @@
 import React from 'react'
-import {Accordion} from'react-bootstrap'
+import { Accordion, Button } from 'react-bootstrap'
 import pdf from './ReporteSemestral.pdf'
+import axios from '../../axios/axios'
+const GENERA_REPORTE_URL = 'reportes/generareporte';
 
 function Reportes() {
+    
+    const handleDescarga = ()  => {
+        axios.get(GENERA_REPORTE_URL).then((response) => {
+            
+        })
+    }
+
     return (
         <div>
             <h1>Pagina de reportes</h1>
@@ -28,6 +37,10 @@ function Reportes() {
                     </Accordion.Item>
                 </Accordion.Item>
                 </Accordion>
+        <Button
+            onClick={handleDescarga}>
+        </Button>
+
         </div>
     )
 }

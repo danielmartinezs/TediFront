@@ -3,7 +3,6 @@ import { Accordion, Alert, Button, ButtonGroup, DropdownButton, Dropdown, Form, 
 import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
 import AccordionItem from "react-bootstrap/esm/AccordionItem";
 import { AiOutlineSelect, AiOutlinePlus } from 'react-icons/ai';
-//import { ButtonGroup } from "@mui/material";
 import axios from '../../axios/axios'
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"

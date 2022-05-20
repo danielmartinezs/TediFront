@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { Alert, Accordion, Button, ButtonGroup, Modal } from 'react-bootstrap';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
-import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from '../../axios/axios';
 import Form from 'react-bootstrap/Form';
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
@@ -57,7 +56,6 @@ function Alumnos() {
             setVariante('danger');
           }
         }
-
     }
 
     const handleNewHito = (ida) => {
@@ -82,14 +80,14 @@ function Alumnos() {
             <Modal 
                 show={showM}
             >
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>Reportar Hito</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <Form>
                     <Form.Group
                     className="mb-3"
-                    controlId="exampleForm.ControlTextarea1"
+                    controlId="newHito"
                     >
                     <Form.Label>Detalles</Form.Label>
                     <Form.Control as="textarea" rows={4} onChange={(e) => setDescripcion(e.target.value)}>

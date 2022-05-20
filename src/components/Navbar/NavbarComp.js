@@ -7,7 +7,6 @@ const NavbarComp = () => {
 
         return(
             <>
-       
             <Navbar className="color-nav" variant="dark" >
                 <Container>
                     <Logo/>
@@ -18,13 +17,11 @@ const NavbarComp = () => {
                     <Nav className="me-auto">
                     <Nav.Link as={Link} to="/Alumnos">Alumnos</Nav.Link>
                     <Nav.Link as={Link} to="/Reportes">Reportes</Nav.Link>
-                    <Nav.Link as={Link} to="/Progreso">Progreso</Nav.Link>
+                    <Nav.Link as={Link} to="/ProgresoAlumAdmin">Progreso</Nav.Link>
                     <Nav.Link as={Link} to="/PerfilSeleccionAdmin">Perfil</Nav.Link>
                     </Nav>
                 </Container>
-            </Navbar>
-
-            
+            </Navbar>            
             </>
         )
 }

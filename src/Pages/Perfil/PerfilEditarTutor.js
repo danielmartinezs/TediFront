@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Accordion, Button, ToggleButton, ButtonGroup } from 'react-bootstrap';
+import { Accordion, Alert, Button, ToggleButton, ButtonGroup } from 'react-bootstrap';
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
 import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
@@ -7,7 +7,7 @@ import axios from '../../axios/axios';
 import Form from 'react-bootstrap/Form';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
-import moment from 'moment';
+import { format } from 'date-fns';
 const GET_TUTORES_URL = '/profiles/gettutores'
 const EDIT_TUTOR_URL = '/profiles/editatutor'
 const EDIT_ALUMNO_URL = 'profiles/editaalumno'
@@ -63,13 +63,6 @@ function PerfilEditarTutor() {
 
     const handleSubmitEditAlumno = async (e) => {
         e.preventDefault();
-        console.log(llave)
-        console.log(nombre)
-        console.log(apellido)
-        console.log(fechanac)
-        console.log(semestre)
-        console.log(foto)
-        console.log(foto.name)
         try{
             const response = await axios.post(EDIT_ALUMNO_URL, {
                 idal: tutoresList[llave-1]?.idAlumno,
@@ -295,7 +288,7 @@ function PerfilEditarTutor() {
                                 <Form.Label>Fecha de Nacimiento</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder={moment(tutoresList[llave-1]?.fechaNacimiento).format('YYYY-MM-DD')}
+                                    placeholder={new Date(tutoresList[llave-1]?.fechaNacimiento)}
                                     value={fechanac}
                                     onFocus={(e) => (e.target.type="date")}
                                     onChange={(e) => setFechaNac(e.target.value)}
