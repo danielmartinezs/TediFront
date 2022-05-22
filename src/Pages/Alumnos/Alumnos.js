@@ -6,6 +6,7 @@ import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import { AiOutlineSearch } from 'react-icons/ai';
 import axios from '../../axios/axios';
 import Form from 'react-bootstrap/Form';
+import "./alumnos.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const INGRESA_HITO_URL = '/profiles/newhito';
 

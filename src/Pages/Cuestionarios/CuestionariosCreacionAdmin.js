@@ -4,6 +4,7 @@ import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
 import AccordionItem from "react-bootstrap/esm/AccordionItem";
 import { AiOutlineSelect, AiOutlinePlus } from 'react-icons/ai';
 import axios from '../../axios/axios'
+import "./cuestionarios.css"
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"

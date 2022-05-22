@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import { format } from 'date-fns';
+import "./perfil.css"
 const GET_TUTORES_URL = '/profiles/gettutores'
 const EDIT_TUTOR_URL = '/profiles/editatutor'
 const EDIT_ALUMNO_URL = 'profiles/editaalumno'

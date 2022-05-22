@@ -1,6 +1,8 @@
 import React from 'react'
 import { Button, Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
 import { AiOutlineUserAdd, AiOutlineUser } from 'react-icons/ai';
+import './perfil.css'
 import foto6 from '../../assets/foto6.jpg';
 import foto7 from '../../assets/foto7.jpg';
 
@@ -15,13 +17,12 @@ function PerfilSeleccionAdmin() {
                 <Card.Text>
                   Editar los perfiles administradores de la institución.
                 </Card.Text>
-                <Button
-                  size='lg'
-                  className='btnCrear'
-                  onClick={() => (window.location.href = "/PerfilEditarAdmin")}>
+                <Link to={'/PerfilEditarAdmin'}>
+                  <Button size='lg' className="btnCrear" >
                     Administrador
                     <AiOutlineUser/>
-                </Button>
+                  </Button>
+                </Link>
               </Card.Body>
             </Card>
             <Card border="primary" className="text-center" style={{ display:'flex' }}>
@@ -31,23 +32,21 @@ function PerfilSeleccionAdmin() {
                 <Card.Text>
                   Editar la información de los tutores y sus respectivos hijos.
                 </Card.Text>
-                <Button
-                  size='lg'
-                  className='btnCrear'
-                  onClick={() => (window.location.href = "/PerfilEditarTutor")}>
+                <Link to={'/PerfilEditarTutor'}>
+                  <Button size='lg' className="btnCrear" >
                     Tutor
                     <AiOutlineUser/>
-                </Button>
+                  </Button>
+                </Link>
               </Card.Body>
             </Card>
             <br/>
-            <Button
-            size='lg'
-            className='btnCrear'
-            onClick={() => (window.location.href = "/PerfilCrearPerfil")}>
-              Crear Perfil Nuevo
-              <AiOutlineUserAdd/>
-            </Button>
+            <Link to={'/PerfilCrearPerfil'}>
+              <Button size='lg' className="btnCrearNuevo">
+                Crear Perfil Nuevo
+                <AiOutlineUserAdd/>
+              </Button>
+            </Link>
         </div>
     )
 }

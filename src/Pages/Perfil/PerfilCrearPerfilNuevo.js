@@ -1,15 +1,17 @@
 import { useState } from "react";
-import { Alert, Button, ButtonGroup, Col, Row, Form } from 'react-bootstrap';
+import { Alert, Button, Tab, Tabs } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
 import axios from '../../axios/axios';
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { DatePicker } from "@material-ui/pickers";
+import { AiOutlineUserAdd } from 'react-icons/ai';
+import { es } from 'date-fns/locale'
 import "./perfil.css";
 const CREAR_TUT_URL = '/profiles/newtutor';
 const CREAR_ADMIN_URL = '/profiles/newadmin';
 
 function CreatePerfil() {
-    const [toggleState, setToggleState] = useState(1);
     const [nombreTutor, setNombreTutor] = useState("");
     const [apellidoTutor, setApellidoTutor] = useState("");
     const [nombreAlumno, setNombreAlumno] = useState("");
@@ -17,6 +19,7 @@ function CreatePerfil() {
     const [nombreAdmin, setNombreAdmin] = useState("");
     const [apellidoAdmin, setApellidoAdmin] = useState("");
     const [pic, setPic] = useState();
+    const [picPreview, setPicPreview] = useState();
     const [password, setPassword] = useState("");
     const [passwordTutor, setPasswordTutor] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,11 +30,18 @@ function CreatePerfil() {
     const [variante, setVariante] = useState('');
     const [show, setShow] = useState(false);
     
-    const toggleTab = (index) => {
-        setToggleState(index);
-        console.log(toggleState);
+    const handleFechaNueva = (date) => {
+      setFechaNac(date)
+      console.log(date)
+    }
+
+    const scrollToTop = () => {
+      window.scroll({
+        top: 0,
+        behavior: 'smooth'
+      });
     };
-    
+
     const handleSubmitA = async (e) => {
         e.preventDefault();
         console.log(nombreAdmin)
@@ -72,8 +82,9 @@ function CreatePerfil() {
         }
     }
 
-    const handleSubmitT = async (e) => {
-        e.preventDefault();
+    const handleSubmitTA = async (e) => {
+      scrollToTop()  
+      e.preventDefault();
         try{
           const response = await axios.post(CREAR_TUT_URL, {
             nombretut: nombreTutor+" "+apellidoTutor,
@@ -131,53 +142,38 @@ function CreatePerfil() {
             {msg}
           </Alert.Heading>
       </Alert>
-      <div className="bloc-tabs">
-        <button
-          className={toggleState === 1 ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(1)}
-        >
-          Tutor
-        </button>
-        <button
-          className={toggleState === 2 ? "tabs active-tabs" : "tabs"}
-          onClick={() => toggleTab(2)}
-        >
-          Administrador
-        </button>
-      </div>
-
-      <div className="content-tabs">
-        <div
-          className={toggleState === 1 ? "content active-content" : "content"}
-        >
-          <Row className="tutorContainer">
-          <Col>
-            <Form className="form">
-            <Form.Group controlId="nombretut">
-                <Form.Label>Nombre del tutor</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Nombre del tutor"
-                  value={nombreTutor}
-                  maxLength= "50"
-                  onChange={(e) => setNombreTutor(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
-              <Form.Group controlId="apellidotut">
-                <Form.Label>Apellido del tutor</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Apellido del tutor"
-                  value={apellidoTutor}
-                  maxLength= "50"
-                  onChange={(e) => setApellidoTutor(e.target.value)}
-                ></Form.Control>
+    <Tabs justify variant="pills" defaultActiveKey="tutor" id="crearperfilnuevo">
+        <Tab eventKey="tutor" title="Tutor" className="content">
+            <Form 
+              className="form"
+              onSubmit={handleSubmitTA} >
+                <h3>Información del Tutor</h3>
+                <br/>
+                <Form.Group controlId="nombretut">
+                    <Form.Label>Nombre del tutor</Form.Label>
+                    <Form.Control
+                    type="text"
+                    placeholder="Nombre del tutor"
+                    value={nombreTutor}
+                    maxLength= "50"
+                    onChange={(e) => setNombreTutor(e.target.value)}
+                    ></Form.Control>
+                </Form.Group>
+                <Form.Group controlId="apellidotut">
+                    <Form.Label>Apellido del tutor</Form.Label>
+                    <Form.Control
+                    type="text"
+                    placeholder="Apellido del tutor"
+                    value={apellidoTutor}
+                    maxLength= "50"
+                    onChange={(e) => setApellidoTutor(e.target.value)}
+                    ></Form.Control>
               </Form.Group>
               <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
-                  type="password"
-                  placeholder="Nueva Contraseña"
+                  type="text"
+                  placeholder="Contraseña debe tener un dígito, una letra minuscula, una letra mayúscula, un caracter especial, y una longitud de más de 8 caracteres"
                   value={passwordTutor}
                   maxLength= "250"
                   minLength={8}
@@ -187,81 +183,96 @@ function CreatePerfil() {
               <Form.Group controlId="confirmPassword">
                 <Form.Label>Repetir Contraseña</Form.Label>
                 <Form.Control
-                  type="password"
-                  placeholder="Repetir Contraseña"
+                  type="text"
+                  placeholder="Repetir contraseña"
                   value={confirmPasswordTutor}
                   maxLength= "250"
                   minLength={8}
                   onChange={(e) => setConfirmPasswordTutor(e.target.value)}
                 ></Form.Control>
               </Form.Group>
-              </Form>
-            </Col>
-            <Col>
-              <Form.Group controlId="nombre">
-                <Form.Label>Nombre del alumno</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Nombre del alumno"
-                  value={nombreAlumno}
-                  maxLength= "50"
-                  onChange={(e) => setNombreAlumno(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
-              <Form.Group controlId="apellido">
-                <Form.Label>Apellido del alumno</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Apellido del alumno"
-                  value={apellidoAlumno}
-                  maxLength= "50"
-                  onChange={(e) => setApellidoAlumno(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
-              <Form.Group controlId="fechanac">
-                <Form.Label>Fecha de Nacimiento</Form.Label>
-                <Form.Control
-                  type="date"
-                  placeholder="Seleccione la fecha de nacimiento"
-                  value={fechanac}
-                  onChange={(e) => setFechaNac(e.target.value)}
-                >
-                </Form.Control>
-              </Form.Group>
-              <Form.Group controlId="semestre">
-                <Form.Label>Semestre Escolar</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Seleccione Semestre Escolar"
-                  value={semestre}
-                  maxLength= "20"
-                  onChange={(e) => setSemestre(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
-            <Form.Group controlId="formFileSm" className="mb-3">
+              <br/>
+              <h3>Información del Alumno</h3>
+              <br/>
+                <img
+                  className='newAlumnoImg'
+                  src={picPreview}/>
+                <Form.Group controlId="formFileSm" className="mb-3">
                   <Form.Label>Sube foto</Form.Label>
                   <Form.Control
                     type="file"
                     size="sm"
-                    onChange={(e) => setPic(e.target.value)}
+                    accept="image/*"
+                    onChange={(e) => {
+                      setPic(e.target.value)
+                      setPicPreview(URL.createObjectURL(e.target.files[0]))
+                    }}
                   ></Form.Control>
-            </Form.Group>
-            <Button 
-              type="submit"
-              //variant="success"
-              className = "btnCrear"
-              onSubmit ={handleSubmitT}>
-                Crear
-            </Button>
-          </Col>
-        </Row>
-        </div>
-
-        <div
-          className = {toggleState === 2 ? "content  active-content" : "content"}
-        >
-        <Row className="adminContainer">
-            <Form onSubmit={handleSubmitA}>
+                </Form.Group>
+                <Form.Group controlId="nombre">
+                    <Form.Label>Nombre del alumno</Form.Label>
+                    <Form.Control
+                    type="text"
+                    placeholder="Nombre del alumno"
+                    value={nombreAlumno}
+                    maxLength= "50"
+                    onChange={(e) => setNombreAlumno(e.target.value)}
+                    ></Form.Control>
+                </Form.Group>
+                <Form.Group controlId="apellido">
+                    <Form.Label>Apellido del alumno</Form.Label>
+                    <Form.Control
+                    type="text"
+                    placeholder="Apellido del alumno"
+                    value={apellidoAlumno}
+                    maxLength= "50"
+                    onChange={(e) => setApellidoAlumno(e.target.value)}
+                    ></Form.Control>
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Fecha de Nacimiento</Form.Label>
+                  <br/>
+                    <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
+                            <DatePicker
+                            disableFuture
+                            openTo="year"
+                            variant="dialog"
+                            format="yyyy/MM/dd"
+                            label="Fecha de Nacimiento"
+                            views={["year", "month", "date"]}
+                            value={fechanac}
+                            onChange={handleFechaNueva}/>
+                    </MuiPickersUtilsProvider>
+                </Form.Group>
+                <Form.Group controlId="semestre">
+                    <Form.Label>Semestre Escolar</Form.Label>
+                    <Form.Control
+                    type="text"
+                    placeholder="Seleccione Semestre Escolar"
+                    value={semestre}
+                    maxLength= "20"
+                    onChange={(e) => setSemestre(e.target.value)}
+                    ></Form.Control>
+                </Form.Group>
+                <br/>
+                <Button 
+                type="submit"
+                className = "btnCrear"
+                onSubmit ={handleSubmitTA}>
+                    Crear
+                    <AiOutlineUserAdd/>
+                </Button>
+            </Form>
+        </Tab>
+        <Tab 
+            eventKey="admin" 
+            title="Administrador" 
+            className="content">
+            <Form 
+            className="form" 
+            onSubmit={handleSubmitA}>
+              <h3>Información del Administrador</h3>
+              <br/>
                 <Form.Group controlId="nombread">
                   <Form.Label>Nombre</Form.Label>
                   <Form.Control
@@ -285,8 +296,8 @@ function CreatePerfil() {
                 <Form.Group controlId="passwordad">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
-                    type="password"
-                    placeholder="Nueva Contraseña"
+                    type="text"
+                    placeholder="Contraseña debe tener un dígito, una letra minuscula, una letra mayúscula, un caracter especial, y una longitud de más de 8 caracteres"
                     value={password}
                     maxLength= "250"
                     minLength={8}
@@ -296,7 +307,7 @@ function CreatePerfil() {
                 <Form.Group controlId="confirmpasswordad">
                   <Form.Label>Repetir Contraseña</Form.Label>
                   <Form.Control
-                    type="password"
+                    type="text"
                     placeholder="Repetir Contraseña"
                     value={confirmPassword}
                     maxLength= "250"
@@ -310,11 +321,11 @@ function CreatePerfil() {
                 className = "btnCrear"
                 onSubmit ={handleSubmitA}>
                   Crear
+                  <AiOutlineUserAdd/>
               </Button>
-              </Form>
-          </Row>
-        </div>
-      </div>
+            </Form>
+        </Tab>
+    </Tabs>
       </div>
   );
 }
