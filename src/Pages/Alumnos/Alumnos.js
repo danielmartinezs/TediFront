@@ -27,6 +27,7 @@ function Alumnos() {
 
     const getAlumnos = () => {
         axios.get(GET_ALUMNOS_URL).then((response) => {
+            setAlumnSearch(response.data)
             setAlumnosList(response.data)
         })
     }
@@ -68,19 +69,24 @@ function Alumnos() {
     }
 
     const filtrar = (terminoBusqueda) => {
+        console.log("El termino es "+terminoBusqueda)
         var resultadosBusqueda = alumnosList.filter( (elemento) => {
-            if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            if(terminoBusqueda === ""){
+                setAlumnSearch(alumnosList)
+                return elemento;
+            }
+            else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
             {
                 return elemento;
             }
         });
+        console.log("Resultado busqueda es: "+resultadosBusqueda)
         setAlumnSearch(resultadosBusqueda);
     }
 
     const handleChange = (e) => {
         e.preventDefault()
         setBusqueda(e.target.value);
-        console.log(e.target.value)
         filtrar(e.target.value);
     }
 
