@@ -112,7 +112,7 @@
   .admin-details__box{
     justify-content: space-between;
     padding: 21px;
-    background-color: rgb(54, 42, 183);
+    background-color: #ccc;
     color: white;
     border-radius: 5px;
     margin-bottom: 21px;

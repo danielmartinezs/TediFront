@@ -22,7 +22,6 @@ import CuestionariosResponderAdmin from './Pages/Cuestionarios/CuestionariosResp
 import PerfilSeleccionAdmin from './Pages/Perfil/PerfilSeleccionAdmin'
 import PerfilEditarAdmin from './Pages/Perfil/PerfilEditarAdmin'
 import PerfilEditarTutor from './Pages/Perfil/PerfilEditarTutor'
-import PerfilCrearPerfil from './Pages/Perfil/PerfilCrearPerfil'
 import PerfilCrearPerfilNuevo from './Pages/Perfil/PerfilCrearPerfilNuevo'
 import PerfilPadre from './Pages/Perfil/PerfilPadre'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -55,7 +54,6 @@ function App() {
                   <Route exact path="/CuestionariosResponderAdmin/:idAlumno" element={<privateRoute roles = {["admin"]}><CuestionariosResponderAdmin/></privateRoute>}/>
 
                   <Route exact path="/PerfilSeleccionAdmin" element={<privateRoute roles = {["admin"]}><PerfilSeleccionAdmin/></privateRoute>}/>
-                  <Route exact path="/PerfilCrearPerfil" element={<privateRoute roles = {["admin"]}><PerfilCrearPerfil/></privateRoute>}/>
                   <Route exact path="/PerfilCrearPerfilNuevo" element={<privateRoute roles = {["admin"]}><PerfilCrearPerfilNuevo/></privateRoute>}/>
                   <Route exact path="/PerfilEditarAdmin" element={<privateRoute roles = {["admin"]}><PerfilEditarAdmin/></privateRoute>}/>
                   <Route exact path="/PerfilEditarTutor" element={<privateRoute roles = {["admin"]}><PerfilEditarTutor/></privateRoute>}/>

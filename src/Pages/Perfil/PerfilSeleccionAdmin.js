@@ -41,7 +41,7 @@ function PerfilSeleccionAdmin() {
               </Card.Body>
             </Card>
             <br/>
-            <Link to={'/PerfilCrearPerfil'}>
+            <Link to={'/PerfilCrearPerfilNuevo'}>
               <Button size='lg' className="btnCrearNuevo">
                 Crear Perfil Nuevo
                 <AiOutlineUserAdd/>

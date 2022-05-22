@@ -8,6 +8,10 @@ import Form from 'react-bootstrap/Form';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import { format } from 'date-fns';
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from '@date-io/date-fns';
+import { DatePicker } from "@material-ui/pickers";
+import { es } from 'date-fns/locale'
 import "./perfil.css"
 const GET_TUTORES_URL = '/profiles/gettutores'
 const EDIT_TUTOR_URL = '/profiles/editatutor'
@@ -25,7 +29,7 @@ function PerfilEditarTutor() {
     const [tutoresList, setTutoresList] = useState([]);
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
-    const [fechanac, setFechaNac] = useState("");
+    const [fechanac, setFechaNac] = useState();
     const [semestre, setSemestre] = useState("");
     const [foto, setFoto] = useState();
     const [fotoPreview, setFotoPreview] = useState();
@@ -43,6 +47,7 @@ function PerfilEditarTutor() {
             setTutoresList(response.data)
             console.log(tutoresList)
         })
+        setFechaNac(tutoresList[llave-1]?.fechaNacimiento)
     }
 
     const openPane = (values, boton) => {
@@ -193,9 +198,10 @@ function PerfilEditarTutor() {
             >
                 <div className='admin-details__info'>
                     <div className='admin-details__box'>
-                        <h3>Editar información</h3>
                         <Form 
+                        className="form"
                         onSubmit={handleSubmitEditTutor}>
+                             <h3>Editar información</h3>
                         <Form.Group controlId="nombreadmin">
                                 <Form.Label>Nombre del tutor</Form.Label>
                                 <Form.Control
@@ -247,9 +253,11 @@ function PerfilEditarTutor() {
             >
             <div className='admin-details__info'>
                 <div className='admin-details__box'>
-                    <h3>Editar información</h3>
-                    <div >
-                        <img 
+                    <Form 
+                        className="form"
+                        onSubmit={handleSubmitEditAlumno}>
+                             <h3>Editar información</h3>
+                             <img 
                         className='admin-details__img'
                         src={fotoPreview ?? (tutoresList[llave-1]?.fotografia)}/>
                         <Form.Group controlId="formFileSm" className="custom-file-upload">
@@ -264,9 +272,6 @@ function PerfilEditarTutor() {
                             >
                             </Form.Control>
                         </Form.Group>
-                    </div>
-                    <Form 
-                        onSubmit={handleSubmitEditAlumno}>
                         <Form.Group controlId="nombre">
                                 <Form.Label>Nombre del alumno</Form.Label>
                                 <Form.Control
@@ -285,16 +290,20 @@ function PerfilEditarTutor() {
                                     onChange={(e) => setApellido(e.target.value)}
                                     ></Form.Control>
                             </Form.Group>
-                            <Form.Group controlId="fecha nacimiento">
-                                <Form.Label>Fecha de Nacimiento</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder={new Date(tutoresList[llave-1]?.fechaNacimiento)}
-                                    value={fechanac}
-                                    onFocus={(e) => (e.target.type="date")}
-                                    onChange={(e) => setFechaNac(e.target.value)}
-                                    onBlur={(e) => (e.target.type = "text")}
-                                    ></Form.Control>
+                            <Form.Group>
+                            <Form.Label>Fecha de Nacimiento</Form.Label>
+                            <br/>
+                                <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
+                                        <DatePicker
+                                        disableFuture
+                                        openTo="year"
+                                        variant="dialog"
+                                        format="yyyy/MM/dd"
+                                        label="Fecha de Nacimiento"
+                                        views={["year", "month", "date"]}
+                                        value={fechanac}
+                                        onChange={setFechaNac}/>
+                                </MuiPickersUtilsProvider>
                             </Form.Group>
                             <Form.Group controlId="semestre">
                                 <Form.Label>Semestre Escolar</Form.Label>
