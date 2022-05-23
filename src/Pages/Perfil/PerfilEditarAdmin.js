@@ -124,10 +124,10 @@ function PerfilEditarAdmin() {
                                     <div className="fw-bold">
                                         {values.usuario}
                                     </div>
-                                    <button className='button-icon'
+                                    <Button className='button-icon'
                                         onClick={() => openPane(values)}>
-                                            <AiOutlineEdit size='3em' color='blue'/>
-                                    </button>
+                                            <AiOutlineEdit size='3em'/>
+                                    </Button>
                                 </ListGroupItem>
                             </ListGroup>
                             <br/>

@@ -4,23 +4,30 @@ import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import axios from '../../axios/axios';
 import { format, parseISO } from 'date-fns';
-import { AiOutlinePlus } from 'react-icons/ai';
-const es = require('date-fns/locale/es')
+import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale';
+import { DateTimePicker } from '@material-ui/pickers';
+import "./progreso.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const GET_HITOS_ALUMNO_URL = 'profiles/gethitosa';
 const INGRESA_HITO_URL = '/profiles/newhito';
+const DELETE_HITO_URL = '/profiles/borrahito';
 
 function ProgresoAlumAdmin() {
 
     const [alumnSelect, setAlumnSelect] = useState(0);
     const [alumnosList, setAlumnosList] = useState([]);
     const [hitosList, setHitosList] = useState([]);
-    const [showModalH, setShowModalH] = useState(false)
+    const [showModalHito, setShowModalHito] = useState(false)
     const [descripcion, setDescripcion] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
+    const [llave, setLlave] = useState(0);
     const [showO, setShowO] = useState(false);
     const [showA, setShowA] = useState(false);
+    const [showMDelete, setShowMDelete] = useState(false);
 
     useEffect (() => {
         getAlumnos()
@@ -37,7 +44,16 @@ function ProgresoAlumAdmin() {
             setHitosList(response.data)
         })
         setAlumnSelect(ida)
-        setShowModalH(true)
+        setShowModalHito(true)
+    }
+
+    const handleDeleteHito = async (llave) => {
+        const response = await axios.post(DELETE_HITO_URL+"/"+llave)
+        setVariante('success')
+        setMsg(response.data.message)
+        setShowA(true)
+        setShowMDelete(false)
+        setShowModalHito(false)
     }
 
     const handleSubmitHito = async (e) => {
@@ -52,6 +68,7 @@ function ProgresoAlumAdmin() {
                 setShowA(true)
                 setVariante('success')
                 setMsg(response.data.message)
+                setDescripcion("")
             }
         }
         catch(error){
@@ -84,6 +101,7 @@ function ProgresoAlumAdmin() {
                                 <AccordionHeader>{values.nombre}</AccordionHeader>
                                     <AccordionBody>
                                         <Button
+                                        className='btnBancoPreguntas'
                                         onClick={() => {getHitosList(values.idAlumno)}}
                                         >Hitos</Button>
                                     </AccordionBody>
@@ -93,10 +111,10 @@ function ProgresoAlumAdmin() {
                 )
             )}
             <Modal 
-                show={showModalH}
+                show={showModalHito}
                 size="sm"
                 scrollable
-                onHide={() => setShowModalH(false)}
+                onHide={() => setShowModalHito(false)}
                 >
                     <ModalHeader closeButton>
                         <ModalTitle>
@@ -107,12 +125,26 @@ function ProgresoAlumAdmin() {
                         {hitosList.map(values => (
                             <div key={values.idHito}>
                             <ListGroup>
-                                <ListGroupItem>
-                                    {values.idHito}. 
-                                    {values.descripcion}
+                                <ListGroupItem> 
+                                    <h3>{values.descripcion}</h3>
+                                    {format(parseISO(values.fecha), 'PPPPp', { locale: es })}
                                     <br/>
-                                    {format(parseISO(values.fecha), 'PPPPp')}
-                                    <br/>
+                                    <Button
+                                    className='btnEditarP'
+                                    variant='success'
+                                    >
+                                        <AiOutlineEdit/>
+                                    </Button>
+                                    <Button
+                                    className='btnBorrarP'
+                                    onClick={() => {
+                                        setShowMDelete(true)
+                                        setLlave(values.idHito)
+                                    }}
+                                    variant='danger'
+                                    >
+                                        <AiOutlineDelete/>
+                                    </Button>
                                 </ListGroupItem>
                             </ListGroup>
                             </div>
@@ -120,9 +152,10 @@ function ProgresoAlumAdmin() {
                         }
                         <Button 
                         variant="success"
+                        className='btnCrearP'
                         onClick={() => {
                             setShowO(true)
-                            setShowModalH(false)}}>
+                            setShowModalHito(false)}}>
                             Agregar nuevo hito
                             <AiOutlinePlus/>
                         </Button>
@@ -133,7 +166,7 @@ function ProgresoAlumAdmin() {
                     <Offcanvas.Title>Nuevo hito</Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
-                        <Form>
+                        <Form className="form">
                             <Form.Group
                             className="mb-3"
                             controlId="newHito"
@@ -144,16 +177,42 @@ function ProgresoAlumAdmin() {
                             </Form.Control>
                             </Form.Group>
                         </Form>
-                        <Button variant="danger" onClick={() => {
+                        <Button 
+                        variant="danger" 
+                        className='btnBorrarP'
+                        onClick={() => {
                             setShowO(false)
-                            setDescripcion('')}}>
+                            setDescripcion('')
+                        }}>
                             Cerrar
                         </Button>
-                        <Button variant="success" onClick={handleSubmitHito}>
+                        <Button 
+                        variant="success"
+                        className='btnEditarP' 
+                        onClick={handleSubmitHito}>
                             Guardar
                         </Button>
                     </Offcanvas.Body>
                 </Offcanvas>
+
+             <Modal show={showMDelete} onHide={() => {setShowMDelete(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>¿Estás seguro que quieres borrar este hito?</Modal.Title>
+                </Modal.Header>
+                    <Modal.Body>Una vez borrado el hito no podrá recuperarse</Modal.Body>
+                <Modal.Footer>
+                    <Button 
+                    variant="success" 
+                    onClick={() => {setShowMDelete(false)}}>
+                        No
+                    </Button>
+                    <Button 
+                    variant="danger" 
+                    onClick={() => {handleDeleteHito(llave)}}>
+                        Sí
+                    </Button>
+                </Modal.Footer>
+            </Modal> 
         </div>
     )
 }

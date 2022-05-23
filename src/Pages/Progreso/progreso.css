@@ -1,0 +1,23 @@
+.btnCrearP {
+    border-radius: 0.75rem;
+    background-color: #0B7A75;
+    width: 100%;
+    margin: 0 auto;
+    align-self: center;
+  }
+
+.btnEditarP {
+    border-radius: 0.75rem;
+    background-color: #0B7A75;
+    width: 50%;
+    margin: 0 auto;
+    align-self: center;
+}
+
+.btnBorrarP {
+    border-radius: 0.75rem;
+    background-color: #0B7A75;
+    width: 50%;
+    margin: 0 auto;
+    align-self: center;
+}
