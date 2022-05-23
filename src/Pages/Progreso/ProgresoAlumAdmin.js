@@ -13,6 +13,7 @@ import "./progreso.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const GET_HITOS_ALUMNO_URL = 'profiles/gethitosa';
 const INGRESA_HITO_URL = '/profiles/newhito';
+const EDIT_HITO_URL = '/profiles/editahito';
 const DELETE_HITO_URL = '/profiles/borrahito';
 
 function ProgresoAlumAdmin() {
@@ -20,14 +21,16 @@ function ProgresoAlumAdmin() {
     const [alumnSelect, setAlumnSelect] = useState(0);
     const [alumnosList, setAlumnosList] = useState([]);
     const [hitosList, setHitosList] = useState([]);
-    const [showModalHito, setShowModalHito] = useState(false)
     const [descripcion, setDescripcion] = useState("");
+    const [timestamp, setTimestamp] = useState();
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [llave, setLlave] = useState(0);
-    const [showO, setShowO] = useState(false);
-    const [showA, setShowA] = useState(false);
+    const [showMHito, setShowMHito] = useState(false)
     const [showMDelete, setShowMDelete] = useState(false);
+    const [showOffNew, setShowOffNew] = useState(false);
+    const [showOffEdit, setShowOffEdit] = useState(false);
+    const [showA, setShowA] = useState(false);
 
     useEffect (() => {
         getAlumnos()
@@ -44,7 +47,7 @@ function ProgresoAlumAdmin() {
             setHitosList(response.data)
         })
         setAlumnSelect(ida)
-        setShowModalHito(true)
+        setShowMHito(true)
     }
 
     const handleDeleteHito = async (llave) => {
@@ -53,12 +56,52 @@ function ProgresoAlumAdmin() {
         setMsg(response.data.message)
         setShowA(true)
         setShowMDelete(false)
-        setShowModalHito(false)
+        setShowMHito(false)
+    }
+
+    const handleEditHito = async (e) => {
+        e.preventDefault()
+        console.log(new Date(timestamp.setHours(timestamp.getHours()-5)).toISOString())
+        try{
+            const response = await axios.post(EDIT_HITO_URL, {
+                idh: llave,
+                timestamp: new Date(timestamp),
+                desc: descripcion
+            })
+            if(response.status === 200){
+                console.log(response)
+                setShowA(true)
+                setVariante('success')
+                setMsg(response.data.message)
+                setTimestamp("")
+                setDescripcion("")
+            }
+        }catch(error){
+            setShowA(true)
+            console.log(error)
+            if(!error?.response){
+                setMsg('No hay respuesta del servidor');
+                setVariante('danger');
+            } else if(error.response?.status === 400){
+                setMsg(error.response.data.message);
+                setVariante('danger');
+            } else if(error.response?.status === 401){
+                setMsg('Usuario sin autorización');
+                setVariante('danger');
+            } else if(error.response?.status === 403){
+                setMsg(error.response.data.message);
+                setVariante('danger');
+            } else if(error.response?.status === 500){
+                setMsg("Error interno");
+                setVariante('danger');
+            }
+            console.log(msg)
+        }
     }
 
     const handleSubmitHito = async (e) => {
         e.preventDefault()
-        setShowO(false)
+        setShowOffNew(false)
         try{
             const response = await axios.post(INGRESA_HITO_URL, {
                 ida: alumnSelect,
@@ -111,10 +154,10 @@ function ProgresoAlumAdmin() {
                 )
             )}
             <Modal 
-                show={showModalHito}
+                show={showMHito}
                 size="sm"
                 scrollable
-                onHide={() => setShowModalHito(false)}
+                onHide={() => setShowMHito(false)}
                 >
                     <ModalHeader closeButton>
                         <ModalTitle>
@@ -131,6 +174,13 @@ function ProgresoAlumAdmin() {
                                     <br/>
                                     <Button
                                     className='btnEditarP'
+                                    onClick={() => {
+                                        setShowOffEdit(true)
+                                        setShowMHito(false)
+                                        setLlave(values.idHito)
+                                        setDescripcion(values.descripcion)
+                                        setTimestamp(values.fecha)
+                                    }}
                                     variant='success'
                                     >
                                         <AiOutlineEdit/>
@@ -154,14 +204,14 @@ function ProgresoAlumAdmin() {
                         variant="success"
                         className='btnCrearP'
                         onClick={() => {
-                            setShowO(true)
-                            setShowModalHito(false)}}>
+                            setShowOffNew(true)
+                            setShowMHito(false)}}>
                             Agregar nuevo hito
                             <AiOutlinePlus/>
                         </Button>
                     </ModalBody>
                 </Modal>
-                <Offcanvas show={showO} onHide={() => setShowO(false)}>
+                <Offcanvas show={showOffNew} onHide={() => setShowOffNew(false)}>
                     <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Nuevo hito</Offcanvas.Title>
                     </Offcanvas.Header>
@@ -181,7 +231,7 @@ function ProgresoAlumAdmin() {
                         variant="danger" 
                         className='btnBorrarP'
                         onClick={() => {
-                            setShowO(false)
+                            setShowOffNew(false)
                             setDescripcion('')
                         }}>
                             Cerrar
@@ -194,8 +244,9 @@ function ProgresoAlumAdmin() {
                         </Button>
                     </Offcanvas.Body>
                 </Offcanvas>
-
-             <Modal show={showMDelete} onHide={() => {setShowMDelete(false)}}>
+             <Modal 
+             show={showMDelete} 
+             onHide={() => {setShowMDelete(false)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>¿Estás seguro que quieres borrar este hito?</Modal.Title>
                 </Modal.Header>
@@ -213,6 +264,57 @@ function ProgresoAlumAdmin() {
                     </Button>
                 </Modal.Footer>
             </Modal> 
+            <Offcanvas 
+            show={showOffEdit} 
+            placement={'end'} 
+            onHide={() => setShowOffEdit(false)}>
+                    <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Editar hito</Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
+                        <Form className="form">
+                            <Form.Group
+                            className="mb-3"
+                            controlId="newHito"
+                            >
+                            <Form.Label>Detalles</Form.Label>
+                            <Form.Control 
+                            as="textarea" 
+                            rows={4} 
+                            value={descripcion}
+                            onChange={(e) => setDescripcion(e.target.value)}>
+                                {descripcion}
+                            </Form.Control>
+                            </Form.Group>
+                            <Form.Label>Fecha de registro</Form.Label>
+                            <br/>
+                            <MuiPickersUtilsProvider 
+                            locale={es}
+                            utils={DateFnsUtils}>
+                                <DateTimePicker
+                                disableFuture
+                                value={timestamp}
+                                onChange={setTimestamp}/>
+                            </MuiPickersUtilsProvider>
+                        </Form>
+                        <br/>
+                        <Button 
+                        variant="danger" 
+                        className='btnBorrarP'
+                        onClick={() => {
+                            setShowOffEdit(false)
+                            setDescripcion('')
+                        }}>
+                            Cerrar
+                        </Button>
+                        <Button 
+                        variant="success"
+                        className='btnEditarP' 
+                        onClick={handleEditHito}>
+                            Guardar
+                        </Button>
+                    </Offcanvas.Body>
+                </Offcanvas>
         </div>
     )
 }

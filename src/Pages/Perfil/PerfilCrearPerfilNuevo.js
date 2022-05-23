@@ -78,6 +78,9 @@ function CreatePerfil() {
           } else if(error.response?.status === 403){
             setMsg(error.response.data.message);
             setVariante('danger');
+          } else if(error.response?.status === 404){
+            setMsg(error.response.data.message);
+            setVariante('danger');
           }
         }
     }
