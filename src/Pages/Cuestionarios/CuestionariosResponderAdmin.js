@@ -350,6 +350,7 @@ function Respuesta () {
                                     setShowOffRes(true)
                                     setShowMEdit(false)
                                     setLlaveCambio(values.id)
+                                    setComment(comentariosEdit[(values.id)-1]?.comment)
                                 }}
                                 variant='success'
                                 >
@@ -402,6 +403,7 @@ function Respuesta () {
                             <Form.Control 
                             as="textarea" 
                             rows={4}
+                            value={comment}
                             onChange={(e) => setComment(e.target.value)}>
                                 {comentariosEdit[(llaveCambio)-1]?.comment}
                             </Form.Control>
