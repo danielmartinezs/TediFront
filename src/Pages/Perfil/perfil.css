@@ -174,7 +174,7 @@
   }
 
   .button-icon{
-    background-color:transparent;
+    background-color:#FE9000;
     border-radius: 10px;
     border: transparent;
   }
@@ -182,7 +182,6 @@
   .button-icon:hover{
     background-color: #252d4a;
     border: #252d4a;
-    border-radius: 20%;
     outline: #252d4a;
   }
 

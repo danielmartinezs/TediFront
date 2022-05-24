@@ -126,6 +126,7 @@ function PerfilEditarAdmin() {
                                     </div>
                                     <Button className='button-icon'
                                         onClick={() => openPane(values)}>
+                                            Editar información
                                             <AiOutlineEdit size='3em'/>
                                     </Button>
                                 </ListGroupItem>
@@ -144,9 +145,10 @@ function PerfilEditarAdmin() {
             >
                 <div className='admin-details__info'>
                     <div className='admin-details__box'>
-                        <div>Editar información</div>
-                        <Form 
+                        <Form
+                        className="form" 
                         onSubmit={handleSubmitEdit}>
+                            <h3>Editar información</h3>
                             <Form.Group controlId="nombreadmin">
                                 <Form.Label>Nombre del admin</Form.Label>
                                 <Form.Control
@@ -176,11 +178,13 @@ function PerfilEditarAdmin() {
                                     onChange={(e) => setConfPassword(e.target.value)}
                                     ></Form.Control>
                             </Form.Group>
+                            <br/>
                             <Button
                             className='button-edit'
                             type='submit'
                             onSubmit={handleSubmitEdit}>
                                 Editar
+                                <AiOutlineEdit/>
                             </Button>
                         </Form>
                     </div>
