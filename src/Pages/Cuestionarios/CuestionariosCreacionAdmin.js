@@ -33,7 +33,6 @@ function CrearCuestionario() {
     const [showModalP, setShowModalP] = useState(false)
     const [showModalR, setShowModalR] = useState(false)
     const [showModalO, setShowModalO] = useState(false)
-
     const [preguntaRespuesta, setPreguntaRespuesta] = useState([]);
 
     useEffect (() => {
@@ -80,6 +79,22 @@ function CrearCuestionario() {
                 setVariante('success')
                 setMsg("Se ha creado un nuevo cuestionario")
             }
+        }catch(error){
+            if(!error?.response){
+                setMsg('No hay respuesta del servidor');
+              } else if(error.response?.status === 400){
+                setMsg(error.response.data.message);
+              } else if(error.response?.status === 401){
+                setMsg('Usuario sin autorización');
+              } else if(error.response?.status === 403){
+                setMsg(error.response.data.message);
+              }
+        }
+        establishKey()
+    }
+
+    const establishKey = async () => {
+        try{
             const respose = await axios.post(ESTABLISH_KEYS_URL, {
                 idc: cuestionariosList.length+1,
                 qa: preguntaRespuesta
@@ -101,6 +116,7 @@ function CrearCuestionario() {
                 setMsg(error.response.data.message);
               }
         }
+       
     }
 
     const newPreguntaRespuesta = () => {
@@ -417,11 +433,6 @@ function CrearCuestionario() {
             Guardar
         </Button>
         <br/>
-            <Button 
-            className="btnGuardar"
-            onClick={handleUploadNewCuestionario}>
-                Subir Cuestionario
-            </Button>
         </div>
         <div className="outputPreguntas">
                 <Table>
@@ -446,6 +457,11 @@ function CrearCuestionario() {
                         ))}
                     </tbody>
                 </Table>
+                <Button 
+                className="btnGuardar"
+                onClick={handleUploadNewCuestionario}>
+                    Subir Cuestionario
+                </Button>
             </div>
     </main>
     );
