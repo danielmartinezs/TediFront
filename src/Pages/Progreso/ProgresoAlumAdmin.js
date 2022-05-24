@@ -295,6 +295,7 @@ function ProgresoAlumAdmin() {
                                 disableFuture
                                 value={timestamp}
                                 onChange={setTimestamp}/>
+                                {console.log(timestamp)}
                             </MuiPickersUtilsProvider>
                         </Form>
                         <br/>

@@ -270,3 +270,14 @@
     font-weight: 500;
     border-radius: 7px;
   }
+
+  .btnEditarRespuesta {
+    border-radius: 0.75rem;
+    background-color: #0B7A75;
+    width: 75%;
+    margin: 10px auto;
+    padding: 5px;
+    cursor: pointer;
+    display: list-item;
+    align-self: center;
+  }

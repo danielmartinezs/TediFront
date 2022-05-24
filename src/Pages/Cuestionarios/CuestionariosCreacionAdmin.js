@@ -466,7 +466,9 @@ function CrearCuestionario() {
                 </div>  
             ))}
             <br/>
-            <Button onClick={() => setNewCuestionario(true)}>
+            <Button
+            className="btnEditarRespuesta"
+            onClick={() => setNewCuestionario(true)}>
                 Crear cuestionario
                 <AiOutlinePlus/>
             </Button>

@@ -1,23 +1,33 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
-import { Accordion, Alert, Button, Form, Offcanvas } from "react-bootstrap";
+import { Link } from 'react-router-dom'
+import { Accordion, Alert, Button, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas } from "react-bootstrap";
 import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
 import AccordionItem from "react-bootstrap/esm/AccordionItem";
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
-import { AiTwotoneStar } from 'react-icons/ai';
+import { AiTwotoneStar, AiOutlineEdit } from 'react-icons/ai';
+import { format, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale';
 import "./cuestionarios.css";
 import axios from '../../axios/axios'
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const UPLOAD_QUESTIONNAIRES_URL = '/questionnaires/uploadquestionnaire'
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
-const GET_RECENTLY_QUESTIONNAIRE_URL = ''
+const GET_RECENT_ENTRY_URL = 'questionnaires/getrecententry'
 const INGRESA_HITO_URL = '/profiles/newhito';
 
 function Respuesta () {
 
     const [preguntasList, setPreguntasList] = useState([])
+    const [cuestionariosList, setCuestionariosList] = useState([]);
+    const [formattedAnswers, setFormattedAnswers] = useState([]);
+    const [respuestas, setRespuestas] = useState([]);
+    const [comentarios, setComentarios] = useState([]);
+    const [rescom, setResCom] = useState([]);
     const [descripcion, setDescripcion] = useState("");
-    const [showO, setShowO] = useState(false);
+    const [showOffHito, setShowOffHito] = useState(false);
+    const [showOffRes, setShowOffRes] = useState(false);
+    const [showMEdit, setShowMEdit] = useState(false);
     const [showA, setShowA] = useState(false);
     const [msg, setMsg] = useState("");
     const [variante, setVariante] = useState('');
@@ -29,10 +39,9 @@ function Respuesta () {
     const [isStart, setIsStart] = useState(false);
     const [isFinished, setIsFinished] = useState(false);
     const [comment, setComment] = useState("");
-    const [respuestas, setRespuestas] = useState([]);
-    const [comentarios, setComentarios] = useState([]);
-    const [answers, setAnswers] = useState([]);
-    const [cuestionariosList, setCuestionariosList] = useState([]);
+    const [tiempoRegistro, setTiempoRegistro] = useState();
+    const [tiempoRegistroV, setTiempoRegistroV] = useState();
+    const [llaveCambio, setLlaveCambio] = useState(0);
     const {idAlumno} = useParams();
 
     useEffect (() => {
@@ -55,9 +64,18 @@ function Respuesta () {
         })
     }
 
+    const getMostRecent = () => {
+        axios.get(GET_RECENT_ENTRY_URL+"/"+idAlumno).then((response) => {
+            console.log(response)
+            setTiempoRegistro(response.data[0].ultimoregistro)
+            setTiempoRegistroV(new Date(response.data[0].ultimoregistro))
+        })
+
+    }
+
     const formatQuestions = () => {
         const opc = preguntasList.map((lis) => JSON.parse(JSON.parse(JSON.stringify(lis.opciones))));
-        setAnswers(opc)
+        setFormattedAnswers(opc)
         setIsStart(false)
         console.log(preguntasList)
     }
@@ -81,6 +99,13 @@ function Respuesta () {
             comment: comment
         }
         setComentarios([...comentarios, newComment])
+        const newResCom = 
+        {
+            id: preguntasList[preguntaActual].idPregunta,
+            value: answer,
+            comment: comment
+        }
+        setResCom([...rescom, newResCom])
     }
 
     const handleUploadCuestionario = async (respuestas) => {
@@ -114,7 +139,7 @@ function Respuesta () {
 
     const handleSubmitHito = async (e) => {
         e.preventDefault()
-        setShowO(false)
+        setShowOffHito(false)
         try{
             const response = await axios.post(INGRESA_HITO_URL, {
                 ida: idAlumno,
@@ -156,6 +181,13 @@ function Respuesta () {
                 comment: comment
             }
             setComentarios([...comentarios, newComment])
+            const newResCom = 
+            {
+                id: preguntasList[preguntaActual].idPregunta,
+                value: answer,
+                comment: comment
+            }
+            setResCom([...rescom, newResCom])
             setIsDone(true)
         }
         else{
@@ -167,7 +199,9 @@ function Respuesta () {
 
     const WrapItUp = () => {
         setIsFinished(true)
+        setComment("")
         handleUploadCuestionario(respuestas)
+        getMostRecent()
     }
 
     if(isSelectedQuestionnaire)
@@ -200,7 +234,7 @@ function Respuesta () {
       <main className="cuestionario">
         <div className="fin">
             <span>
-            Bienvenido al cuestinario {preguntasList[0]?.idCuestionario}
+            Bienvenido al cuestionario {preguntasList[0]?.idCuestionario}
             </span>
             <h2>{preguntasList[0]?.nombre}</h2>
           <button className='buttonq' onClick={() => formatQuestions()}>
@@ -227,16 +261,117 @@ function Respuesta () {
             <span>
             El alumno obtuvo un puntaje de {puntaje} de 15
             </span>
-          <button className='buttonq' onClick={() => (window.location.href = "/CuestionariosResponderAdmin")}>
-            Volver a tomar cuestionario
-          </button>
+          <Button className='buttonq' onClick={() => {setShowMEdit(true)}}>
+            Editar Respuestas
+          </Button>
+          <Link to={'/CuestionariosResponderAdmin'}>
+            <Button size='lg' className="buttonq" >
+                Regresar a página de alumnos
+            </Button>
+          </Link>
         </div>
+        <Modal 
+        show={showMEdit}
+        size="lg"
+        scrollable
+        onHide={() => setShowMEdit(false)}
+        >
+        <ModalHeader closeButton>
+            <ModalTitle>
+                Registro de Respuestas:
+            </ModalTitle>
+        </ModalHeader>
+            <ModalBody>
+                {respuestas.map(values => (
+                    <div key={values.id}>
+                        <ListGroup>
+                            <ListGroupItem> 
+                                <h3>{preguntasList[(values.id)-1].pregunta}</h3>
+                                <h2>Comentario: {comentarios[(values.id)-1].comment}</h2>
+                                <h2>Respuesta elegida: {values.value}</h2>
+                                <br/>
+                                <Button
+                                className='btnEditarRespuesta'
+                                onClick={() => {
+                                    setShowOffRes(true)
+                                    setShowMEdit(false)
+                                    setLlaveCambio(values.id)
+                                }}
+                                variant='success'
+                                >
+                                    Editar<AiOutlineEdit/>
+                                </Button>
+                            </ListGroupItem>
+                        </ListGroup>
+                        </div>
+                    ))
+                }
+            </ModalBody>
+        </Modal>
+        <Offcanvas
+        show={showOffRes}
+        placement={'end'}
+        >
+            <Offcanvas.Header closeButton>
+                <Offcanvas.Title>Editar respuesta</Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
+                        <Form className="form">
+                            <Form.Group
+                            className="mb-3"
+                            controlId="EditRespuesta"
+                            >
+                            <Form.Label><h1>{preguntasList[(llaveCambio)-1]?.pregunta}</h1></Form.Label>
+                            <Form.Label>Respuesta elegida: {respuestas[(llaveCambio)-1]?.value}</Form.Label>
+                            {(preguntasList[(llaveCambio)-1]?.tipo === "Opción múltiple") ?
+                            <div className='right-side'>{
+                                formattedAnswers[(llaveCambio)-1].opciones.map((Respuesta) => (
+                                    <Button
+                                    className='btnEditarRespuesta'
+                                    variant='success'
+                                    key={Respuesta.respuesta} 
+                                    onClick = {(e) => handleAnswerSubmit(Respuesta.respuesta, e)}>
+                                        {Respuesta.respuesta}
+                                    </Button>
+                                ))
+                            }</div>: <textarea></textarea>}
+                            <Form.Label>Comentario</Form.Label>
+                            <Form.Control 
+                            as="textarea" 
+                            rows={4} 
+                            value={comentarios[(llaveCambio)-1]?.comment}
+                            onChange={(e) => setComment(e.target.value)}>
+                                {comment}
+                            </Form.Control>
+                            </Form.Group>
+                            <br/>
+                        </Form>
+                        <br/>
+                        <Button 
+                        variant="danger" 
+                        className='btnBorrarP'
+                        onClick={() => {
+                            setShowOffRes(false)
+                            setDescripcion('')
+                        }}>
+                            Cerrar
+                        </Button>
+                        <Button 
+                        variant="success"
+                        className='btnEditarP'>
+                            Guardar
+                        </Button>
+                    </Offcanvas.Body>
+        </Offcanvas>
       </main>
     );
 
     return(
         <main className='cuestionario'>
-            <Offcanvas show={showO} placement={'bottom'} onHide={() => setShowO(false)}>
+            <Offcanvas 
+            show={showOffHito} 
+            placement={'bottom'} 
+            onHide={() => setShowOffHito(false)}>
                     <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Nuevo hito</Offcanvas.Title>
                     </Offcanvas.Header>
@@ -252,7 +387,7 @@ function Respuesta () {
                             </Form.Control>
                             </Form.Group>
                         </Form>
-                        <Button size='sm' variant="danger" onClick={() => {setShowO(false)
+                        <Button size='sm' variant="danger" onClick={() => {setShowOffHito(false)
                             setDescripcion('')}}>
                             Cerrar
                         </Button>
@@ -288,20 +423,23 @@ function Respuesta () {
                 </div>
             </div>
                 <div className='numero-pregunta'>
-                    <Button className='buttonh' onClick={() => setShowO(true)}>
+                    <Button className='buttonh' onClick={() => setShowOffHito(true)}>
                         Hito<AiTwotoneStar/>
                     </Button>
                     <span>{preguntasList[preguntaActual]?.tipo}</span>
                 </div>
                 {(preguntasList[preguntaActual]?.tipo === "Opción múltiple") ?
                 <div className='right-side'>{
-                    answers[preguntaActual].opciones.map((Respuesta) => (
+                    formattedAnswers[preguntaActual].opciones.map((Respuesta) => (
                         <button className='buttonq' key={Respuesta.respuesta} 
                         onClick = {(e) => handleAnswerSubmit(Respuesta.respuesta, e)}>
                             {Respuesta.respuesta}
                         </button>
                     ))
-                }</div>: <textarea></textarea>}
+                }</div>: 
+                <textarea
+                onChange={(e) => handleAnswerSubmit(e.target.value)}
+                ></textarea>}
         </main>
     )
 }
