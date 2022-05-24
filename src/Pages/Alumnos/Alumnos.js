@@ -84,7 +84,7 @@ function Alumnos() {
         setAlumnSearch(resultadosBusqueda);
     }
 
-    const handleChange = (e) => {
+    const handleBuscar = (e) => {
         e.preventDefault()
         setBusqueda(e.target.value);
         filtrar(e.target.value);
@@ -108,7 +108,7 @@ function Alumnos() {
                     className="inputBuscar"
                     value={busqueda}
                     placeholder="Buscar Alumno"
-                    onChange={(e) => handleChange(e)}
+                    onChange={(e) => handleBuscar(e)}
                 />
                 <button className="btn">
                     <AiOutlineSearch/>

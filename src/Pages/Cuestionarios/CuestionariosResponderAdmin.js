@@ -5,13 +5,12 @@ import { Accordion, Alert, Button, Form, ListGroup, ListGroupItem, Modal, ModalB
 import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
 import AccordionItem from "react-bootstrap/esm/AccordionItem";
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
-import { AiTwotoneStar, AiOutlineEdit } from 'react-icons/ai';
-import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';
+import {  AiOutlineEdit, AiOutlineSend, AiTwotoneStar } from 'react-icons/ai';
 import "./cuestionarios.css";
 import axios from '../../axios/axios'
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const UPLOAD_QUESTIONNAIRES_URL = '/questionnaires/uploadquestionnaire'
+const EDIT_QUESTIONNAIRES_URL = '/questionnaires/editquestionnaire'
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 const GET_RECENT_ENTRY_URL = 'questionnaires/getrecententry'
 const INGRESA_HITO_URL = '/profiles/newhito';
@@ -23,7 +22,8 @@ function Respuesta () {
     const [formattedAnswers, setFormattedAnswers] = useState([]);
     const [respuestas, setRespuestas] = useState([]);
     const [comentarios, setComentarios] = useState([]);
-    const [rescom, setResCom] = useState([]);
+    const [respuestasEdit, setRespuestasEdit] = useState([]);
+    const [comentariosEdit, setComentariosEdit] =useState([]);
     const [descripcion, setDescripcion] = useState("");
     const [showOffHito, setShowOffHito] = useState(false);
     const [showOffRes, setShowOffRes] = useState(false);
@@ -87,27 +87,6 @@ function Respuesta () {
         setIsStart(true)
     }
 
-    const handleRespuestasArray = (answer, preguntaActual) => {
-        const newAnswer = 
-        {
-            id: preguntasList[preguntaActual].idPregunta,
-            value: answer
-        }
-        setRespuestas([...respuestas, newAnswer])
-        const newComment = 
-        {
-            comment: comment
-        }
-        setComentarios([...comentarios, newComment])
-        const newResCom = 
-        {
-            id: preguntasList[preguntaActual].idPregunta,
-            value: answer,
-            comment: comment
-        }
-        setResCom([...rescom, newResCom])
-    }
-
     const handleUploadCuestionario = async (respuestas) => {
         try{
             const response = await axios.post(UPLOAD_QUESTIONNAIRES_URL, {
@@ -121,7 +100,6 @@ function Respuesta () {
                 setVariante('success')
                 setMsg(response.data.message)
             }
-            
         }catch(error){
             if(!error?.response){
                 setMsg('No hay respuesta del servidor');
@@ -132,6 +110,44 @@ function Respuesta () {
               } else if(error.response?.status === 403){
                 setMsg(error.response.data.message);
               } else if(error.response?.status === 500){
+                setMsg("Algo salió mal al cargar los datos");
+              }
+        }
+    }
+
+    const handleSubmitEdicion = async () => {
+        try{
+            const response = await axios.post(EDIT_QUESTIONNAIRES_URL, {
+                ida: idAlumno,
+                idc: selectedQuestionnaire,
+                timestamp: tiempoRegistro,
+                respuestas: JSON.stringify(respuestasEdit),
+                comentarios: JSON.stringify(comentariosEdit)
+            })
+            if(response.status === 200){
+                setShowA(true)
+                setVariante('success')
+                setMsg(response.data.message)
+            }
+        }catch(error){
+            if(!error?.response){
+                setShowA(true)
+                setVariante('error')
+                setMsg('No hay respuesta del servidor');
+              } else if(error.response?.status === 400){
+                setShowA(true)
+                setVariante('error')
+                setMsg(error.response.data.message);
+              } else if(error.response?.status === 401){
+                setShowA(true)
+                setVariante('error')
+                setMsg('Usuario sin autorización');
+              } else if(error.response?.status === 403){
+                setShowA(true)
+                setMsg(error.response.data.message);
+              } else if(error.response?.status === 500){
+                setShowA(true)
+                setVariante('error')
                 setMsg("Algo salió mal al cargar los datos");
               }
         }
@@ -163,6 +179,22 @@ function Respuesta () {
         }
     }
 
+    const handleRespuestasArray = (answer, preguntaActual) => {
+        const newAnswer = 
+        {
+            id: preguntasList[preguntaActual].idPregunta,
+            value: answer
+        }
+        setRespuestas([...respuestas, newAnswer])
+        setRespuestasEdit([...respuestasEdit, newAnswer])
+        const newComment = 
+        {
+            comment: comment
+        }
+        setComentarios([...comentarios, newComment])
+        setComentariosEdit([...comentariosEdit, newComment])
+    }
+
     function handleAnswerSubmit(answer, e){
         if(answer === "NR"){
             setPuntaje(puntaje+0)
@@ -176,18 +208,13 @@ function Respuesta () {
                 value: answer
             }
             setRespuestas([...respuestas, newAnswer])
+            setRespuestasEdit([...respuestasEdit, newAnswer])
             const newComment = 
             {
                 comment: comment
             }
             setComentarios([...comentarios, newComment])
-            const newResCom = 
-            {
-                id: preguntasList[preguntaActual].idPregunta,
-                value: answer,
-                comment: comment
-            }
-            setResCom([...rescom, newResCom])
+            setComentariosEdit([...comentariosEdit, newComment])
             setIsDone(true)
         }
         else{
@@ -195,6 +222,25 @@ function Respuesta () {
             setPreguntaActual(preguntaActual + 1)
             setComment("")
         }
+    }
+
+    const handleEditRespuesta = (answer, e) => {
+        //console.log(JSON.stringify(comment))
+        const editAnswer = 
+        {
+            id: preguntasList[llaveCambio-1].idPregunta,
+            value: answer
+        }
+        respuestasEdit[llaveCambio-1] = editAnswer;
+        const editComment = 
+        {
+            comment: comment
+        }
+        comentariosEdit[llaveCambio-1] = editComment;
+        setComment("");
+        setLlaveCambio(0);
+        setShowOffRes(false)
+        setShowMEdit(true)
     }
 
     const WrapItUp = () => {
@@ -261,11 +307,15 @@ function Respuesta () {
             <span>
             El alumno obtuvo un puntaje de {puntaje} de 15
             </span>
-          <Button className='buttonq' onClick={() => {setShowMEdit(true)}}>
+          <Button 
+          className='buttonq' 
+          onClick={() => {setShowMEdit(true)}}>
             Editar Respuestas
           </Button>
-          <Link to={'/CuestionariosResponderAdmin'}>
-            <Button size='lg' className="buttonq" >
+          <Link to={'/Alumnos'}>
+            <Button 
+            size='lg' 
+            className="buttonq" >
                 Regresar a página de alumnos
             </Button>
           </Link>
@@ -282,12 +332,16 @@ function Respuesta () {
             </ModalTitle>
         </ModalHeader>
             <ModalBody>
-                {respuestas.map(values => (
+                {respuestasEdit && respuestasEdit.map(values => (
                     <div key={values.id}>
                         <ListGroup>
-                            <ListGroupItem> 
-                                <h3>{preguntasList[(values.id)-1].pregunta}</h3>
-                                <h2>Comentario: {comentarios[(values.id)-1].comment}</h2>
+                            <ListGroupItem>
+                                {console.log("values id es"+values.id)}
+                                {console.log("llavecambio es"+llaveCambio)}
+                                {console.log(respuestasEdit)}
+                                {console.log(comentariosEdit)}
+                                <h3>{preguntasList[(values.id)-1]?.pregunta}</h3>
+                                <h2>Comentario: {comentariosEdit[(values.id)-1]?.comment}</h2>
                                 <h2>Respuesta elegida: {values.value}</h2>
                                 <br/>
                                 <Button
@@ -306,6 +360,15 @@ function Respuesta () {
                         </div>
                     ))
                 }
+                <Button
+                className='btnEditarRespuesta'
+                onClick={() => {
+                    handleSubmitEdicion()
+                    setShowMEdit(false)
+                }}>
+                Guardar registros
+                <AiOutlineSend/>
+            </Button>
             </ModalBody>
         </Modal>
         <Offcanvas
@@ -330,7 +393,7 @@ function Respuesta () {
                                     className='btnEditarRespuesta'
                                     variant='success'
                                     key={Respuesta.respuesta} 
-                                    onClick = {(e) => handleAnswerSubmit(Respuesta.respuesta, e)}>
+                                    onClick = {(e) => handleEditRespuesta(Respuesta.respuesta, e)}>
                                         {Respuesta.respuesta}
                                     </Button>
                                 ))
@@ -338,15 +401,12 @@ function Respuesta () {
                             <Form.Label>Comentario</Form.Label>
                             <Form.Control 
                             as="textarea" 
-                            rows={4} 
-                            value={comentarios[(llaveCambio)-1]?.comment}
+                            rows={4}
                             onChange={(e) => setComment(e.target.value)}>
-                                {comment}
+                                {comentariosEdit[(llaveCambio)-1]?.comment}
                             </Form.Control>
                             </Form.Group>
-                            <br/>
                         </Form>
-                        <br/>
                         <Button 
                         variant="danger" 
                         className='btnBorrarP'
@@ -382,7 +442,10 @@ function Respuesta () {
                             controlId="newHito"
                             >
                             <Form.Label>Detalles</Form.Label>
-                            <Form.Control as="textarea" rows={1} onChange={(e) => setDescripcion(e.target.value)}>
+                            <Form.Control 
+                            as="textarea" 
+                            rows={1} 
+                            onChange={(e) => setDescripcion(e.target.value)}>
                                 {descripcion}
                             </Form.Control>
                             </Form.Group>

@@ -4,7 +4,7 @@ import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import axios from '../../axios/axios';
 import { format, parseISO } from 'date-fns';
-import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
+import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale';
@@ -20,6 +20,8 @@ function ProgresoAlumAdmin() {
 
     const [alumnSelect, setAlumnSelect] = useState(0);
     const [alumnosList, setAlumnosList] = useState([]);
+    const [alumnSearch, setAlumnSearch] = useState([]);
+    const [busqueda, setBusqueda] = useState("");
     const [hitosList, setHitosList] = useState([]);
     const [descripcion, setDescripcion] = useState("");
     const [timestamp, setTimestamp] = useState();
@@ -39,6 +41,7 @@ function ProgresoAlumAdmin() {
     const getAlumnos = () => {
         axios.get(GET_ALUMNOS_URL).then((response) => {
             setAlumnosList(response.data)
+            setAlumnSearch(response.data)
         })
     }
 
@@ -126,8 +129,31 @@ function ProgresoAlumAdmin() {
         }
     }
 
+    const filtrar = (terminoBusqueda) => {
+        console.log("El termino es "+terminoBusqueda)
+        var resultadosBusqueda = alumnosList.filter( (elemento) => {
+            if(terminoBusqueda === ""){
+                setAlumnSearch(alumnosList)
+                return elemento;
+            }
+            else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            {
+                return elemento;
+            }
+        });
+        console.log("Resultado busqueda es: "+resultadosBusqueda)
+        setAlumnSearch(resultadosBusqueda);
+    }
+
+    const handleBuscar = (e) => {
+        e.preventDefault()
+        setBusqueda(e.target.value);
+        filtrar(e.target.value);
+    }
+
     return (
-        <div> <h3>Progreso por Alumno</h3>
+        <div> 
+            <h1>Progreso por Alumno</h1>
             <Alert 
                 show={showA}
                 variant={variante}
@@ -137,7 +163,18 @@ function ProgresoAlumAdmin() {
                     {msg}
                 </Alert.Heading>
             </Alert>
-            {alumnosList.map(values => (
+                <div className="containerInput">
+                <input
+                    className="inputBuscar"
+                    value={busqueda}
+                    placeholder="Buscar Alumno"
+                    onChange={(e) => handleBuscar(e)}
+                />
+                <button className="btn">
+                    <AiOutlineSearch/>
+                </button>
+                </div>
+            {alumnSearch && alumnSearch.map(values => (
                     <div className='admin' key={values.idAlumno}>
                         <div>
                             <Accordion flush>
@@ -268,9 +305,9 @@ function ProgresoAlumAdmin() {
             show={showOffEdit} 
             placement={'end'} 
             onHide={() => setShowOffEdit(false)}>
-                    <Offcanvas.Header closeButton>
+                <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Editar hito</Offcanvas.Title>
-                    </Offcanvas.Header>
+                </Offcanvas.Header>
                     <Offcanvas.Body>
                         <Form className="form">
                             <Form.Group
