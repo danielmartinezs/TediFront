@@ -129,8 +129,12 @@ function CrearCuestionario() {
     }
 
     const newPreguntaRespuesta = () => {
-        console.log(maxIdRespuesta)
-        console.log(maxIdPregunta)
+        if(!pregunta){
+            setShowA(true)
+            setVariante('danger')
+            setMsg("No puedes registrar una pregunta vacía")
+            return
+        }
         if(idRespuesta === 0 && idPregunta === 0){
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta: (respuestasList.length)+maxIdRespuesta}])
             setMaxIdRespuesta(maxIdRespuesta+1)
@@ -207,15 +211,6 @@ function CrearCuestionario() {
     if(newCuestionario)
     return(
         <main className="crearCuestionario">
-            <Alert 
-                show={showA}
-                variant={variante}
-                onClose={() => setShowA(false)}
-                dismissible>
-                <Alert.Heading>
-                    {msg}
-                </Alert.Heading>
-            </Alert>
             <div className="inputPreguntas">
             Nombre del Cuestionario
                 <input
@@ -444,6 +439,16 @@ function CrearCuestionario() {
         <br/>
         </div>
         <div className="outputPreguntas">
+                <Alert 
+                    show={showA}
+                    variant={variante}
+                    onClose={() => setShowA(false)}
+                    dismissible
+                    transition>
+                    <Alert.Heading>
+                        {msg}
+                    </Alert.Heading>
+                </Alert>
                 <Table>
                     <thead>
                         <tr>
