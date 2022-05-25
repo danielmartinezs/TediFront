@@ -25,11 +25,11 @@ function CrearCuestionario() {
     const [pregunta, setPregunta] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
-    const [show, setShow] = useState(false);
     const [respuesta, setRespuesta] = useState([{ "respuesta": "" }]);
     const [respuestaFormatted, setRespuestaFormatted] = useState("");
     const [newCuestionario, setNewCuestionario] = useState(false);
     const [tipoPregunta, setTipoPregunta] = useState("");
+    const [showA, setShowA] = useState(false);
     const [showModalP, setShowModalP] = useState(false)
     const [showModalR, setShowModalR] = useState(false)
     const [showModalO, setShowModalO] = useState(false)
@@ -75,18 +75,27 @@ function CrearCuestionario() {
             })
             if(response.status === 200){
                 console.log(response)
-                setShow(true)
+                setShowA(true)
                 setVariante('success')
                 setMsg("Se ha creado un nuevo cuestionario")
             }
+            console.log(response)
         }catch(error){
             if(!error?.response){
+                setShowA(true)
+                setVariante('danger')
                 setMsg('No hay respuesta del servidor');
               } else if(error.response?.status === 400){
+                setShowA(true)
+                setVariante('danger')
                 setMsg(error.response.data.message);
               } else if(error.response?.status === 401){
+                setShowA(true)
+                setVariante('danger')
                 setMsg('Usuario sin autorización');
               } else if(error.response?.status === 403){
+                setShowA(true)
+                setVariante('danger')
                 setMsg(error.response.data.message);
               }
         }
@@ -101,7 +110,7 @@ function CrearCuestionario() {
             })
             if(respose.status === 200){
                 console.log(respose)
-                setShow(true)
+                setShowA(true)
                 setVariante('success')
                 setMsg(respose.data.message)
             }
@@ -199,9 +208,9 @@ function CrearCuestionario() {
     return(
         <main className="crearCuestionario">
             <Alert 
-                show={show}
+                show={showA}
                 variant={variante}
-                onClose={() => setShow(false)}
+                onClose={() => setShowA(false)}
                 dismissible>
                 <Alert.Heading>
                     {msg}
