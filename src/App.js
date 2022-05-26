@@ -40,6 +40,8 @@ function App() {
               <Route exact path="/HomeAdmin" element={<privateRoute roles = {["admin"]}><HomeAdmin/></privateRoute>}/>
                   {/*Aqui abajo es la pagina principal del usuario administrador*/}
 
+                  <Route exact path="/Alumnos" element={<privateRoute roles = {["admin"]}><Alumnos/></privateRoute>}/>
+
                   <Route exact path="/ReportesAdmin" element={<privateRoute roles = {["admin"]}><ReportesAdmin/></privateRoute>}/>
                   <Route exact path="/ReportesAlumAdmin" element={<privateRoute roles ={["admin"]}><ReportesAlumAdmin/></privateRoute>}/>
                   <Route exact path="/ReportesEdicionAdmin" element={<privateRoute roles ={["admin"]}><ReportesEdicionAdmin/></privateRoute>}/>
@@ -62,7 +64,6 @@ function App() {
                   <Route exact path="/Home" element={<privateRoute roles = {["tutor"]}><Home/></privateRoute>}/>
                   <Route exact path="/Reportes" element={<privateRoute roles = {["tutor"]}><Reportes/></privateRoute>}/>
                   <Route exact path="/Progreso" element={<privateRoute roles = {["tutor"]}><Progreso/></privateRoute>}/>
-                  <Route exact path="/Alumnos" element={<privateRoute roles = {["tutor"]}><Alumnos/></privateRoute>}/>
                   <Route exact path="/PerfilPadre" element={<privateRoute roles = {["tutor"]}><PerfilPadre/></privateRoute>}/>
                   
               </Routes>

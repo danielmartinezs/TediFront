@@ -30,7 +30,7 @@
     border-radius: 15px;
     display: flex;
     padding: 5px;
-    justify-content: flex-start;
+    justify-content: space-evenly;
     align-items: center;
     border: 5px solid #234668;
     cursor: pointer;
@@ -75,7 +75,7 @@
     border-radius: 15px;
     display: flex;
     padding: 5px;
-    justify-content: flex-start;
+    justify-content: space-evenly;
     align-items: center;
     border: 5px solid #234668;
   }
@@ -126,6 +126,14 @@
     justify-content: space-evenly;
   }
   
+  .open-question {
+    width: 10%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
   /* FINALIZADO */
   .fin {
     display: flex;

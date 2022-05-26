@@ -23,14 +23,18 @@ function Respuesta () {
     const [respuestas, setRespuestas] = useState([]);
     const [comentarios, setComentarios] = useState([]);
     const [respuestasEdit, setRespuestasEdit] = useState([]);
-    const [comentariosEdit, setComentariosEdit] =useState([]);
+    const [comentariosEdit, setComentariosEdit] = useState([]);
+    const [edicionList, setEdicionList] = useState([]);
     const [descripcion, setDescripcion] = useState("");
+    const [respuestaAbierta, setRespuestaAbierta] = useState([]);
+    const [respuestaEdit, setRespuestaEdit] = useState();
     const [showOffHito, setShowOffHito] = useState(false);
     const [showOffRes, setShowOffRes] = useState(false);
     const [showMEdit, setShowMEdit] = useState(false);
     const [showA, setShowA] = useState(false);
     const [msg, setMsg] = useState("");
     const [variante, setVariante] = useState('');
+    const [numeroPregunta, setNumeroPregunta] = useState(0);
     const [preguntaActual, setPreguntaActual] = useState(0);
     const [puntaje, setPuntaje] = useState(0);
     const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(0);
@@ -40,7 +44,6 @@ function Respuesta () {
     const [isFinished, setIsFinished] = useState(false);
     const [comment, setComment] = useState("");
     const [tiempoRegistro, setTiempoRegistro] = useState();
-    const [tiempoRegistroV, setTiempoRegistroV] = useState();
     const [llaveCambio, setLlaveCambio] = useState(0);
     const {idAlumno} = useParams();
 
@@ -51,6 +54,10 @@ function Respuesta () {
     useEffect (() => {
        getQuestionnairesDetails()
     }, [selectedQuestionnaire])
+
+    useEffect (() => {
+        console.log(edicionList)
+    }, [preguntaActual])
 
     const getQuestionnairesDetails = () => {
         axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+selectedQuestionnaire).then((response) => {
@@ -68,7 +75,6 @@ function Respuesta () {
         axios.get(GET_RECENT_ENTRY_URL+"/"+idAlumno).then((response) => {
             console.log(response)
             setTiempoRegistro(response.data[0].ultimoregistro)
-            setTiempoRegistroV(new Date(response.data[0].ultimoregistro))
         })
 
     }
@@ -179,6 +185,22 @@ function Respuesta () {
         }
     }
 
+    const handleAnswerAbierta = (answer, preguntaActual) => {
+        const newAnswer = 
+        {
+            value: answer
+        }
+        setRespuestaAbierta([...respuestasEdit, newAnswer])
+    }
+
+    const handleEditAnswerAbierta = (answer) => {
+        const editAnswer = 
+        {
+            value: answer
+        }
+        respuestaAbierta[numeroPregunta] = editAnswer;
+    }
+
     const handleRespuestasArray = (answer, preguntaActual) => {
         const newAnswer = 
         {
@@ -193,10 +215,19 @@ function Respuesta () {
         }
         setComentarios([...comentarios, newComment])
         setComentariosEdit([...comentariosEdit, newComment])
+        const newQA = 
+        {
+            id: preguntasList[preguntaActual].idPregunta,
+            numpregunta: preguntaActual,
+            pregunta: preguntasList[preguntaActual].pregunta,
+            respuesta: answer,
+            comentario: comment
+        }
+        setEdicionList([...edicionList, newQA])
     }
 
     function handleAnswerSubmit(answer, e){
-        if(answer === "NR"){
+        if(isNaN(answer)){
             setPuntaje(puntaje+0)
         }else{
             setPuntaje(puntaje+answer)
@@ -215,6 +246,15 @@ function Respuesta () {
             }
             setComentarios([...comentarios, newComment])
             setComentariosEdit([...comentariosEdit, newComment])
+            const newQA = 
+            {
+                id: preguntasList[preguntaActual].idPregunta,
+                numpregunta: preguntaActual,
+                pregunta: preguntasList[preguntaActual].pregunta,
+                respuesta: answer,
+                comentario: comment
+            }
+            setEdicionList([...edicionList, newQA])
             setIsDone(true)
         }
         else{
@@ -225,19 +265,28 @@ function Respuesta () {
     }
 
     const handleEditRespuesta = (answer, e) => {
-        //console.log(JSON.stringify(comment))
         const editAnswer = 
         {
-            id: preguntasList[llaveCambio-1].idPregunta,
+            id: edicionList[numeroPregunta].id,
             value: answer
         }
-        respuestasEdit[llaveCambio-1] = editAnswer;
+        respuestasEdit[numeroPregunta] = editAnswer;
         const editComment = 
         {
             comment: comment
         }
-        comentariosEdit[llaveCambio-1] = editComment;
+        comentariosEdit[numeroPregunta] = editComment;
+        const editedQA = 
+        {
+            id: edicionList[numeroPregunta].id,
+            numpregunta: edicionList[numeroPregunta].numpregunta,
+            pregunta: edicionList[numeroPregunta].pregunta,
+            respuesta: answer,
+            comentario: comment
+        }
+        edicionList[numeroPregunta] = editedQA;
         setComment("");
+        setRespuestaEdit("");
         setLlaveCambio(0);
         setShowOffRes(false)
         setShowMEdit(true)
@@ -280,12 +329,21 @@ function Respuesta () {
       <main className="cuestionario">
         <div className="fin">
             <span>
-            Bienvenido al cuestionario {preguntasList[0]?.idCuestionario}
+            Bienvenido al cuestionario {preguntasList[preguntaActual]?.idCuestionario}
             </span>
-            <h2>{preguntasList[0]?.nombre}</h2>
-          <button className='buttonq' onClick={() => formatQuestions()}>
-            Comenzar
+            <h2>{preguntasList[preguntaActual]?.nombre}</h2>
+            <button 
+            className='buttonq'
+            onClick={() => formatQuestions()}>
+                Comenzar
           </button>
+           <button 
+            className="buttonq"
+            onClick={() => {
+                setIsStart(false)
+                setIsSelectedQuestionnaire(true)}}>
+                Regresar
+            </button>
         </div>
       </main>
     );
@@ -303,9 +361,8 @@ function Respuesta () {
                 </Alert.Heading>
             </Alert>
         <div className="fin">
-            Has concluido con el cuestionario ¡Felicidades!
             <span>
-            El alumno obtuvo un puntaje de {puntaje} de 15
+            Has concluido con el cuestionario {preguntasList[0]?.nombre}
             </span>
           <Button 
           className='buttonq' 
@@ -332,17 +389,18 @@ function Respuesta () {
             </ModalTitle>
         </ModalHeader>
             <ModalBody>
-                {respuestasEdit && respuestasEdit.map(values => (
+                {edicionList && edicionList.map(values => (
                     <div key={values.id}>
                         <ListGroup>
                             <ListGroupItem>
+                                {console.log("numero pregunta es"+values.numpregunta)}
                                 {console.log("values id es"+values.id)}
                                 {console.log("llavecambio es"+llaveCambio)}
                                 {console.log(respuestasEdit)}
                                 {console.log(comentariosEdit)}
-                                <h3>{preguntasList[(values.id)-1]?.pregunta}</h3>
-                                <h2>Comentario: {comentariosEdit[(values.id)-1]?.comment}</h2>
-                                <h2>Respuesta elegida: {values.value}</h2>
+                                <h3>{values.pregunta}</h3>
+                                <h2>Comentario: {values.comentario}</h2>
+                                <h2>Respuesta elegida: {values.respuesta}</h2>
                                 <br/>
                                 <Button
                                 className='btnEditarRespuesta'
@@ -350,7 +408,9 @@ function Respuesta () {
                                     setShowOffRes(true)
                                     setShowMEdit(false)
                                     setLlaveCambio(values.id)
-                                    setComment(comentariosEdit[(values.id)-1]?.comment)
+                                    setNumeroPregunta(values.numpregunta)
+                                    setComment(values.comentario)
+                                    setRespuestaEdit(respuestaAbierta[values.numpregunta]?.value)
                                 }}
                                 variant='success'
                                 >
@@ -385,27 +445,41 @@ function Respuesta () {
                             className="mb-3"
                             controlId="EditRespuesta"
                             >
-                            <Form.Label><h1>{preguntasList[(llaveCambio)-1]?.pregunta}</h1></Form.Label>
-                            <Form.Label>Respuesta elegida: {respuestas[(llaveCambio)-1]?.value}</Form.Label>
-                            {(preguntasList[(llaveCambio)-1]?.tipo === "Opción múltiple") ?
-                            <div className='right-side'>{
-                                formattedAnswers[(llaveCambio)-1].opciones.map((Respuesta) => (
+                            <Form.Label><h1>{preguntasList[numeroPregunta]?.pregunta}</h1></Form.Label>
+                            <br/>
+                            <Form.Label>Respuesta Elegida: {respuestasEdit[numeroPregunta]?.value}</Form.Label>
+                            {(preguntasList[numeroPregunta]?.tipo === "Opción múltiple") ?
+                            <div>{
+                                formattedAnswers[numeroPregunta].opciones.map((Respuesta) => (
                                     <Button
                                     className='btnEditarRespuesta'
                                     variant='success'
                                     key={Respuesta.respuesta} 
-                                    onClick = {(e) => handleEditRespuesta(Respuesta.respuesta, e)}>
+                                    onClick = {(e) => {
+                                        handleEditRespuesta(Respuesta.respuesta, e)}}>
                                         {Respuesta.respuesta}
                                     </Button>
                                 ))
-                            }</div>: <textarea></textarea>}
+                            }</div>:
+                            <div>
+                                <Form.Control
+                                as="textarea" 
+                                rows={4}
+                                value={respuestaEdit}
+                                onChange={(e) => {
+                                    setRespuestaEdit(e.target.value)
+                                    handleEditAnswerAbierta(e.target.value)
+                                }}>
+                                    {respuestas[numeroPregunta]?.value}
+                                </Form.Control>
+                            </div>}
                             <Form.Label>Comentario</Form.Label>
                             <Form.Control 
                             as="textarea" 
                             rows={4}
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}>
-                                {comentariosEdit[(llaveCambio)-1]?.comment}
+                                {comment}
                             </Form.Control>
                             </Form.Group>
                         </Form>
@@ -420,8 +494,9 @@ function Respuesta () {
                         </Button>
                         <Button 
                         variant="success"
-                        className='btnEditarP'>
-                            Guardar
+                        className='btnEditarP'
+                        onClick={(e) => {handleEditRespuesta(respuestaEdit, e)}}>
+                            Guardar cambios
                         </Button>
                     </Offcanvas.Body>
         </Offcanvas>
@@ -482,13 +557,14 @@ function Respuesta () {
                         Enviar
                     </button>
                     : 
-                    <button className='button-previous'>
-                        Regresar
-                    </button>}
+                    <div>
+                    </div>}
                 </div>
             </div>
                 <div className='numero-pregunta'>
-                    <Button className='buttonh' onClick={() => setShowOffHito(true)}>
+                    <Button 
+                    className='buttonh' 
+                    onClick={() => setShowOffHito(true)}>
                         Hito<AiTwotoneStar/>
                     </Button>
                     <span>{preguntasList[preguntaActual]?.tipo}</span>
@@ -496,15 +572,26 @@ function Respuesta () {
                 {(preguntasList[preguntaActual]?.tipo === "Opción múltiple") ?
                 <div className='right-side'>{
                     formattedAnswers[preguntaActual].opciones.map((Respuesta) => (
-                        <button className='buttonq' key={Respuesta.respuesta} 
+                        <button 
+                        className='buttonq' 
+                        key={Respuesta.respuesta} 
                         onClick = {(e) => handleAnswerSubmit(Respuesta.respuesta, e)}>
                             {Respuesta.respuesta}
                         </button>
                     ))
-                }</div>: 
-                <textarea
-                onChange={(e) => handleAnswerSubmit(e.target.value)}
-                ></textarea>}
+                }</div>:
+                <div className='open-question'>
+                    <textarea
+                    onChange={(e) => setRespuestaEdit(e.target.value)}>
+                    </textarea> 
+                <Button 
+                className='buttonq'
+                onClick = {(e) => {
+                    handleAnswerSubmit(respuestaEdit, e)
+                    handleAnswerAbierta(respuestaEdit, e)
+                }}
+                >Siguiente</Button>
+                </div>}
         </main>
     )
 }
