@@ -13,8 +13,8 @@ function PerfilEditarAdmin() {
     const [adminList, setAdminList] = useState([]);
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
-    const [show, setShow] = useState(false);
-    const [showM, setShowM] = useState(false);
+    const [showA, setShowA] = useState(false);
+    const [showModalBorrar, setShowModalBorrar] = useState(false);
     const [nombre, setNombre] = useState("");
     const [llave, setLlave] = useState(0);
     const [contrasenia, setContrasenia] = useState("");
@@ -32,14 +32,6 @@ function PerfilEditarAdmin() {
         })
     }
 
-    const handleShowM = () => {
-        setShowM(true)
-    }
-
-    const handleCloseM = () => {
-        setShowM(false)
-    }
-
     const openPane = (values) => {
         setDetailsPane({isPaneOpen: true});
         setLlave(values.idAdministrador);
@@ -55,11 +47,11 @@ function PerfilEditarAdmin() {
     const handleDelete = async (llave) => {
         console.log(llave)
         const response = await axios.post(DELETE_ADMINS_URL+"/"+llave)
-        setShow(true)
+        setShowA(true)
         setVariante('success')
         setMsg(response.data.message)
         setDetailsPane({isPaneOpen: false})
-        setShowM(false)
+        setShowModalBorrar(false)
     }
 
     const handleSubmitEdit = async (e) => {
@@ -77,7 +69,7 @@ function PerfilEditarAdmin() {
             })
           if(response.status === 200){
               console.log(response)
-              setShow(true)
+              setShowA(true)
               setVariante('success')
               setMsg(response.data.message)
               setNombre("")
@@ -85,9 +77,9 @@ function PerfilEditarAdmin() {
               setConfPassword("")
           }
         }catch(error){
-          setShow(true)
-          console.log(error)
-          if(!error?.response){
+            setShowA(true)
+            console.log(error)
+            if(!error?.response){
             setMsg('No hay respuesta del servidor');
             setVariante('danger');
           } else if(error.response?.status === 400){
@@ -106,11 +98,11 @@ function PerfilEditarAdmin() {
 
     return (
         <div>
-            <h1>Página de perfil de edición admin</h1>
+            <h1>Página de edición de perfiles admin</h1>
             <Alert 
-                show={show}
+                show={showA}
                 variant={variante}
-                onClose={() => setShow(false)}
+                onClose={() => setShowA(false)}
                 dismissible>
                 <Alert.Heading>
                     {msg}
@@ -190,18 +182,18 @@ function PerfilEditarAdmin() {
                     </div>
                     <button 
                     className='button-delete'
-                    onClick={handleShowM}>
+                    onClick={() => {setShowModalBorrar(true)}}>
                         Borrar <AiOutlineDelete size='2em' />
                     </button>
                 </div>
             </SlidingPane>
-            <Modal show={showM} onHide={handleCloseM}>
+            <Modal show={showModalBorrar} onHide={() => {setShowModalBorrar(false)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>¿Estás seguro que quieres borrar este registro?</Modal.Title>
                 </Modal.Header>
                     <Modal.Body>Una vez borrado el registro y sus relaciones serán borradas</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="success" onClick={handleCloseM}>
+                    <Button variant="success" onClick={() => {setShowModalBorrar(false)}}>
                         No
                     </Button>
                     <Button variant="danger" onClick={() => {handleDelete(llave)}}>

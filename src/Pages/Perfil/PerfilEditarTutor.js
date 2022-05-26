@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, Alert, Button, ToggleButton, ButtonGroup } from 'react-bootstrap';
+import { Accordion, Alert, Button, ToggleButton, ButtonGroup, Modal } from 'react-bootstrap';
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
 import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
@@ -16,6 +16,7 @@ import "./perfil.css"
 const GET_TUTORES_URL = '/profiles/gettutores'
 const EDIT_TUTOR_URL = '/profiles/editatutor'
 const EDIT_ALUMNO_URL = 'profiles/editaalumno'
+const DELETE_TUTOR_URL = 'profiles/borratutor'
 
 function PerfilEditarTutor() {
     const [btnValue, setBtnValue] = useState(0);
@@ -25,7 +26,8 @@ function PerfilEditarTutor() {
     ];
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
-    const [show, setShow] = useState(false);
+    const [showA, setShowA] = useState(false);
+    const [showModalBorrar, setShowModalBorrar] = useState(false);
     const [tutoresList, setTutoresList] = useState([]);
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
@@ -50,7 +52,7 @@ function PerfilEditarTutor() {
         setFechaNac(tutoresList[llave-1]?.fechaNacimiento)
     }
 
-    const openPane = (values, boton) => {
+    const openPane = (values) => {
         console.log(values)
         setDetailsPane({isPaneOpen: true});
         setLlave(values.idTutor);
@@ -69,6 +71,8 @@ function PerfilEditarTutor() {
 
     const handleSubmitEditAlumno = async (e) => {
         e.preventDefault();
+        console.log(fechanac)
+        console.log("foto"+foto)
         try{
             const response = await axios.post(EDIT_ALUMNO_URL, {
                 idal: tutoresList[llave-1]?.idAlumno,
@@ -80,7 +84,7 @@ function PerfilEditarTutor() {
             })
           if(response.status === 200){
               console.log(response)
-              setShow(true)
+              setShowA(true)
               setVariante('success')
               setMsg(response.data.message)
               setNombre("")
@@ -90,7 +94,7 @@ function PerfilEditarTutor() {
               setFoto("")
           }
         }catch(error){
-          setShow(true)
+          setShowA(true)
           console.log(error)
           if(!error?.response){
             setMsg('No hay respuesta del servidor');
@@ -105,7 +109,6 @@ function PerfilEditarTutor() {
             setMsg(error.response.data.message);
             setVariante('danger');
           }
-          console.log(msg)
         }
     }
 
@@ -120,7 +123,7 @@ function PerfilEditarTutor() {
             })
           if(response.status === 200){
               console.log(response)
-              setShow(true)
+              setShowA(true)
               setVariante('success')
               setMsg(response.data.message)
               setNombre("")
@@ -128,7 +131,7 @@ function PerfilEditarTutor() {
               setConfPassword("")
           }
         }catch(error){
-          setShow(true)
+          setShowA(true)
           console.log(error)
           if(!error?.response){
             setMsg('No hay respuesta del servidor');
@@ -147,13 +150,23 @@ function PerfilEditarTutor() {
         }
     }
 
+    const handleDelete = async (llave) => {
+        console.log(llave)
+        const response = await axios.post(DELETE_TUTOR_URL+"/"+llave)
+        setShowA(true)
+        setVariante('success')
+        setMsg(response.data.message)
+        setDetailsPane({isPaneOpen: false})
+        setShowModalBorrar(false)
+    }
+
     return (
         <div>
-            <h1>Página de perfil de edición admin</h1>
+            <h1>Página de edición de tutores/alumnos</h1>
             <Alert 
-                show={show}
+                show={showA}
                 variant={variante}
-                onClose={() => setShow(false)}
+                onClose={() => setShowA(false)}
                 dismissible>
                 <Alert.Heading>
                     {msg}
@@ -171,7 +184,7 @@ function PerfilEditarTutor() {
                                             key={idx}
                                             id={`radio-${idx}`}
                                             type="radio"
-                                            variant={idx % 2 ? 'outline-info' : 'outline-info'}
+                                            variant={idx % 2 ? 'outline-warning' : 'outline-warning'}
                                             name="radio"
                                             value={botones.value}
                                             onChange={(e) => setBtnValue(e.currentTarget.value)}
@@ -229,6 +242,7 @@ function PerfilEditarTutor() {
                                     onChange={(e) => setConfPassword(e.target.value)}
                                     ></Form.Control>
                             </Form.Group>
+                            <br/>
                             <Button
                             className='button-edit'
                             type='submit'
@@ -314,6 +328,7 @@ function PerfilEditarTutor() {
                                     onChange={(e) => setSemestre(e.target.value)}
                                     ></Form.Control>
                             </Form.Group>
+                            <br/>
                             <Button
                             className='button-edit'
                             type='submit'
@@ -323,12 +338,28 @@ function PerfilEditarTutor() {
                             </Button>
                         </Form>
                 </div>
-                <button className='button-delete'>
+                <button 
+                className='button-delete'
+                onClick={() => {setShowModalBorrar(true)}}>
                     Borrar  <AiOutlineDelete size='2em' />
                 </button>
             </div>
         </SlidingPane>
         }
+        <Modal show={showModalBorrar} onHide={() => {setShowModalBorrar(false)}}>
+            <Modal.Header closeButton>
+                <Modal.Title>¿Estás seguro que quieres borrar este registro?</Modal.Title>
+            </Modal.Header>
+                <Modal.Body>Una vez borrado el registro y sus relaciones serán borradas</Modal.Body>
+            <Modal.Footer>
+                <Button variant="success" onClick={() => {setShowModalBorrar(false)}}>
+                    No
+                </Button>
+                <Button variant="danger" onClick={() => {handleDelete(llave)}}>
+                    Sí
+                </Button>
+            </Modal.Footer>
+        </Modal>
         </div>
     )
 }
