@@ -10,7 +10,7 @@ import "./cuestionarios.css";
 import axios from '../../axios/axios'
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const UPLOAD_QUESTIONNAIRES_URL = '/questionnaires/uploadquestionnaire'
-const EDIT_QUESTIONNAIRES_URL = '/questionnaires/editquestionnaire'
+const EDIT_QUESTIONNAIRES_URL = '/questionnaires/edituploadedquestionnaire'
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 const GET_RECENT_ENTRY_URL = 'questionnaires/getrecententry'
 const INGRESA_HITO_URL = '/profiles/newhito';
@@ -87,7 +87,6 @@ function Respuesta () {
     }
 
     const handleSelectedQuestionnaire = (idcuestionario) => {
-        console.log("cuestionario elegido "+idcuestionario)
         setSelectedQuestionnaire(idcuestionario)
         setIsSelectedQuestionnaire(false)
         setIsStart(true)

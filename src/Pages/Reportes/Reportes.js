@@ -2,7 +2,7 @@ import React from 'react'
 import { Accordion, Button } from 'react-bootstrap'
 import pdf from './ReporteSemestral.pdf'
 import axios from '../../axios/axios'
-const GENERA_REPORTE_URL = 'reportes/generareporte';
+const GENERA_REPORTE_URL = 'reportes/holamundo';
 
 function Reportes() {
     
@@ -37,9 +37,11 @@ function Reportes() {
                     </Accordion.Item>
                 </Accordion.Item>
                 </Accordion>
-        {/* <Button
+        <Button
+            
             onClick={handleDescarga}>
-        </Button> */}
+                descarga PDF
+        </Button> 
 
         </div>
     )

@@ -1,23 +1,32 @@
-import { useState } from 'react';
-import surveyJson from '../../components/surveyjs';
-import { StylesManager, Model } from 'survey-core';
-import * as Survey  from 'survey-react';
-import 'survey-react/survey.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
-StylesManager.applyTheme("modern");
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { Alert } from 'react-bootstrap';
+import axios from '../../axios/axios';
+const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 
 function CuestionariosEdicionAdmin() {
-    const [datos, setDatos] = useState([]);
 
-    const dataHandler = (e) => {
-        setDatos(e)
+    const [cuestionariosInfo, setCuestionariosInfo] = useState([]);
+    const {idCuestionario} = useParams();
+
+    useEffect (() => {
+        getQuestionnaireDetails()
+    }, [])
+
+    const getQuestionnaireDetails = () => {
+        axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+idCuestionario).then((response) => {
+            console.log("length"+response.data.length)
+            for(let i = 0; i<response.data.length; i++){
+                response.data[i].opciones = JSON.parse(response.data[i].opciones)
+                console.log(response.data[i].opciones)
+            }
+            setCuestionariosInfo(response.data)
+        })
     }
 
     return(
         <div>
-            <Survey.Survey
-            json={surveyJson}
-            onComplete={(e) => dataHandler(e.valuesHash)}/>
+            <h3>{idCuestionario}</h3>
         </div>
     )
 }

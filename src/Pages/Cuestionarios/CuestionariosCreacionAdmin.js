@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { Accordion, Alert, Button, ButtonGroup, DropdownButton, Dropdown, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Table } from "react-bootstrap";
+import { Link } from 'react-router-dom'
+import { Accordion, AccordionCollapse, Alert, Button, ButtonGroup, DropdownButton, Dropdown, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Table } from "react-bootstrap";
+import AccordionBody from "react-bootstrap/esm/AccordionBody";
 import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
 import AccordionItem from "react-bootstrap/esm/AccordionItem";
-import { AiOutlineSelect, AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlineEdit, AiOutlineInfoCircle, AiOutlinePlus, AiOutlineSelect } from 'react-icons/ai';
 import axios from '../../axios/axios'
 import "./cuestionarios.css"
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
+const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const UPLOAD_NEW_QUESTIONNAIRE_URL = '/questionnaires/uploadnewquestionnaire'
@@ -16,17 +19,19 @@ function CrearCuestionario() {
     const [nombrec, setNombreC] = useState("");
     const [materiac, setMateriaC] = useState("");
     const [cuestionariosList, setCuestionariosList] = useState([]);
+    const [cuestionariosInfo, setCuestionariosInfo] = useState([]);
     const [preguntasList, setPreguntasList] = useState([]);
     const [respuestasList, setRespuestasList] = useState([]);
     const [maxIdPregunta, setMaxIdPregunta] = useState(1);
-    const [maxIdRespuesta, setMaxIdRespuesta] = useState(1)
-    const [idPregunta, setIdPregunta] = useState(0)
-    const [idRespuesta, setIdRespuesta] = useState(0)
+    const [maxIdRespuesta, setMaxIdRespuesta] = useState(1);
+    const [idPregunta, setIdPregunta] = useState(0);
+    const [idRespuesta, setIdRespuesta] = useState(0);
     const [pregunta, setPregunta] = useState("");
+    const [selectedQuestionnaire, setSelectedQuestionnaire] = useState();
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [respuesta, setRespuesta] = useState([{ "respuesta": "" }]);
-    const [respuestaFormatted, setRespuestaFormatted] = useState("");
+    const [respuestaFormatted, setRespuestaFormatted] = useState("{\"opciones\":[{\"respuesta\":\"\"}]}");
     const [newCuestionario, setNewCuestionario] = useState(false);
     const [tipoPregunta, setTipoPregunta] = useState("");
     const [showA, setShowA] = useState(false);
@@ -47,9 +52,24 @@ function CrearCuestionario() {
         console.log(maxIdRespuesta)
     }, [preguntaRespuesta])
 
+    useEffect (() => {
+        getQuestionnaireDetails()
+    }, [selectedQuestionnaire])
+
     const getQuestionnaires = () => {
         axios.get(GET_CUESTIONARIOS_URL).then((response) => {
             setCuestionariosList(response.data)
+        })
+    }
+
+    const getQuestionnaireDetails = () => {
+        axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+selectedQuestionnaire).then((response) => {
+            console.log("length"+response.data.length)
+            for(let i = 0; i<response.data.length; i++){
+                response.data[i].opciones = JSON.parse(response.data[i].opciones)
+                console.log(response.data[i].opciones)
+            }
+            setCuestionariosInfo(response.data)
         })
     }
 
@@ -135,6 +155,12 @@ function CrearCuestionario() {
             setMsg("No puedes registrar una pregunta vacía")
             return
         }
+        if(!tipoPregunta){
+            setShowA(true)
+            setVariante('danger')
+            setMsg("No puedes registrar una pregunta sin su tipo")
+            return
+        }
         if(idRespuesta === 0 && idPregunta === 0){
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta: (respuestasList.length)+maxIdRespuesta}])
             setMaxIdRespuesta(maxIdRespuesta+1)
@@ -162,6 +188,10 @@ function CrearCuestionario() {
         setTipoPregunta("")
         setIdPregunta(0)
         setIdRespuesta(0)
+    }
+
+    const handleDisplayInfoCuestionario = (idcuestionario) => {
+        setSelectedQuestionnaire(idcuestionario)
     }
 
     const handleSelectPregunta = (values) =>{
@@ -203,6 +233,7 @@ function CrearCuestionario() {
 
     const formatRespuesta = (idRespuesta) => {
         console.log("el Id es: "+idRespuesta)
+        console.log("IN FORMAT")
         const rep = "{\"opciones\":"+JSON.stringify(respuesta)+"}";
         setRespuestaFormatted(rep);
         setShowModalO(false);
@@ -491,6 +522,27 @@ function CrearCuestionario() {
                                         <h1>{values.nombre}</h1>
                                         Materia: {values.materia}
                                     </AccordionHeader>
+                                    <AccordionBody>
+                                        <Button
+                                        onClick={() => {handleDisplayInfoCuestionario(values.idCuestionario)}}>
+                                            Desplegar información
+                                            <AiOutlineInfoCircle/>
+                                        </Button>
+                                        <Link to={`/CuestionariosEdicionAdmin/${values.idCuestionario}`}>
+                                            <Button className="btnBancoPreguntas" >
+                                                Modificar
+                                                <AiOutlineEdit/>
+                                            </Button>
+                                        </Link>
+                                        <br/>
+                                        {cuestionariosInfo.map(values => (
+                                            <div>
+                                                <h1>{values.pregunta}</h1>
+                                                <h6>{values.tipo}</h6>
+                                                <h6>{JSON.stringify(values.opciones)}</h6>
+                                            </div>
+                                        ))}
+                                    </AccordionBody>
                                 </AccordionItem>
                         </Accordion>
                 </div>  
