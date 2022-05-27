@@ -98,7 +98,8 @@ function Respuesta () {
                 ida: idAlumno,
                 idc: selectedQuestionnaire,
                 respuestas: JSON.stringify(respuestas),
-                comentarios: JSON.stringify(comentarios)
+                comentarios: JSON.stringify(comentarios),
+                puntaje: puntaje
             })
             if(response.status === 200){
                 setShowA(true)
@@ -127,7 +128,8 @@ function Respuesta () {
                 idc: selectedQuestionnaire,
                 timestamp: tiempoRegistro,
                 respuestas: JSON.stringify(respuestasEdit),
-                comentarios: JSON.stringify(comentariosEdit)
+                comentarios: JSON.stringify(comentariosEdit),
+                puntaje: puntaje
             })
             if(response.status === 200){
                 setShowA(true)

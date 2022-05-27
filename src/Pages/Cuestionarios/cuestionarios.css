@@ -21,7 +21,9 @@
     display: flex;
     justify-content: space-evenly;
   }
+
   /*BOTONES*/
+
   .buttonq {
     width: 100%;
     font-size: 16px;
@@ -88,6 +90,52 @@
     outline: none;
   }
 
+  .btnBancoPreguntas {
+    outline: none;
+    cursor: pointer;
+    border-radius: 7px;
+    background-color: #FE9000;
+    width: fit-content;
+  }
+
+  .btnRegistroRespuestas {
+    outline: none;
+    cursor: pointer;
+    border-radius: 7px;
+    background-color: #FE9000;
+    width: fit-content;
+  }
+
+  .btnGuardar {
+    outline: none;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 7px;
+  }
+
+  .btnEditarRespuesta {
+    border-radius: 0.75rem;
+    background-color: #0B7A75;
+    width: 75%;
+    margin: 10px auto;
+    padding: 5px;
+    cursor: pointer;
+    display: list-item;
+    align-self: center;
+  }
+
+  .btnEditarPregunta {
+    border-radius: 7.75rem;
+    background-color: #0B7A75;
+    width: 15%;
+    margin: 10px auto;
+    margin-left: 25px;
+    padding: 5px;
+    cursor: pointer;
+    display: table-column-group;
+    align-self: center;
+  }
+
   /* PREGUNTAS */
   .left-side {
     width: 140%;
@@ -127,7 +175,7 @@
   }
   
   .open-question {
-    width: 10%;
+    width: 15%;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -256,40 +304,6 @@
     border: 1px solid #252d4a;
   }
 
-  .btnBancoPreguntas {
-    outline: none;
-    cursor: pointer;
-    border-radius: 7px;
-    background-color: #FE9000;
-    width: fit-content;
-  }
-
-  .btnRegistroRespuestas {
-    outline: none;
-    cursor: pointer;
-    border-radius: 7px;
-    background-color: #FE9000;
-    width: fit-content;
-  }
-
-  .btnGuardar {
-    outline: none;
-    cursor: pointer;
-    font-weight: 500;
-    border-radius: 7px;
-  }
-
-  .btnEditarRespuesta {
-    border-radius: 0.75rem;
-    background-color: #0B7A75;
-    width: 75%;
-    margin: 10px auto;
-    padding: 5px;
-    cursor: pointer;
-    display: list-item;
-    align-self: center;
-  }
-
   .displaySetRespuestas {
     display: flex;
     flex-direction: column;
@@ -307,4 +321,5 @@
     background-color: #fff;
     border: 1px solid #FE9000;
     justify-content: space-evenly;
+    font-size: x-large;
   }

@@ -23,6 +23,7 @@ import PerfilEditarAdmin from './Pages/Perfil/PerfilEditarAdmin'
 import PerfilEditarTutor from './Pages/Perfil/PerfilEditarTutor'
 import PerfilCrearPerfilNuevo from './Pages/Perfil/PerfilCrearPerfilNuevo'
 import PerfilPadre from './Pages/Perfil/PerfilPadre'
+import GraphChart from './Pages/Progreso/GraphChart';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import privateRoute from './components/privateRoute.js';
 
@@ -63,6 +64,7 @@ function App() {
                   <Route exact path="/Home" element={<privateRoute roles = {["tutor"]}><Home/></privateRoute>}/>
                   <Route exact path="/Reportes" element={<privateRoute roles = {["tutor"]}><Reportes/></privateRoute>}/>
                   <Route exact path="/Progreso" element={<privateRoute roles = {["tutor"]}><Progreso/></privateRoute>}/>
+                  <Route exact path="/GraphChart" element={<privateRoute roles = {["tutor"]}><GraphChart/></privateRoute>}/>
                   <Route exact path="/PerfilPadre" element={<privateRoute roles = {["tutor"]}><PerfilPadre/></privateRoute>}/>
                   
               </Routes>
