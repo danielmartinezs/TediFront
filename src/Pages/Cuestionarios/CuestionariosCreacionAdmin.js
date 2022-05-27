@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
-import { Accordion, AccordionCollapse, Alert, Button, ButtonGroup, DropdownButton, Dropdown, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Table } from "react-bootstrap";
+import { Alert, Button, ButtonGroup, Card, DropdownButton, Dropdown, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Table } from "react-bootstrap";
 import AccordionBody from "react-bootstrap/esm/AccordionBody";
 import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
 import AccordionItem from "react-bootstrap/esm/AccordionItem";
@@ -252,7 +252,7 @@ function CrearCuestionario() {
                 <input
                 className="inputFields"
                 maxLength="150"
-                placeholder="Ingresa el nombre del cuestionario"
+                placeholder="Ingresa el nombre de la materia"
                 value={materiac}
                 onChange={(e) => setMateriaC(e.target.value)}/>
             <br/>
@@ -512,36 +512,23 @@ function CrearCuestionario() {
         <div>
             {cuestionariosList.map(values => (
                 <div key={values.idCuestionario}>
-                            <Accordion>
-                                <AccordionItem>
-                                    <AccordionHeader>
-                                        Cuestionario #{values.idCuestionario}
-                                        <h1>{values.nombre}</h1>
-                                        Materia: {values.materia}
-                                    </AccordionHeader>
-                                    <AccordionBody>
-                                        <Button
-                                        onClick={() => {handleDisplayInfoCuestionario(values.idCuestionario)}}>
-                                            Desplegar información
-                                            <AiOutlineInfoCircle/>
-                                        </Button>
-                                        <Link to={`/CuestionariosEdicionAdmin/${values.idCuestionario}`}>
-                                            <Button className="btnBancoPreguntas" >
-                                                Modificar
-                                                <AiOutlineEdit/>
-                                            </Button>
-                                        </Link>
-                                        <br/>
-                                        {cuestionariosInfo.map(values => (
-                                            <div>
-                                                <h1>{values.pregunta}</h1>
-                                                <h6>{values.tipo}</h6>
-                                                <h6>{JSON.stringify(values.opciones)}</h6>
-                                            </div>
-                                        ))}
-                                    </AccordionBody>
-                                </AccordionItem>
-                        </Accordion>
+                    <Card 
+                    border = "warning"
+                    style={{ width: '100%' }}>
+                        <Card.Body>
+                            <Card.Header>Cuestionario #{values.idCuestionario}</Card.Header>
+                            <Card.Title><h1>{values.nombre}</h1></Card.Title>
+                            <Link to={`/CuestionariosEdicionAdmin/${values.idCuestionario}`}>
+                                <Button className="btnBancoPreguntas" >
+                                    Modificar
+                                    <AiOutlineEdit/>
+                                </Button>
+                            </Link>
+                        </Card.Body>
+                        <Card.Footer>
+                                 Materia: {values.materia}
+                        </Card.Footer>
+                    </Card>
                 </div>  
             ))}
             <br/>

@@ -15,12 +15,23 @@ function GraphChart(){
     const [nombreAlumno, setNombreAlumno] = useState("");
     const [apellidoAlumno, setApellidoAlumno] = useState("");
     const [puntaje, setPuntaje] = useState("");
-
+    var idTutor = localStorage.getItem('id');
     const[graph,setGraph]=useState([]);
     const [datosGraph,setDatosGraph] = useState([]);
-
-    var idTutor = localStorage.getItem('id');
  
+    const graphDetails = async () => {
+      axios.get("http://localhost:3000/graphs/generareporte/3")
+      
+       .then(response => {
+        setDatosGraph(response.data);
+       });
+       
+     }
+
+     useEffect(() => {
+      graphDetails();
+    }, []);
+
     const getDatosGraph = () => {
       axios.post(GRAFICA_URL+"/"+idTutor).then((response) => {
         setDatosGraph (response.data)
