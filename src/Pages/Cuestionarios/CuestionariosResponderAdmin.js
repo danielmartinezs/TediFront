@@ -361,6 +361,9 @@ function Respuesta () {
             </Alert>
         <div className="fin">
             <span>
+            El alumno obtuvo un puntaje de {puntaje}
+            </span>
+            <span>
             Has concluido con el cuestionario {preguntasList[0]?.nombre}
             </span>
           <Button 

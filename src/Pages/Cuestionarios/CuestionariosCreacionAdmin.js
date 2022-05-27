@@ -325,7 +325,7 @@ function CrearCuestionario() {
                 <div>
             {(idRespuesta !== 0) ?
                 <div>
-                    {console.log(respuesta)}
+                    {console.log("Respuesta:"+respuesta.opciones)}
                     {respuesta.opciones.map(values => (
                         <div key={values}>
                             <ListGroup>
