@@ -48,8 +48,7 @@ function CrearCuestionario() {
 
     useEffect (() => {
         console.log(preguntaRespuesta)
-        console.log(maxIdPregunta)
-        console.log(maxIdRespuesta)
+        console.log("respuesta"+respuesta)
     }, [preguntaRespuesta])
 
     useEffect (() => {
@@ -231,9 +230,7 @@ function CrearCuestionario() {
         }
     };
 
-    const formatRespuesta = (idRespuesta) => {
-        console.log("el Id es: "+idRespuesta)
-        console.log("IN FORMAT")
+    const formatRespuesta = () => {
         const rep = "{\"opciones\":"+JSON.stringify(respuesta)+"}";
         setRespuestaFormatted(rep);
         setShowModalO(false);
@@ -264,7 +261,6 @@ function CrearCuestionario() {
             <ButtonGroup>
                 <Button className="btnBancoPreguntas" value="Opción múltiple" onClick={(e) => setTipoPregunta(e.target.value)}>Opción múltiple</Button>
                 <Button className="btnBancoPreguntas" value="Abierta" onClick={(e) => setTipoPregunta(e.target.value)}>Abierta</Button>
-                <Button className="btnBancoPreguntas" value="Numérica" onClick={(e) => setTipoPregunta(e.target.value)}>Numérica</Button>
             </ButtonGroup>
             Pregunta nueva
             <br/>
@@ -417,6 +413,7 @@ function CrearCuestionario() {
                 <ModalBody>
                     {respuesta.map((opcion, index) => (
                         <div key={index} className="services">
+                            {console.log(opcion.opciones)}
                             <div className="first-division">
                             <input
                                 name="respuesta"
@@ -483,20 +480,20 @@ function CrearCuestionario() {
                 <Table>
                     <thead>
                         <tr>
-                            <th>Id Pregunta</th>
+                            {/* <th>Id Pregunta</th> */}
                             <th>Tipo de pregunta</th>
                             <th>Pregunta</th>
-                            <th>Id Respuesta</th>
+                            {/* <th>Id Respuesta</th> */}
                             <th>Respuesta</th>
                         </tr>
                     </thead>
                     <tbody>
                         {preguntaRespuesta.map((pr, index) => (
                             <tr key={index}>
-                                <td>{pr.idPregunta}</td>
+                                {/* <td>{pr.idPregunta}</td> */}
                                 <td>{pr.tipop}</td>
                                 <td>{pr.pregunta}</td>
-                                <td>{pr.idRespuesta}</td>
+                                {/* <td>{pr.idRespuesta}</td> */}
                                 <td>{JSON.parse(JSON.stringify(pr.respuesta))}</td>
                             </tr>
                         ))}

@@ -22,8 +22,8 @@ function GraphChart(){
     var idTutor = localStorage.getItem('id');
  
     const getDatosGraph = () => {
-      axios.get(GRAFICA_URL+"/"+idTutor).then((response) => {
-        setDatosGraph(response.data)
+      axios.post(GRAFICA_URL+"/"+idTutor).then((response) => {
+        setDatosGraph (response.data)
           console.log(response.data)
       const graphData = response.data;
       let puntaje = [];
@@ -34,7 +34,7 @@ function GraphChart(){
        });
   
         setGraph({
-            labels: puntaje,fecha,
+            labels: puntaje,
             datasets: [
               {
                 label: 'Progreso',
@@ -42,7 +42,7 @@ function GraphChart(){
                     '#1D3F94',
                  ],
                 borderWidth:0,
-                data: puntaje
+                data: fecha
               }
              ]
         });
@@ -66,10 +66,10 @@ function GraphChart(){
                         <th>Puntaje</th>
                         <th>Fecha</th>
                     </tr> 
-                    { datosGraph.map((getDatosGraph)=>
+                    { datosGraph.map((name)=>
                         <tr>
-                        <td>{getDatosGraph.puntaje}</td>
-                        <td>{getDatosGraph.fecha}</td>
+                        <td>{name.puntaje}</td>
+                        <td>{name.fecha}</td>
                         </tr>                  
                     )}   
                 </table>     

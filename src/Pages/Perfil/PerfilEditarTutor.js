@@ -274,7 +274,9 @@ function PerfilEditarTutor() {
                              <img 
                         className='admin-details__img'
                         src={fotoPreview ?? (tutoresList[llave-1]?.fotografia)}/>
-                        <Form.Group controlId="formFileSm" className="custom-file-upload">
+                        <Form.Group 
+                        controlId="formFileSm" 
+                        className="custom-file-upload">
                             <Form.Control
                                 type="file"
                                 size="sm"
