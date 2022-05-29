@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom'
-import { Accordion, Alert, Button, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas } from "react-bootstrap";
+import { Accordion, Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas } from "react-bootstrap";
 import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
 import AccordionItem from "react-bootstrap/esm/AccordionItem";
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
@@ -305,21 +305,24 @@ function Respuesta () {
         <div>
             {cuestionariosList.map(values => (
                     <div key={values.idCuestionario}>
-                            <Accordion>
-                                <AccordionItem>
-                                    <AccordionHeader>
-                                        Cuestionario #{values.idCuestionario}
-                                        <h1>{values.nombre}</h1>
-                                        Materia: {values.materia}
-                                    </AccordionHeader>
-                                    <AccordionBody>
-                                        <Button
-                                        onClick = {() => handleSelectedQuestionnaire(values.idCuestionario)}>
-                                            elegir cuestionario
-                                        </Button>
-                                    </AccordionBody>
-                                </AccordionItem>
-                            </Accordion>
+                    <Card 
+                    className="text-center"
+                    border = "warning"
+                    style={{ width: '100%' }}>
+                        <Card.Body>
+                            <Card.Header>Cuestionario #{values.idCuestionario}</Card.Header>
+                            <Card.Title><h1>{values.nombre}</h1></Card.Title>
+                                <Button
+                                className='buttonh'
+                                onClick = {() => handleSelectedQuestionnaire(values.idCuestionario)}>
+                                    Contestar cuestionario
+                                    <AiOutlineEdit/>
+                                </Button>
+                            </Card.Body>
+                            <Card.Footer>
+                                Materia: {values.materia}
+                            </Card.Footer>
+                        </Card>
                     </div>  
             ))}
         </div>
@@ -397,11 +400,6 @@ function Respuesta () {
                     <div key={values.id}>
                         <ListGroup>
                             <ListGroupItem>
-                                {console.log("numero pregunta es"+values.numpregunta)}
-                                {console.log("values id es"+values.id)}
-                                {console.log("llavecambio es"+llaveCambio)}
-                                {console.log(respuestasEdit)}
-                                {console.log(comentariosEdit)}
                                 <h3>{values.pregunta}</h3>
                                 <h2>Comentario: {values.comentario}</h2>
                                 <h2>Respuesta elegida: {values.respuesta}</h2>

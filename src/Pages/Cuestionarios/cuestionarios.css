@@ -54,7 +54,7 @@
     border-radius: 15px;
     display: flex;
     padding: 5px;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     border: 5px solid #234668;
     cursor: pointer;
@@ -107,10 +107,20 @@
   }
 
   .btnGuardar {
-    outline: none;
+    width: 75%;
+    background-color: #FE9000;
+    outline: #0B7A75;
     cursor: pointer;
     font-weight: 500;
     border-radius: 7px;
+    align-self: center;
+    display: list-item;
+    margin: 10px auto;
+  }
+
+  .btnGuardar:hover {
+    background-color: #0B7A75;
+    color: #FE9000;
   }
 
   .btnEditarRespuesta {

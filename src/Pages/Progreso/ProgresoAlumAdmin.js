@@ -184,6 +184,10 @@ function ProgresoAlumAdmin() {
                                         className='btnBancoPreguntas'
                                         onClick={() => {getHitosList(values.idAlumno)}}
                                         >Hitos</Button>
+                                        <Button
+                                        className='btnBancoPreguntas'>
+                                            Gráficas de progreso
+                                        </Button>
                                     </AccordionBody>
                             </Accordion>
                         </div>

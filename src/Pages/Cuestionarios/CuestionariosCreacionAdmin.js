@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
-import { Alert, Button, ButtonGroup, Card, DropdownButton, Dropdown, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Table } from "react-bootstrap";
-import AccordionBody from "react-bootstrap/esm/AccordionBody";
-import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
-import AccordionItem from "react-bootstrap/esm/AccordionItem";
-import { AiOutlineEdit, AiOutlineInfoCircle, AiOutlinePlus, AiOutlineSelect } from 'react-icons/ai';
+import { Alert, Button, ButtonGroup, Card, DropdownButton, Dropdown, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Table, FormControl } from "react-bootstrap";
+import { AiOutlineEdit, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineSelect, AiOutlineSend, AiOutlineQuestionCircle } from 'react-icons/ai';
+import SlidingPane from 'react-sliding-pane';
 import axios from '../../axios/axios'
 import "./cuestionarios.css"
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
@@ -22,6 +20,7 @@ function CrearCuestionario() {
     const [cuestionariosInfo, setCuestionariosInfo] = useState([]);
     const [preguntasList, setPreguntasList] = useState([]);
     const [respuestasList, setRespuestasList] = useState([]);
+    const [preguntaRespuesta, setPreguntaRespuesta] = useState([]);
     const [maxIdPregunta, setMaxIdPregunta] = useState(1);
     const [maxIdRespuesta, setMaxIdRespuesta] = useState(1);
     const [idPregunta, setIdPregunta] = useState(0);
@@ -38,7 +37,7 @@ function CrearCuestionario() {
     const [showModalP, setShowModalP] = useState(false)
     const [showModalR, setShowModalR] = useState(false)
     const [showModalO, setShowModalO] = useState(false)
-    const [preguntaRespuesta, setPreguntaRespuesta] = useState([]);
+    const [detailsPane, setDetailsPane] = useState({isPaneOpen: false});
 
     useEffect (() => {
         getQuestionnaires()
@@ -83,6 +82,13 @@ function CrearCuestionario() {
             setRespuestasList(response.data)
         })
     }
+
+    const scrollToTop = () => {
+        window.scroll({
+          top: 0,
+          behavior: 'smooth'
+        });
+    };
 
     const handleUploadNewCuestionario = async () => {
         try{
@@ -148,6 +154,7 @@ function CrearCuestionario() {
     }
 
     const newPreguntaRespuesta = () => {
+        scrollToTop() 
         if(!pregunta){
             setShowA(true)
             setVariante('danger')
@@ -180,6 +187,7 @@ function CrearCuestionario() {
         else{
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: idPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuesta), idRespuesta: idRespuesta}])
         }
+        setDetailsPane({isPaneOpen: true})
         //handleUploadNewCuestionario()
         setPregunta("")
         setRespuesta([{ respuesta: "" }])
@@ -187,6 +195,11 @@ function CrearCuestionario() {
         setTipoPregunta("")
         setIdPregunta(0)
         setIdRespuesta(0)
+    }
+
+    const openPane = (values) => {
+        console.log(values)
+        setDetailsPane({isPaneOpen: true});
     }
 
     const handleDisplayInfoCuestionario = (idcuestionario) => {
@@ -238,245 +251,153 @@ function CrearCuestionario() {
 
     if(newCuestionario)
     return(
-        <main className="crearCuestionario">
-            <div className="inputPreguntas">
-            Nombre del Cuestionario
-                <input
-                className="inputFields"
-                maxLength="150"
-                placeholder="Ingresa el nombre del cuestionario"
-                value={nombrec}
-                onChange={(e) => setNombreC(e.target.value)}/>
-            <br/>
-            Materia
-                <input
-                className="inputFields"
-                maxLength="150"
-                placeholder="Ingresa el nombre de la materia"
-                value={materiac}
-                onChange={(e) => setMateriaC(e.target.value)}/>
-            <br/>
-            Tipo de pregunta<h3>{tipoPregunta}</h3>
-            
-            <ButtonGroup>
-                <Button className="btnBancoPreguntas" value="Opción múltiple" onClick={(e) => setTipoPregunta(e.target.value)}>Opción múltiple</Button>
-                <Button className="btnBancoPreguntas" value="Abierta" onClick={(e) => setTipoPregunta(e.target.value)}>Abierta</Button>
-            </ButtonGroup>
-            Pregunta nueva
-            <br/>
-                <textarea
-                className='inputNewQuestion'
-                maxLength="250"
-                value={pregunta}
-                onChange={(e) => {
-                    setPregunta(e.target.value)
-                }}/>
-            <Button
-            className="btnBancoPreguntas"
-            size="sm"
-            onClick={() => {
-                getPreguntas()
-                setShowModalP(true)
-                }}>
-                    Banco de preguntas
-            </Button>
-                <Modal 
-                show={showModalP}
-                size="sm"
-                scrollable
-                onHide={() => setShowModalP(false)}
-                >
-                    <ModalHeader closeButton>
-                        <ModalTitle>
-                            Elige una pregunta de las siguientes opciones:
-                        </ModalTitle>
-                    </ModalHeader>
-                    <ModalBody>
-                        {preguntasList.map(values => (
-                            <div key={values.idPregunta}>
-                            <ListGroup>
-                                <ListGroupItem>
-                                    {values.idPregunta}. {values.pregunta}
-                                    <br/>
-                                    <Button 
-                                    variant="success"
-                                    onClick={() => handleSelectPregunta(values)}>
-                                        <AiOutlineSelect/>
-                                    </Button>
-                                </ListGroupItem>
-                            </ListGroup>
-                            </div>
-                        ))
-                        }
-                    </ModalBody>
-                </Modal>
-            <br/>
-            Respuestas
-            <br/>
-                <textarea
-                className='input-new-question'
-                disabled
-                value={JSON.stringify(respuesta)}
-                onChange={(e) => setRespuesta(e.target.value)}/>
-                <div>
-            {(idRespuesta !== 0) ?
-                <div>
-                    {console.log("Respuesta:"+respuesta.opciones)}
-                    {respuesta.opciones.map(values => (
-                        <div key={values}>
-                            <ListGroup>
-                                <ListGroupItem>
-                                    {(values.respuesta)}
-                                </ListGroupItem>
-                            </ListGroup>
-                        </div>
-                    ))
-                    }
-                </div>:
-                <div>
-                    {respuesta.map(values => (
-                        <div key={values}>
-                            <ListGroup>
-                                <ListGroupItem>
-                                    {(values.respuesta)}
-                                </ListGroupItem>
-                            </ListGroup>
-                        </div>
-                    ))
-                    }
-                </div>
-                }
-            </div>
-            <br/>
-            <Button
-            className="btnBancoPreguntas"
-            size="sm"
-            onClick={() => {
-                getRespuestas()
-                setShowModalR(true)
-            }}>
-                Banco de respuestas
-            </Button>
-                <Modal 
-                    show={showModalR}
+        <main>
+            <Alert 
+                show={showA}
+                variant={variante}
+                onClose={() => setShowA(false)}
+                dismissible
+                transition>
+                <Alert.Heading>
+                    {msg}
+                </Alert.Heading>
+            </Alert>
+            <Form
+            className="form"
+            onSubmit={handleUploadNewCuestionario}>
+                <h3>Crear cuestionario</h3>
+                <br/>
+                <Form.Group controlId="newcuestionarioname">
+                    <Form.Label>Nombre del cuestionario</Form.Label>
+                    <Form.Control
+                    type="text"
+                    placeholder="Ingresa el nombre del cuestionario"
+                    maxLength={150}
+                    value={nombrec}
+                    onChange={(e) => setNombreC(e.target.value)}/>
+                    <br/>
+                    <Form.Label>Materia</Form.Label>
+                    <Form.Control
+                    type="text"
+                    placeholder="Ingresa el nombre de la materia"
+                    maxLength={150}
+                    value={materiac}
+                    onChange={(e) => setMateriaC(e.target.value)}
+                    />
+                    <br/>
+                    <br/>
+                    <Form.Label><h3>Pregunta nueva</h3></Form.Label>
+                    <br/>
+                    <Button
+                    className="btnBancoPreguntas"
                     size="sm"
-                    scrollable
-                    onHide={() => setShowModalR(false)}
-                >
-                    <ModalHeader closeButton>
-                        <ModalTitle>
-                            Elige un set de respuestas de las siguientes opciones:
-                        </ModalTitle>
-                    </ModalHeader>
-                    <ModalBody>
-                        {respuestasList.map(values => (
-                            <div key={values.id}>
-                                <ListGroup>
-                                    <ListGroupItem>
-                                        {values.id}. 
-                                        <ListGroup>
-                                            <ListGroupItem>
-                                            {values.opciones}
-                                            </ListGroupItem>
-                                        </ListGroup>
-                                        <br/>
-                                        <Button 
-                                        variant="success"
-                                        onClick={() => handleSelectRespuesta(values)}>
-                                            <AiOutlineSelect/>
-                                        </Button>
-                                    </ListGroupItem>
-                                </ListGroup>
+                    onClick={() => {
+                        getPreguntas()
+                        setShowModalP(true)
+                        }}>
+                            Banco de preguntas
+                            <AiOutlineQuestionCircle size={20}/>
+                    </Button>
+                    <FormControl
+                    as="textarea"
+                    placeholder="Ingresa la pregunta"
+                    maxLength={250}
+                    value={pregunta}
+                    onChange={(e) => {
+                        setPregunta(e.target.value)
+                    }}/>
+                    <br/>
+                    <Form.Label>Tipo de pregunta</Form.Label>
+                    <h3>{tipoPregunta}</h3>
+                    <ButtonGroup>
+                        <Button 
+                            className="btnBancoPreguntas"
+                            value="Opción múltiple" 
+                            onClick={(e) => setTipoPregunta(e.target.value)}>
+                                Opción múltiple
+                        </Button>
+                        <Button 
+                            className="btnBancoPreguntas"
+                            value="Abierta"
+                            onClick={(e) => setTipoPregunta(e.target.value)}>
+                                Abierta
+                        </Button>
+                    </ButtonGroup>
+                    <br/>
+                    <br/>
+                    <Form.Label><h3>Respuesta(s) nueva</h3></Form.Label>
+                    <br/>
+                    <Button
+                    className="btnBancoPreguntas"
+                    size="sm"
+                    onClick={() => {
+                        getRespuestas()
+                        setShowModalR(true)
+                    }}>
+                        Banco de respuestas
+                    </Button>
+                    <br/>
+                    <FormControl
+                    as="textarea"
+                    disabled
+                    value={JSON.stringify(respuesta)}
+                    onChange={(e) => setRespuesta(e.target.value)}
+                    />
+                    <div>
+                    {(idRespuesta !== 0) ?
+                        <div>
+                            {console.log("Respuesta:"+respuesta.opciones)}
+                            {respuesta.opciones.map(values => (
+                                <div key={values}>
+                                    <ListGroup>
+                                        <ListGroupItem>
+                                            {(values.respuesta)}
+                                        </ListGroupItem>
+                                    </ListGroup>
                                 </div>
                             ))
                             }
-                        </ModalBody>
-                    </Modal>
-            {(tipoPregunta === "Opción múltiple") ? 
-            <div>
-            <Button
-            className="btnRegistroRespuestas"
-            onClick={() => {setShowModalO(true)}}>
-                Registrar Opciones
-            </Button>
-            <br/>
-            <br/>
-            <Modal
-            show={showModalO}
-            scrollable
-            onHide={() => setShowModalO(false)}>
-                <ModalHeader>
-                    <ModalTitle>
-                        Elige una pregunta de las siguientes opciones:
-                    </ModalTitle>
-                </ModalHeader>
-                <ModalBody>
-                    {respuesta.map((opcion, index) => (
-                        <div key={index} className="services">
-                            {console.log(opcion.opciones)}
-                            <div className="first-division">
-                            <input
-                                name="respuesta"
-                                type="text"
-                                id="opcion"
-                                value={opcion.opciones}
-                                onChange={(e) => handleChangeRespuesta(e, index)}
-                            />
-                            {respuesta.length-1 === index && 
-                            (<Button 
-                            size="sm"
-                            className="add-btn"
-                            variant="success"
-                            onClick={handleAddRespuesta}>
-                                <span>Nueva opción</span>
-                            </Button>)
+                        </div>:
+                        <div>
+                            {respuesta.map(values => (
+                                <div key={values}>
+                                    <ListGroup>
+                                        <ListGroupItem>
+                                            {(values.respuesta)}
+                                        </ListGroupItem>
+                                    </ListGroup>
+                                </div>
+                            ))
                             }
-                            <br/>
-                            {respuesta.length-1 === index && 
-                            (<Button 
-                            size="sm"
-                            className="add-btn"
-                            variant="success"
-                            onClick={() => {formatRespuesta(idRespuesta)}}>
-                                <span>Guardar registros</span>
-                            </Button>)
-                            }
-                            </div>
-                            <div className="second-division">
-                                {respuesta.length > 1 && 
-                                (<Button 
-                                size="sm"
-                                className="remove-btn"
-                                variant="danger"
-                                onClick={() => handleRemoveRespuesta(index)}
-                                >
-                                    <span>Borrar</span>
-                                </Button>)}
-                            </div>
                         </div>
-                    ))}
-                </ModalBody>
-            </Modal>
-            </div>: <br></br>
-            }
-        <Button 
-        className="btnGuardar"
-        onClick={newPreguntaRespuesta}>
-            Guardar
-        </Button>
-        <br/>
-        </div>
-        <div className="outputPreguntas">
-                <Alert 
-                    show={showA}
-                    variant={variante}
-                    onClose={() => setShowA(false)}
-                    dismissible
-                    transition>
-                    <Alert.Heading>
-                        {msg}
-                    </Alert.Heading>
-                </Alert>
+                        }
+                    </div>
+                    {(tipoPregunta === "Opción múltiple") ? 
+                    <div>
+                    <Button
+                    className="btnRegistroRespuestas"
+                    onClick={() => {setShowModalO(true)}}>
+                        Registrar Opciones
+                    </Button>
+                    </div>
+                    :<br/>
+                    }
+                    <Button 
+                    className="btnGuardar"
+                    onClick={newPreguntaRespuesta}>
+                        Guardar
+                        <AiOutlinePlus/>
+                    </Button>
+                </Form.Group>
+            </Form>
+            <SlidingPane
+            className='sliding-pane'
+            isOpen={detailsPane.isPaneOpen}
+            title="Preguntas registradas"
+            width={window.innerWidth < 600 ? "100%" : "500px"}
+            onRequestClose={() => {setDetailsPane({isPaneOpen: false})}}
+            >
+                <div className="pane-content">
                 <Table>
                     <thead>
                         <tr>
@@ -503,7 +424,134 @@ function CrearCuestionario() {
                 className="btnGuardar"
                 onClick={handleUploadNewCuestionario}>
                     Subir Cuestionario
+                    <AiOutlineSend/>
                 </Button>
+                </div>
+            </SlidingPane>
+            <Modal 
+            show={showModalP}
+            size="sm"
+            scrollable
+            onHide={() => setShowModalP(false)}>
+                <ModalHeader closeButton>
+                    <ModalTitle>
+                        Elige una pregunta de las siguientes opciones:
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    {preguntasList.map(values => (
+                        <div key={values.idPregunta}>
+                        <ListGroup>
+                            <ListGroupItem>
+                                {values.idPregunta}. {values.pregunta}
+                                <br/>
+                                <Button 
+                                variant="success"
+                                onClick={() => handleSelectPregunta(values)}>
+                                    <AiOutlineSelect/>
+                                 </Button>
+                            </ListGroupItem>
+                        </ListGroup>
+                        </div>
+                        ))
+                    }
+                </ModalBody>
+            </Modal>
+            <div className="inputPreguntas">
+            <Modal 
+            show={showModalR}
+            size="sm"
+            scrollable
+            onHide={() => setShowModalR(false)}>
+                <ModalHeader closeButton>
+                    <ModalTitle>
+                        Elige un set de respuestas de las siguientes opciones:
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    {respuestasList.map(values => (
+                        <div key={values.id}>
+                            <ListGroup>
+                                <ListGroupItem>
+                                    {values.id}. 
+                                <ListGroup>
+                                    <ListGroupItem>
+                                        {values.opciones}
+                                    </ListGroupItem>
+                                </ListGroup>
+                                <br/>
+                                <Button 
+                                variant="success"
+                                onClick={() => handleSelectRespuesta(values)}>
+                                    <AiOutlineSelect/>
+                                </Button>
+                                </ListGroupItem>
+                            </ListGroup>
+                            </div>
+                        ))
+                    }
+                </ModalBody>
+            </Modal>
+            <div>
+            <Modal
+            show={showModalO}
+            scrollable
+            onHide={() => setShowModalO(false)}>
+                <ModalHeader>
+                    <ModalTitle>
+                        Registra las respuestas:
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    {respuesta.map((opcion, index) => (
+                        <div key={index} className="services">
+                            {console.log(opcion.opciones)}
+                            <div className="first-division">
+                            <input
+                                name="respuesta"
+                                type="text"
+                                id="opcion"
+                                value={opcion.opciones}
+                                onChange={(e) => handleChangeRespuesta(e, index)}
+                            />
+                            {respuesta.length-1 === index && 
+                            (<Button 
+                            size="sm"
+                            className="add-btn"
+                            variant="success"
+                            onClick={handleAddRespuesta}>
+                                <span>Nueva opción</span>
+                                <AiOutlinePlus/>
+                            </Button>)
+                            }
+                            <br/>
+                            {respuesta.length-1 === index && 
+                            (<Button 
+                            size="sm"
+                            className="add-btn"
+                            variant="success"
+                            onClick={() => {formatRespuesta(idRespuesta)}}>
+                                <span>Guardar registros</span>
+                                <AiOutlineSend/>
+                            </Button>)
+                            }
+                            </div>
+                            <div className="second-division">
+                                {respuesta.length > 1 && 
+                                (<Button 
+                                size="sm"
+                                className="remove-btn"
+                                variant="danger"
+                                onClick={() => handleRemoveRespuesta(index)}
+                                >
+                                    <AiOutlineDelete/>
+                                </Button>)}
+                            </div>
+                        </div>
+                    ))}
+                </ModalBody>
+            </Modal>
+            </div>
             </div>
     </main>
     );
@@ -513,6 +561,7 @@ function CrearCuestionario() {
             {cuestionariosList.map(values => (
                 <div key={values.idCuestionario}>
                     <Card 
+                    className="text-center"
                     border = "warning"
                     style={{ width: '100%' }}>
                         <Card.Body>
@@ -533,7 +582,7 @@ function CrearCuestionario() {
             ))}
             <br/>
             <Button
-            className="btnEditarRespuesta"
+            className="btnGuardar"
             onClick={() => setNewCuestionario(true)}>
                 Crear cuestionario
                 <AiOutlinePlus/>
