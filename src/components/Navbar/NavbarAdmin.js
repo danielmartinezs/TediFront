@@ -3,7 +3,7 @@ import { Navbar, Nav, Container } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../assets/LogoT.svg';
 
-const NavbarComp = () => {
+const NavbarAdmin = () => {
 
     {}
         
@@ -17,7 +17,7 @@ const NavbarComp = () => {
                     
                     <Nav className="me-auto">
                     <Nav.Link as={Link} to="/Alumnos">Alumnos</Nav.Link>
-                    <Nav.Link as={Link} to="/Reportes">Reportes</Nav.Link>
+                    <Nav.Link as={Link} to="/ReportesAdmin">Reportes</Nav.Link>
                     <Nav.Link as={Link} to="/ProgresoAlumAdmin">Progreso</Nav.Link>
                     <Nav.Link as={Link} to="/CuestionariosCreacionAdmin">Cuestionarios</Nav.Link>
                     <Nav.Link as={Link} to="/PerfilSeleccionAdmin">Perfil</Nav.Link>
@@ -27,4 +27,4 @@ const NavbarComp = () => {
     )
 }
 
-export default NavbarComp;
+export default NavbarAdmin;

@@ -106,7 +106,7 @@
     width: fit-content;
   }
 
-  .btnGuardar {
+  .btnAct {
     width: 75%;
     background-color: #FE9000;
     outline: #0B7A75;
@@ -118,7 +118,7 @@
     margin: 10px auto;
   }
 
-  .btnGuardar:hover {
+  .btnAct:hover {
     background-color: #0B7A75;
     color: #FE9000;
   }

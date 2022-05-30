@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import NavbarComp from "./components/Navbar/NavbarComp";
+import NavbarAdmin from "./components/Navbar/NavbarAdmin";
+import NavbarPadre from "./components/Navbar/NavbarPadre";
 import { Routes, Route } from 'react-router-dom'
 import Home from './Pages/Home/Home'
 import Reportes from './Pages/Reportes/Reportes'
@@ -29,14 +30,17 @@ import privateRoute from './components/privateRoute.js';
 
 
 function App() {
+  if(localStorage.getItem('token') === null){
+    return <Login/>
+  }
+  else if(localStorage.getItem('role') === 'admin'){
   return (      
           <div className="App">
-            <NavbarComp/>
+            <NavbarAdmin/>
             <div>
               <Routes>               
           
               <Route exact path="/Login" element={<Login/>}/>
-
               <Route exact path="/HomeAdmin" element={<privateRoute roles = {["admin"]}><HomeAdmin/></privateRoute>}/>
                   {/*Aqui abajo es la pagina principal del usuario administrador*/}
 
@@ -59,18 +63,29 @@ function App() {
                   <Route exact path="/PerfilCrearPerfilNuevo" element={<privateRoute roles = {["admin"]}><PerfilCrearPerfilNuevo/></privateRoute>}/>
                   <Route exact path="/PerfilEditarAdmin" element={<privateRoute roles = {["admin"]}><PerfilEditarAdmin/></privateRoute>}/>
                   <Route exact path="/PerfilEditarTutor" element={<privateRoute roles = {["admin"]}><PerfilEditarTutor/></privateRoute>}/>
-                 
-                  {/*Aqui abajo es la pagina principal del usuario padre*/}
-                  <Route exact path="/Home" element={<privateRoute roles = {["tutor"]}><Home/></privateRoute>}/>
-                  <Route exact path="/Reportes" element={<privateRoute roles = {["tutor"]}><Reportes/></privateRoute>}/>
-                  <Route exact path="/Progreso" element={<privateRoute roles = {["tutor"]}><Progreso/></privateRoute>}/>
-                  <Route exact path="/GraphChart" element={<privateRoute roles = {["tutor"]}><GraphChart/></privateRoute>}/>
-                  <Route exact path="/PerfilPadre" element={<privateRoute roles = {["tutor"]}><PerfilPadre/></privateRoute>}/>
-                  
               </Routes>
-            </div> 
+            </div>
           </div>
-  )
+  );
+  }
+  else if(localStorage.getItem('role') === 'tutor'){
+    return (
+      <div className="app">
+        <NavbarPadre/>
+        <div>
+          <Routes>      
+            {/*Aqui abajo es la pagina principal del usuario padre*/}
+            <Route exact path="/Home" element={<privateRoute roles = {["tutor"]}><Home/></privateRoute>}/>
+            <Route exact path="/Reportes" element={<privateRoute roles = {["tutor"]}><Reportes/></privateRoute>}/>
+            <Route exact path="/Progreso" element={<privateRoute roles = {["tutor"]}><Progreso/></privateRoute>}/>
+            <Route exact path="/GraphChart" element={<privateRoute roles = {["tutor"]}><GraphChart/></privateRoute>}/>
+            <Route exact path="/PerfilPadre" element={<privateRoute roles = {["tutor"]}><PerfilPadre/></privateRoute>}/>
+              
+          </Routes>
+        </div>
+      </div> 
+  );
+  }
 }
   
 export default App;

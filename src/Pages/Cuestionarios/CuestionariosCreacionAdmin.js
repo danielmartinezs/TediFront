@@ -197,11 +197,6 @@ function CrearCuestionario() {
         setIdRespuesta(0)
     }
 
-    const openPane = (values) => {
-        console.log(values)
-        setDetailsPane({isPaneOpen: true});
-    }
-
     const handleDisplayInfoCuestionario = (idcuestionario) => {
         setSelectedQuestionnaire(idcuestionario)
     }
@@ -311,16 +306,16 @@ function CrearCuestionario() {
                     <h3>{tipoPregunta}</h3>
                     <ButtonGroup>
                         <Button 
-                            className="btnBancoPreguntas"
-                            value="Opción múltiple" 
-                            onClick={(e) => setTipoPregunta(e.target.value)}>
-                                Opción múltiple
+                        className="btnBancoPreguntas"
+                        value="Opción múltiple" 
+                        onClick={(e) => setTipoPregunta(e.target.value)}>
+                            Opción múltiple
                         </Button>
                         <Button 
-                            className="btnBancoPreguntas"
-                            value="Abierta"
-                            onClick={(e) => setTipoPregunta(e.target.value)}>
-                                Abierta
+                        className="btnBancoPreguntas"
+                        value="Abierta"
+                        onClick={(e) => setTipoPregunta(e.target.value)}>
+                            Abierta
                         </Button>
                     </ButtonGroup>
                     <br/>
@@ -383,7 +378,7 @@ function CrearCuestionario() {
                     :<br/>
                     }
                     <Button 
-                    className="btnGuardar"
+                    className="btnAct"
                     onClick={newPreguntaRespuesta}>
                         Guardar
                         <AiOutlinePlus/>
@@ -421,7 +416,7 @@ function CrearCuestionario() {
                     </tbody>
                 </Table>
                 <Button 
-                className="btnGuardar"
+                className="btnAct"
                 onClick={handleUploadNewCuestionario}>
                     Subir Cuestionario
                     <AiOutlineSend/>
@@ -582,7 +577,7 @@ function CrearCuestionario() {
             ))}
             <br/>
             <Button
-            className="btnGuardar"
+            className="btnAct"
             onClick={() => setNewCuestionario(true)}>
                 Crear cuestionario
                 <AiOutlinePlus/>

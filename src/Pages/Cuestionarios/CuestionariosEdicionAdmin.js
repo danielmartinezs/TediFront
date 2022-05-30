@@ -246,12 +246,12 @@ function CuestionariosEdicionAdmin() {
                                         setShowModalRes(false)
                                         setShowOffEditR(true)
                                     }}>
-                                        Editar<AiOutlineEdit/>
+                                        <AiOutlineEdit/>
                                     </Button>
                                     <Button
                                     className='open-question'
                                     variant='danger'>
-                                        Borrar<AiOutlineDelete/>
+                                        <AiOutlineDelete/>
                                     </Button>
                                 </ListGroupItem>
                             </ListGroup>
@@ -512,18 +512,18 @@ function CuestionariosEdicionAdmin() {
                     </Modal.Body>
                 </Modal>
                 <Button
-                className='btnEditarRespuesta'
+                className='btnAct'
                 onClick={() => {setShowModalAddPreg(true)}}>
                     Agregar Pregunta<AiOutlinePlus/>
                 </Button>
                 <Link to={'/CuestionariosCreacionAdmin'}>
                     <Button
-                    className='btnEditarRespuesta'>
+                    className='btnAct'>
                         Regresar<AiOutlineRollback/>
                     </Button>
                 </Link>
                 <Button
-                className='btnEditarRespuesta'
+                className='btnAct'
                 variant='danger'
                 onClick={() => {setShowMDelete(true)}}>
                     Borrar cuestionario<AiOutlineDelete/>
