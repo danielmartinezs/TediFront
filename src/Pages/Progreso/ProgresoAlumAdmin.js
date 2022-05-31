@@ -154,7 +154,8 @@ function ProgresoAlumAdmin() {
     return (
         <div> 
             <h1>Progreso por Alumno</h1>
-            <Alert 
+            <div className='alertas'>
+                <Alert 
                 show={showA}
                 variant={variante}
                 onClose={() => setShowA(false)}
@@ -162,7 +163,8 @@ function ProgresoAlumAdmin() {
                 <Alert.Heading>
                     {msg}
                 </Alert.Heading>
-            </Alert>
+                </Alert>
+            </div>
                 <div className="containerInput">
                 <input
                     className="inputBuscar"

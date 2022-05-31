@@ -99,7 +99,8 @@ function PerfilEditarAdmin() {
     return (
         <div>
             <h1>Página de edición de perfiles admin</h1>
-            <Alert 
+            <div className='alertas'>
+                <Alert 
                 show={showA}
                 variant={variante}
                 onClose={() => setShowA(false)}
@@ -107,7 +108,8 @@ function PerfilEditarAdmin() {
                 <Alert.Heading>
                     {msg}
                 </Alert.Heading>
-            </Alert>
+                </Alert>
+            </div>
             {adminList.map(values => (
                     <div className='admin' key={values.idAdministrador}>
                         <div>

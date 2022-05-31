@@ -163,15 +163,17 @@ function PerfilEditarTutor() {
     return (
         <div>
             <h1>Página de edición de tutores/alumnos</h1>
+            <div className='alertas'>
             <Alert 
-                show={showA}
-                variant={variante}
-                onClose={() => setShowA(false)}
-                dismissible>
-                <Alert.Heading>
-                    {msg}
-                </Alert.Heading>
+            show={showA}
+            variant={variante}
+            onClose={() => setShowA(false)}
+            dismissible>
+              <Alert.Heading>
+                {msg}
+              </Alert.Heading>
             </Alert>
+            </div>
             {tutoresList.map(values => (
                     <div className='admin' key={values.idAdministrador}>
                         <div>

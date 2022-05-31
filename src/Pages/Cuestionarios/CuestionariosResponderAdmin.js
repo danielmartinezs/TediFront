@@ -355,15 +355,17 @@ function Respuesta () {
     if (isFinished)
     return (
       <main className="cuestionario">
-          <Alert 
-                show={showA}
-                variant={variante}
-                onClose={() => setShowA(false)}
-                dismissible>
-                <Alert.Heading>
-                    {msg}
-                </Alert.Heading>
+        <div className='alertas'>
+            <Alert 
+            show={showA}
+            variant={variante}
+            onClose={() => setShowA(false)}
+            dismissible>
+            <Alert.Heading>
+                {msg}
+            </Alert.Heading>
             </Alert>
+        </div>
         <div className="fin">
             <span>
             El alumno obtuvo un puntaje de {puntaje}

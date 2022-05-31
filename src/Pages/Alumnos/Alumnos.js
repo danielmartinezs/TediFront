@@ -18,7 +18,7 @@ function Alumnos() {
     const [descripcion, setDescripcion] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
-    const [show, setShow] = useState(false);
+    const [showA, setShowA] = useState(false);
     const [showM, setShowM] = useState(false);
 
     useEffect (() => {
@@ -46,13 +46,13 @@ function Alumnos() {
                 desc: descripcion
             })
             if(response.status === 200){
-                setShow(true)
+                setShowA(true)
                 setVariante('success')
                 setMsg(response.data.message)
             }
         }
         catch(error){
-            setShow(true)
+            setShowA(true)
           if(!error?.response){
             setMsg('No hay respuesta del servidor');
             setVariante('danger');
@@ -93,15 +93,17 @@ function Alumnos() {
     return (
         <div>
             <h1>Página Alumnos</h1>
-            <Alert 
-                show={show}
+            <div className='alertas'>
+                <Alert 
+                show={showA}
                 variant={variante}
-                onClose={() => setShow(false)}
+                onClose={() => setShowA(false)}
                 dismissible>
                 <Alert.Heading>
                     {msg}
                 </Alert.Heading>
-            </Alert>
+                </Alert>
+            </div>
             <div>
                 <div className="containerInput">
                 <input

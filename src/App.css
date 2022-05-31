@@ -12,3 +12,12 @@
   color: rgb(234, 250, 7)
 
 }
+.alertas{
+  position: relative;
+  padding: 0 50px;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  text-align: center;
+  min-width: 250px;
+}

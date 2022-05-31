@@ -96,7 +96,7 @@ function GraphChart(){
                         fontSize:20
                         },
                         legend:{
-                        display:true,
+                        display: true,
                         position:'right'
                         }
                     }}

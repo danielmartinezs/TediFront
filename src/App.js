@@ -73,7 +73,8 @@ function App() {
       <div className="app">
         <NavbarPadre/>
         <div>
-          <Routes>      
+          <Routes>  
+          <Route exact path="/Login" element={<Login/>}/>    
             {/*Aqui abajo es la pagina principal del usuario padre*/}
             <Route exact path="/Home" element={<privateRoute roles = {["tutor"]}><Home/></privateRoute>}/>
             <Route exact path="/Reportes" element={<privateRoute roles = {["tutor"]}><Reportes/></privateRoute>}/>

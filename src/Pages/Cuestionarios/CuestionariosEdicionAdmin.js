@@ -206,16 +206,17 @@ function CuestionariosEdicionAdmin() {
 
     return(
         <div>
-            <Alert 
-            show={showA}
-            variant={variante}
-            onClose={() => setShowA(false)}
-            dismissible
-            transition>
+            <div className='alertas'>
+                <Alert 
+                show={showA}
+                variant={variante}
+                onClose={() => setShowA(false)}
+                dismissible>
                 <Alert.Heading>
                     {msg}
                 </Alert.Heading>
-            </Alert>
+                </Alert>
+            </div>
             <h3>{cuestionariosInfo[0]?.nombre}</h3>
             <Modal
             show={showModalRes}

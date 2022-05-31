@@ -77,8 +77,8 @@ export const Login = () =>{
   }
 
   return(
-        <div className='div-login'>
-          <div >
+    <div>
+       <div className='alertas'>
             <Alert 
             show={show}
             variant={variante}
@@ -88,6 +88,9 @@ export const Login = () =>{
                 {msg}
               </Alert.Heading>
             </Alert>
+        </div>
+        <div className='div-login'>
+          <div >
             <img
             src={Logo}
             width="95%"
@@ -127,6 +130,7 @@ export const Login = () =>{
             <Button type = "submit" className = "button" onSubmit ={handleSubmit}>Ingresar</Button>
             </form>
         </div>
+    </div>
     )
 }
 

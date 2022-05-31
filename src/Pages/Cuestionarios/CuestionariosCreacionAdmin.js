@@ -247,16 +247,17 @@ function CrearCuestionario() {
     if(newCuestionario)
     return(
         <main>
-            <Alert 
+            <div className='alertas'>
+                <Alert 
                 show={showA}
                 variant={variante}
                 onClose={() => setShowA(false)}
-                dismissible
-                transition>
+                dismissible>
                 <Alert.Heading>
                     {msg}
                 </Alert.Heading>
-            </Alert>
+                </Alert>
+            </div>
             <Form
             className="form"
             onSubmit={handleUploadNewCuestionario}>

@@ -28,7 +28,7 @@ function CreatePerfil() {
     const [semestre, setSemestre] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
-    const [show, setShow] = useState(false);
+    const [showA, setShowA] = useState(false);
     
     const handleFechaNueva = (date) => {
       setFechaNac(date)
@@ -56,7 +56,7 @@ function CreatePerfil() {
                 confpassword: confirmPassword
             })
           if(response.status === 200){
-            setShow(true)
+            setShowA(true)
             setVariante('success')
             setMsg('Administrador creado con éxito!')
             setNombreAdmin("")
@@ -65,7 +65,7 @@ function CreatePerfil() {
             setConfirmPassword("")
           }
         }catch(error){
-          setShow(true)
+          setShowA(true)
           if(!error?.response){
             setMsg('No hay respuesta del servidor');
             setVariante('danger');
@@ -100,7 +100,7 @@ function CreatePerfil() {
             foto: pic
           })
           if(response.status === 200){
-            setShow(true)
+            setShowA(true)
             setVariante('success')
             setMsg('Tutor y alumno creados con éxito!')
             setNombreTutor("")
@@ -114,7 +114,7 @@ function CreatePerfil() {
             setPic()
           }
         }catch(error){
-          setShow(true)
+          setShowA(true)
           if(!error?.response){
             setMsg('No hay respuesta del servidor');
             setVariante('danger');
@@ -136,22 +136,24 @@ function CreatePerfil() {
 
   return (
     <div>
-      <Alert 
-        show={show}
+      <div className='alertas'>
+        <Alert 
+        show={showA}
         variant={variante}
-        onClose={() => setShow(false)}
+        onClose={() => setShowA(false)}
         dismissible>
           <Alert.Heading>
             {msg}
           </Alert.Heading>
-      </Alert>
-    <Tabs justify variant="pills" defaultActiveKey="tutor" id="crearperfilnuevo">
+        </Alert>
+      </div>
+      <Tabs justify variant="pills" defaultActiveKey="tutor" id="crearperfilnuevo">
         <Tab eventKey="tutor" title="Tutor" className="content">
-            <Form 
-              className="form"
-              onSubmit={handleSubmitTA} >
-                <h3>Información del Tutor</h3>
-                <br/>
+          <Form 
+          className="form"
+          onSubmit={handleSubmitTA}>
+            <h3>Información del Tutor</h3>
+            <br/>
                 <Form.Group controlId="nombretut">
                     <Form.Label>Nombre del tutor</Form.Label>
                     <Form.Control
@@ -265,9 +267,9 @@ function CreatePerfil() {
                     Crear
                     <AiOutlineUserAdd/>
                 </Button>
-            </Form>
-        </Tab>
-        <Tab 
+          </Form>
+      </Tab>
+      <Tab 
             eventKey="admin" 
             title="Administrador" 
             className="content">
