@@ -163,6 +163,12 @@
     border: 1px solid #252d4a;
   }
   
+  .input-answer{
+    width: 100%;
+    height: 125px;
+    border: 1px solid #252d4a;
+  }
+
   .numero-pregunta {
     margin-bottom: 20px;
   }
@@ -185,11 +191,11 @@
   }
   
   .open-question {
-    width: 15%;
+    width: 80%;
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-evenly;
   }
 
   /* FINALIZADO */

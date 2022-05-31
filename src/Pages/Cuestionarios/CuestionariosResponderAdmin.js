@@ -36,7 +36,9 @@ function Respuesta () {
     const [variante, setVariante] = useState('');
     const [numeroPregunta, setNumeroPregunta] = useState(0);
     const [preguntaActual, setPreguntaActual] = useState(0);
-    const [puntaje, setPuntaje] = useState(0);
+    const [puntaje, setPuntaje] = useState([]);
+    const [puntajeEdit, setPuntajeEdit] = useState([]);
+    const [resultadoPuntaje, setResultadoPuntaje] = useState(0);
     const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(0);
     const [isSelectedQuestionnaire, setIsSelectedQuestionnaire] = useState(true);
     const [isDone, setIsDone] = useState(false);
@@ -92,14 +94,15 @@ function Respuesta () {
         setIsStart(true)
     }
 
-    const handleUploadCuestionario = async (respuestas) => {
+    const handleUploadCuestionario = async (resultadoPuntaje, respuestas) => {
+        console.log("resultadoPuntaje"+resultadoPuntaje)
         try{
             const response = await axios.post(UPLOAD_QUESTIONNAIRES_URL, {
                 ida: idAlumno,
                 idc: selectedQuestionnaire,
                 respuestas: JSON.stringify(respuestas),
                 comentarios: JSON.stringify(comentarios),
-                puntaje: puntaje
+                puntaje: resultadoPuntaje
             })
             if(response.status === 200){
                 setShowA(true)
@@ -122,6 +125,7 @@ function Respuesta () {
     }
 
     const handleSubmitEdicion = async () => {
+        calcularPuntajeEdit()
         try{
             const response = await axios.post(EDIT_QUESTIONNAIRES_URL, {
                 ida: idAlumno,
@@ -129,7 +133,7 @@ function Respuesta () {
                 timestamp: tiempoRegistro,
                 respuestas: JSON.stringify(respuestasEdit),
                 comentarios: JSON.stringify(comentariosEdit),
-                puntaje: puntaje
+                puntaje: resultadoPuntaje
             })
             if(response.status === 200){
                 setShowA(true)
@@ -186,6 +190,32 @@ function Respuesta () {
         }
     }
 
+    const calcularPuntaje = () => {
+        console.log("calculando puntaje")
+        console.log(puntaje)
+        let result = null
+        for(let i = 0; i < puntaje.length; i++){
+            if(!isNaN(puntaje[i].puntaje)){
+                result += puntaje[i].puntaje
+                console.log(result)
+            }
+        }
+        setResultadoPuntaje(result)
+    }
+
+    const calcularPuntajeEdit = () => {
+        console.log("modificando puntaje")
+        console.log(puntajeEdit)
+        let result = null
+        for(let i = 0; i < puntajeEdit.length; i++){
+            if(!isNaN(puntajeEdit[i].puntaje)){
+                result += puntajeEdit[i].puntaje
+                console.log(result)
+            }
+        }
+        setResultadoPuntaje(result)
+    }
+
     const handleAnswerAbierta = (answer, preguntaActual) => {
         const newAnswer = 
         {
@@ -216,6 +246,12 @@ function Respuesta () {
         }
         setComentarios([...comentarios, newComment])
         setComentariosEdit([...comentariosEdit, newComment])
+        const newPuntaje =
+        {
+            puntaje: answer
+        }
+        setPuntaje([...puntaje, newPuntaje])
+        setPuntajeEdit([...puntajeEdit, newPuntaje])
         const newQA = 
         {
             id: preguntasList[preguntaActual].idPregunta,
@@ -228,11 +264,6 @@ function Respuesta () {
     }
 
     function handleAnswerSubmit(answer, e){
-        if(isNaN(answer)){
-            setPuntaje(puntaje+0)
-        }else{
-            setPuntaje(puntaje+answer)
-        }
         if(preguntaActual === preguntasList.length - 1){
             const newAnswer = 
             {
@@ -247,6 +278,12 @@ function Respuesta () {
             }
             setComentarios([...comentarios, newComment])
             setComentariosEdit([...comentariosEdit, newComment])
+            const newPuntaje =
+            {
+                puntaje: answer
+            }
+            setPuntaje([...puntaje, newPuntaje])
+            setPuntajeEdit([...puntajeEdit, newPuntaje])
             const newQA = 
             {
                 id: preguntasList[preguntaActual].idPregunta,
@@ -256,6 +293,7 @@ function Respuesta () {
                 comentario: comment
             }
             setEdicionList([...edicionList, newQA])
+            calcularPuntaje()
             setIsDone(true)
         }
         else{
@@ -277,6 +315,11 @@ function Respuesta () {
             comment: comment
         }
         comentariosEdit[numeroPregunta] = editComment;
+        const editPuntaje =
+        {
+            puntaje: answer
+        }
+        puntajeEdit[numeroPregunta] = editPuntaje;
         const editedQA = 
         {
             id: edicionList[numeroPregunta].id,
@@ -286,6 +329,7 @@ function Respuesta () {
             comentario: comment
         }
         edicionList[numeroPregunta] = editedQA;
+        calcularPuntajeEdit()
         setComment("");
         setRespuestaEdit("");
         setLlaveCambio(0);
@@ -296,7 +340,8 @@ function Respuesta () {
     const WrapItUp = () => {
         setIsFinished(true)
         setComment("")
-        handleUploadCuestionario(respuestas)
+        console.log("resultadoPuntaje"+resultadoPuntaje)
+        handleUploadCuestionario(resultadoPuntaje, respuestas)
         getMostRecent()
     }
 
@@ -304,7 +349,7 @@ function Respuesta () {
     return (
         <div>
             {cuestionariosList.map(values => (
-                    <div key={values.idCuestionario}>
+                <div key={values.idCuestionario}>
                     <Card 
                     className="text-center"
                     border = "warning"
@@ -318,12 +363,12 @@ function Respuesta () {
                                     Contestar cuestionario
                                     <AiOutlineEdit/>
                                 </Button>
-                            </Card.Body>
-                            <Card.Footer>
-                                Materia: {values.materia}
-                            </Card.Footer>
-                        </Card>
-                    </div>  
+                        </Card.Body>
+                        <Card.Footer>
+                            Materia: {values.materia}
+                        </Card.Footer>
+                    </Card>
+                </div>  
             ))}
         </div>
     );
@@ -355,21 +400,24 @@ function Respuesta () {
     if (isFinished)
     return (
       <main className="cuestionario">
-        <div className='alertas'>
+        <div className="fin">
             <Alert 
             show={showA}
             variant={variante}
             onClose={() => setShowA(false)}
+            className="alerta"
             dismissible>
             <Alert.Heading>
                 {msg}
             </Alert.Heading>
             </Alert>
-        </div>
-        <div className="fin">
+            {console.log(resultadoPuntaje)}
+            {isNaN(resultadoPuntaje) || resultadoPuntaje === null?
+            <div/>
+            :
             <span>
-            El alumno obtuvo un puntaje de {puntaje}
-            </span>
+            El alumno obtuvo un puntaje de {resultadoPuntaje}
+            </span>}
             <span>
             Has concluido con el cuestionario {preguntasList[0]?.nombre}
             </span>
@@ -386,6 +434,7 @@ function Respuesta () {
             </Button>
           </Link>
         </div>
+        {/*MODAL EDITAR RESPUESTAS */}
         <Modal 
         show={showMEdit}
         size="lg"
@@ -436,57 +485,56 @@ function Respuesta () {
             </Button>
             </ModalBody>
         </Modal>
+        {/*OFFCANVAS EDITAR RESPUESTAS */}
         <Offcanvas
         show={showOffRes}
         placement={'end'}
         >
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>Editar respuesta</Offcanvas.Title>
-                    </Offcanvas.Header>
-                    <Offcanvas.Body>
-                        <Form className="form">
-                            <Form.Group
-                            className="mb-3"
-                            controlId="EditRespuesta"
-                            >
-                            <Form.Label><h1>{preguntasList[numeroPregunta]?.pregunta}</h1></Form.Label>
-                            <br/>
-                            <Form.Label>Respuesta Elegida: {respuestasEdit[numeroPregunta]?.value}</Form.Label>
-                            {(preguntasList[numeroPregunta]?.tipo === "Opción múltiple") ?
-                            <div>{
-                                formattedAnswers[numeroPregunta].opciones.map((Respuesta) => (
-                                    <Button
-                                    className='btnEditarRespuesta'
-                                    variant='success'
-                                    key={Respuesta.respuesta} 
-                                    onClick = {(e) => {
-                                        handleEditRespuesta(Respuesta.respuesta, e)}}>
-                                        {Respuesta.respuesta}
-                                    </Button>
-                                ))
-                            }</div>:
-                            <div>
-                                <Form.Control
-                                as="textarea" 
-                                rows={4}
-                                value={respuestaEdit}
-                                onChange={(e) => {
-                                    setRespuestaEdit(e.target.value)
-                                    handleEditAnswerAbierta(e.target.value)
-                                }}>
-                                    {respuestas[numeroPregunta]?.value}
-                                </Form.Control>
-                            </div>}
-                            <Form.Label>Comentario</Form.Label>
-                            <Form.Control 
-                            as="textarea" 
-                            rows={4}
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}>
-                                {comment}
-                            </Form.Control>
-                            </Form.Group>
-                        </Form>
+            </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <Form className="form">
+                        <Form.Group
+                        className="mb-3"
+                        controlId="EditRespuesta"
+                        >
+                        <Form.Label><h1>{preguntasList[numeroPregunta]?.pregunta}</h1></Form.Label>
+                        <br/>
+                        <Form.Label>Respuesta Elegida: {respuestasEdit[numeroPregunta]?.value}</Form.Label>
+                        {(preguntasList[numeroPregunta]?.tipo === "Opción múltiple") ?
+                        <div>{
+                            formattedAnswers[numeroPregunta].opciones.map((Respuesta) => (
+                                <Button
+                                className='btnEditarRespuesta'
+                                variant='success'
+                                key={Respuesta.respuesta} 
+                                onClick = {(e) => {
+                                    handleEditRespuesta(Respuesta.respuesta, e)}}>
+                                    {Respuesta.respuesta}
+                                </Button>
+                            ))
+                        }</div>:
+                        <div>
+                        <Form.Control
+                        as="textarea" 
+                        rows={4}
+                        value={respuestaEdit}
+                        onChange={(e) => {
+                            setRespuestaEdit(e.target.value)
+                            handleEditAnswerAbierta(e.target.value)
+                        }}>
+                            {respuestas[numeroPregunta]?.value}
+                        </Form.Control>
+                        </div>}
+                        <Form.Label>Comentario</Form.Label>
+                        <Form.Control 
+                        as="textarea" 
+                        rows={4}
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}/>
+                        </Form.Group>
+                    </Form>
                         <Button 
                         variant="danger" 
                         className='btnBorrarP'
@@ -502,7 +550,7 @@ function Respuesta () {
                         onClick={(e) => {handleEditRespuesta(respuestaEdit, e)}}>
                             Guardar cambios
                         </Button>
-                    </Offcanvas.Body>
+                </Offcanvas.Body>
         </Offcanvas>
       </main>
     );
@@ -531,11 +579,17 @@ function Respuesta () {
                             </Form.Control>
                             </Form.Group>
                         </Form>
-                        <Button size='sm' variant="danger" onClick={() => {setShowOffHito(false)
+                        <Button 
+                        size='sm' 
+                        variant="danger" 
+                        onClick={() => {setShowOffHito(false)
                             setDescripcion('')}}>
                             Cerrar
                         </Button>
-                        <Button size='sm' variant="success" onClick={handleSubmitHito}>
+                        <Button 
+                        size='sm' 
+                        variant="success" 
+                        onClick={handleSubmitHito}>
                             Guardar
                         </Button>
                     </Offcanvas.Body>
@@ -586,6 +640,9 @@ function Respuesta () {
                 }</div>:
                 <div className='open-question'>
                     <textarea
+                    className='input-answer'
+                    placeholder='Escribe la respuesta del alumno'
+                    scrollable='true'
                     onChange={(e) => setRespuestaEdit(e.target.value)}>
                     </textarea> 
                 <Button 
