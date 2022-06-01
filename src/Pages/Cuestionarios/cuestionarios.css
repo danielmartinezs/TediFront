@@ -22,6 +22,22 @@
     justify-content: space-evenly;
   }
 
+  .tabla {
+    --bs-table-bg: transparent;
+    --bs-table-accent-bg: transparent;
+    --bs-table-striped-color: #212529;
+    --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
+    --bs-table-active-color: #212529;
+    --bs-table-active-bg: rgba(0, 0, 0, 0.1);
+    --bs-table-hover-color: #212529;
+    --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
+    width: 75%;
+    color: #212529;
+    vertical-align: bottom;
+    border-color: #dee2e6;
+    margin: auto;
+    /*text-align: center;*/
+  }
   /*BOTONES*/
 
   .buttonq {
@@ -136,15 +152,37 @@
   }
 
   .btnEditarPregunta {
-    border-radius: 7.75rem;
+    border-radius: 100px;
     background-color: #0B7A75;
-    width: 15%;
-    margin: 10px auto;
-    margin-left: 25px;
+    width: 55%;
     padding: 5px;
     cursor: pointer;
     display: table-column-group;
     align-self: center;
+    flex-wrap: wrap;
+  }
+
+  .btnVisualizaRespuesta {
+    width: 75%;
+    background-color: #FE9000;
+    outline: #0B7A75;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 7px;
+    align-self: center;
+    display: list-item;
+  }
+
+  .btnVisualizaRespuesta:hover {
+    background-color: #0B7A75;
+    color: #FE9000;
+  }
+
+  .btnEdicion {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
   }
 
   /* PREGUNTAS */
@@ -332,11 +370,20 @@
   .setRespuestas {
     position: inherit;
     display: inherit;
-    padding: 0.5rem 1%;
+    padding: 5.5px 25%;
     color: #212529;
-    text-decoration: none;
     background-color: #fff;
     border: 1px solid #FE9000;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    font-size: x-large
+  }
+
+  .setRespuestasBotones {
+    position: inherit;
+    display: inherit;
+    padding: 0.5px 1%;
+    color: #212529;
+    background-color: #fff;
+    justify-content: flex-end;
     font-size: x-large;
   }

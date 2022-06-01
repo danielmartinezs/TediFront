@@ -63,6 +63,7 @@ function CuestionariosEdicionAdmin() {
             pregunta: preguntaEdit
         })
         if(response.status === 200){
+            getQuestionnaireDetails()
             console.log(response)
             setShowA(true)
             setVariante('success')
@@ -91,8 +92,10 @@ function CuestionariosEdicionAdmin() {
 
     const editarRespuesta = async () => {
         setShowOffEditR(false)
-        respuestas.opciones[cambioRespuesta] = "{"+'"'+"respuesta"+'"'+":"+respuestaEdit+"}"
-        JSON.stringify(respuestas)
+        //console.log(respuestas.opciones[cambioRespuesta].respuesta)
+        respuestas.opciones[cambioRespuesta].respuesta = respuestaEdit
+        //console.log(respuestas.opciones)
+        //console.log(JSON.stringify(respuestas))
         try{
         const response = await axios.post(EDIT_RESPUESTA_URL, {
             idr: idRespuestaEdit,
@@ -104,6 +107,7 @@ function CuestionariosEdicionAdmin() {
             setVariante('success')
             setMsg(response.data.message)
             setCambioRespuesta(0)
+            setRespuestaEdit("")
         }
         }catch(error){
             if(!error?.response){
@@ -217,7 +221,10 @@ function CuestionariosEdicionAdmin() {
                 </Alert.Heading>
                 </Alert>
             </div>
-            <h3>{cuestionariosInfo[0]?.nombre}</h3>
+            <div className="text-center">
+                <h3>{cuestionariosInfo[0]?.nombre}</h3>
+            </div>
+            {/* MODAL EDICION RESPUESTAS */}
             <Modal
             show={showModalRes}
             onHide={() => {setShowModalRes(false)}}>
@@ -238,22 +245,24 @@ function CuestionariosEdicionAdmin() {
                             <ListGroup className='displaySetRespuestas'>
                                 <ListGroupItem className='setRespuestas'>
                                     {(values.respuesta)}
-                                    <Button
-                                    className='open-question'
-                                    variant='success'
-                                    onClick={() => {
-                                        setRespuestaEdit(values.respuesta)
-                                        setCambioRespuesta(index)
-                                        setShowModalRes(false)
-                                        setShowOffEditR(true)
-                                    }}>
-                                        <AiOutlineEdit/>
-                                    </Button>
-                                    <Button
-                                    className='open-question'
-                                    variant='danger'>
-                                        <AiOutlineDelete/>
-                                    </Button>
+                                    <div className='setRespuestasBotones'>
+                                        <Button
+                                        className='btnEdicion'
+                                        variant='success'
+                                        onClick={() => {
+                                            setRespuestaEdit(values.respuesta)
+                                            setCambioRespuesta(index)
+                                            setShowModalRes(false)
+                                            setShowOffEditR(true)
+                                        }}>
+                                            <AiOutlineEdit/>
+                                        </Button>
+                                        <Button
+                                        className='btnEdicion'
+                                        variant='danger'>
+                                            <AiOutlineDelete/>
+                                        </Button>
+                                    </div>
                                 </ListGroupItem>
                             </ListGroup>
                         </div>
@@ -262,10 +271,12 @@ function CuestionariosEdicionAdmin() {
                     </div>}
                 </ModalBody>
             </Modal>
-                <Table>
+                <Table className="tabla">
                     <thead>
                         <th>
                         Pregunta
+                        </th>
+                        <th>
                         </th>
                         <th>
                         Tipo
@@ -277,7 +288,8 @@ function CuestionariosEdicionAdmin() {
                     <tbody>
                         {cuestionariosInfo.map((values) => (
                             <tr key={values.idPregunta+values.idRespuesta}>
-                                <td>{values.pregunta}
+                                <td>{values.pregunta}</td>
+                                <td>
                                 <Button
                                 className='btnEditarPregunta'
                                 variant='success'
@@ -290,16 +302,18 @@ function CuestionariosEdicionAdmin() {
                                     <AiOutlineEdit/>
                                 </Button></td>
                                 <td>{values.tipo}</td>
-                                <td><Button
-                                    onClick={() => {
-                                        setTipoPreguntaEdit(values.tipo)
-                                        setIdRespuestaEdit(values.idRespuesta)
-                                        handleSetRespuestas(values.idRespuesta)
-                                    }}
-                                    variant='success'>
-                                        Visualizar respuestas
-                                    </Button></td>
-                                {/* <td>{JSON.stringify(values.opciones)}</td> */}
+                                <td>
+                                <Button
+                                className='btnVisualizaRespuesta'
+                                variant="success"
+                                onClick={() => {
+                                    setTipoPreguntaEdit(values.tipo)
+                                    setIdRespuestaEdit(values.idRespuesta)
+                                    handleSetRespuestas(values.idRespuesta)
+                                }}>
+                                    Visualizar respuestas
+                                </Button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

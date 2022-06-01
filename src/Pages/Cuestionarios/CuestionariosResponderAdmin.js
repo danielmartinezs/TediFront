@@ -476,6 +476,7 @@ function Respuesta () {
                 }
                 <Button
                 className='btnEditarRespuesta'
+                size='lg'
                 onClick={() => {
                     handleSubmitEdicion()
                     setShowMEdit(false)
