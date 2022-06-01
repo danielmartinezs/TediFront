@@ -132,6 +132,7 @@
     cursor: pointer;
     display: list-item;
     align-self: center;
+    flex-wrap: wrap;
   }
 
   .btnEditarPregunta {

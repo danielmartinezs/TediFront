@@ -287,7 +287,7 @@ function CuestionariosEdicionAdmin() {
                                     setShowOffEditP(true)
                                 }}
                                 >
-                                    Editar<AiOutlineEdit/>
+                                    <AiOutlineEdit/>
                                 </Button></td>
                                 <td>{values.tipo}</td>
                                 <td><Button
@@ -385,21 +385,22 @@ function CuestionariosEdicionAdmin() {
                 {/*MODAL BORRAR CUESTIONARIO*/}
                 <Modal 
                 show={showMDelete} 
+                size="lg"
                 onHide={() => {setShowMDelete(false)}}>
                     <Modal.Header closeButton>
                         <Modal.Title>¿Estás seguro que quieres borrar este cuestionario?</Modal.Title>
                     </Modal.Header>
-                        <Modal.Body>Una vez borrado el cuestionario no podrá recuperarse</Modal.Body>
+                        <Modal.Body><h3>Una vez borrado el cuestionario no podrá recuperarse<br/>Las respuestas de aquellos alumnos que respondieron este cuestionario se desaparecerá permanentemente</h3></Modal.Body>
                     <Modal.Footer>
                         <Button 
                         variant="success" 
                         onClick={() => {setShowMDelete(false)}}>
-                            No
+                            No, quiero conservar el cuestionario
                         </Button>
                         <Button 
                         variant="danger" 
                         onClick={handleDeleteCuestionario}>
-                            Sí
+                            Sí, quiero borrar el cuestionario
                         </Button>
                     </Modal.Footer>
                 </Modal>

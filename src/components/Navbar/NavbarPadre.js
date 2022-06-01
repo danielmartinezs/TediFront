@@ -8,18 +8,24 @@ const NavbarComp = () => {
     {}
         
     return(
-        <Navbar className="color-nav" variant="dark" >
+        <Navbar 
+        expand="sm"
+        collapseOnSelect
+        className="color-nav" 
+        variant="dark" >
             <Container>
-                <Logo/>
-                    <Navbar.Brand as={Link} to="/Home">
+                <Navbar.Brand as={Link} to="/Home">
+                    <Logo/>
                        Tedi
-                    </Navbar.Brand>
-                    
-                    <Nav className="me-auto">
-                    <Nav.Link as={Link} to="/Reportes">Reportes</Nav.Link>
-                    <Nav.Link as={Link} to="/Progreso">Progreso</Nav.Link>
-                    <Nav.Link as={Link} to="/PerfilPadre">Perfil</Nav.Link>
-                    </Nav>
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                    <Navbar.Collapse id="responsive-navbar-nav">        
+                        <Nav className='ml-auto'>
+                        <Nav.Link as={Link} to="/Reportes">Reportes</Nav.Link>
+                        <Nav.Link as={Link} to="/Progreso">Progreso</Nav.Link>
+                        <Nav.Link as={Link} to="/PerfilPadre">Perfil</Nav.Link>
+                        </Nav>
+                    </Navbar.Collapse>
             </Container>
         </Navbar>            
     )

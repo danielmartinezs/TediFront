@@ -8,20 +8,26 @@ const NavbarAdmin = () => {
     {}
         
     return(
-        <Navbar className="color-nav" variant="dark" >
+        <Navbar 
+        expand="md"
+        collapseOnSelect
+        className="color-nav"
+        variant="dark" >
             <Container>
-                <Logo/>
-                    <Navbar.Brand as={Link} to="/Home">
+                <Navbar.Brand as={Link} to="/HomeAdmin">
+                    <Logo/>
                        Tedi
-                    </Navbar.Brand>
-                    
-                    <Nav className="me-auto">
-                    <Nav.Link as={Link} to="/Alumnos">Alumnos</Nav.Link>
-                    <Nav.Link as={Link} to="/ReportesAdmin">Reportes</Nav.Link>
-                    <Nav.Link as={Link} to="/ProgresoAlumAdmin">Progreso</Nav.Link>
-                    <Nav.Link as={Link} to="/CuestionariosCreacionAdmin">Cuestionarios</Nav.Link>
-                    <Nav.Link as={Link} to="/PerfilSeleccionAdmin">Perfil</Nav.Link>
-                    </Nav>
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                    <Navbar.Collapse id="responsive-navbar-nav">
+                        <Nav className='mr-auto'>
+                        <Nav.Link as={Link} to="/Alumnos">Alumnos</Nav.Link>
+                        <Nav.Link as={Link} to="/ReportesAdmin">Reportes</Nav.Link>
+                        <Nav.Link as={Link} to="/ProgresoAlumAdmin">Progreso</Nav.Link>
+                        <Nav.Link as={Link} to="/CuestionariosCreacionAdmin">Cuestionarios</Nav.Link>
+                        <Nav.Link as={Link} to="/PerfilSeleccionAdmin">Perfil</Nav.Link>
+                        </Nav>
+                    </Navbar.Collapse>
             </Container>
         </Navbar>            
     )
