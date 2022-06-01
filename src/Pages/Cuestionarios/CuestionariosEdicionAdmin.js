@@ -141,12 +141,19 @@ function CuestionariosEdicionAdmin() {
 
     const handleSubmitNewPregunta = async () => {
         setShowModalAddPreg(false)
+        let newres = ""
+        if(tipoNewPregunta === "Opción múltiple"){
+            newres = JSON.stringify(newRespuesta)
+        }
+        else{
+            newres = newRespuestaFormatted
+        }
         try{
         const response = await axios.post(NEW_PREGUNTA_URL, {
             idc: idCuestionario,
             pregunta: newPregunta,
             tipo: tipoNewPregunta,
-            respuesta: newRespuestaFormatted
+            respuesta: newres
         })
         if(response.status === 200){
             console.log(response)
