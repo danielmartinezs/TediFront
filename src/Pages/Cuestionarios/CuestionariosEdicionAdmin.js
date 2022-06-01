@@ -29,6 +29,8 @@ function CuestionariosEdicionAdmin() {
     const [variante, setVariante] = useState('');
     const [showMDelete, setShowMDelete] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
+    const [showModalResEdit, setShowModalResEdit] = useState(false);
+    const [showModalPregEdit, setShowModalPregEdit] = useState(false);
     const [showModalAddPreg, setShowModalAddPreg] = useState(false);
     const [showOffEditR, setShowOffEditR] = useState(false);
     const [showOffEditP, setShowOffEditP] = useState(false);
@@ -57,6 +59,7 @@ function CuestionariosEdicionAdmin() {
 
     const editarPregunta = async () => {
         setShowOffEditP(false)
+        setShowModalPregEdit(false)
         try{
         const response = await axios.post(EDIT_PREGUNTA_URL, {
             idp: idPreguntaEdit,
@@ -92,6 +95,7 @@ function CuestionariosEdicionAdmin() {
 
     const editarRespuesta = async () => {
         setShowOffEditR(false)
+        setShowModalResEdit(false)
         //console.log(respuestas.opciones[cambioRespuesta].respuesta)
         respuestas.opciones[cambioRespuesta].respuesta = respuestaEdit
         //console.log(respuestas.opciones)
@@ -141,14 +145,15 @@ function CuestionariosEdicionAdmin() {
         const response = await axios.post(NEW_PREGUNTA_URL, {
             idc: idCuestionario,
             pregunta: newPregunta,
-            tipo: tipoNewPregunta
+            tipo: tipoNewPregunta,
+            respuesta: newRespuestaFormatted
         })
         if(response.status === 200){
             console.log(response)
             setShowA(true)
             setVariante('success')
             setMsg(response.data.message)
-            getQuestionnaireDetails()
+            //getQuestionnaireDetails()
         }
         }catch(error){
             if(!error?.response){
@@ -351,7 +356,10 @@ function CuestionariosEdicionAdmin() {
                             setPreguntaEdit('')}}>
                             Cerrar
                         </Button>
-                        <Button size='sm' variant="success" onClick={editarPregunta}>
+                        <Button
+                        size='sm'
+                        variant="success"
+                        onClick={() => {setShowModalPregEdit(true)}}>
                             Guardar
                         </Button>
                     </Offcanvas.Body>
@@ -385,13 +393,14 @@ function CuestionariosEdicionAdmin() {
                         variant="danger"
                         onClick={() => {
                             setShowOffEditR(false)
+                            setShowModalRes(true)
                             setRespuestaEdit('')}}>
                             Cerrar
                         </Button>
                         <Button 
                         size='sm' 
                         variant="success" 
-                        onClick={editarRespuesta}>
+                        onClick={() => {setShowModalResEdit(true)}}>
                             Guardar
                         </Button>
                     </Offcanvas.Body>
@@ -404,7 +413,7 @@ function CuestionariosEdicionAdmin() {
                     <Modal.Header closeButton>
                         <Modal.Title>¿Estás seguro que quieres borrar este cuestionario?</Modal.Title>
                     </Modal.Header>
-                        <Modal.Body><h3>Una vez borrado el cuestionario no podrá recuperarse<br/>Las respuestas de aquellos alumnos que respondieron este cuestionario se desaparecerá permanentemente</h3></Modal.Body>
+                        <Modal.Body><h3>Una vez borrado el cuestionario no podrá recuperarse<br/>Las respuestas de aquellos alumnos que respondieron este cuestionario serán borradas permanentemente</h3></Modal.Body>
                     <Modal.Footer>
                         <Button 
                         variant="success" 
@@ -418,7 +427,7 @@ function CuestionariosEdicionAdmin() {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-                {/*MODAL AGERGAR PREGUNTA*/}
+                {/*MODAL AGREGAR PREGUNTA*/}
                 <Modal
                 scrollable
                 show={showModalAddPreg}
@@ -525,6 +534,52 @@ function CuestionariosEdicionAdmin() {
                                 <AiOutlineSend/>
                             </Button>
                         </Form>
+                    </Modal.Body>
+                </Modal>
+                {/*MODAL CONFIRMACIÓN EDICION RESPUESTA*/}
+                <Modal
+                show={showModalResEdit}
+                size="sm"
+                onHide={() => {setShowModalResEdit(false)}}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Modificación detectada en el set de respuestas</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        El set de respuestas ha sido modificado, deseas cambiar la respuesta en esta pregunta, o aplicar el cambio en todas las preguntas?
+                        <Button
+                        className='btnAct'
+                        variant='success'>
+                            Aplicar cambio en esta pregunta
+                        </Button>
+                        <Button
+                        className='btnAct'
+                        variant='success'
+                        onClick={editarRespuesta}>
+                            Aplicar cambio en todas las preguntas
+                        </Button>
+                    </Modal.Body>
+                </Modal>
+                {/*MODAL CONFIRMACIÓN EDICION PREGUNTA*/}
+                <Modal
+                show={showModalPregEdit}
+                size="sm"
+                onHide={() => {setShowModalPregEdit(false)}}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Modificación de pregunta detectada</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        La pregunta ha sido moidificada, deseas cambiar la pregunta solo en esta pregunta, o aplicar el cambio en todas las preguntas?
+                        <Button
+                        className='btnAct'
+                        variant='success'>
+                            Aplicar cambio en esta pregunta
+                        </Button>
+                        <Button
+                        className='btnAct'
+                        variant='success'
+                        onClick={editarPregunta}>
+                            Aplicar cambio en todas las preguntas
+                        </Button>
                     </Modal.Body>
                 </Modal>
                 <Button
