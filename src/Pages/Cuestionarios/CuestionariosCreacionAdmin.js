@@ -577,6 +577,12 @@ function CrearCuestionario() {
                 </div>  
             ))}
             <br/>
+            <Link to={"/CuestionariosRegistrosAdmin"}>
+                <Button className="btnAct">
+                    Registros de preguntas y respuestas
+                    <AiOutlineInfoCircle/>
+                </Button>
+            </Link>
             <Button
             className="btnAct"
             onClick={() => setNewCuestionario(true)}>

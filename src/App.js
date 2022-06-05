@@ -16,6 +16,7 @@ import ReportesNuevoAdmin from './Pages/Reportes/ReportesNuevoAdmin'
 import ProgresoAdmin from './Pages/Progreso/ProgresoAdmin'
 import ProgresoAlumAdmin from './Pages/Progreso/ProgresoAlumAdmin'
 import CuestionariosAdmin from './Pages/Cuestionarios/CuestionariosAdmin'
+import CuestionariosRegistrosAdmin from './Pages/Cuestionarios/CuestionariosRegistrosAdmin'
 import CuestionariosCreacionAdmin from './Pages/Cuestionarios/CuestionariosCreacionAdmin'
 import CuestionariosEdicionAdmin from './Pages/Cuestionarios/CuestionariosEdicionAdmin'
 import CuestionariosResponderAdmin from './Pages/Cuestionarios/CuestionariosResponderAdmin'
@@ -54,7 +55,7 @@ function App() {
                   <Route exact path="/ProgresoAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoAdmin/></PrivateRoute>}/>
                   <Route exact path="/ProgresoAlumAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoAlumAdmin/></PrivateRoute>}/>
 
-                  <Route exact path="/CuestionariosAdmin" element={<PrivateRoute roles = {["admin"]}><CuestionariosAdmin/></PrivateRoute>}/>
+                  <Route exact path="/CuestionariosRegistrosAdmin" element={<PrivateRoute roles = {["admin"]}><CuestionariosRegistrosAdmin/></PrivateRoute>}/>
                   <Route exact path="/CuestionariosCreacionAdmin" element={<PrivateRoute roles = {["admin"]}><CuestionariosCreacionAdmin/></PrivateRoute>}/>
                   <Route exact path="/CuestionariosEdicionAdmin/:idCuestionario" element={<PrivateRoute roles = {["admin"]}><CuestionariosEdicionAdmin/></PrivateRoute>}/>
                   <Route exact path="/CuestionariosResponderAdmin/:idAlumno" element={<PrivateRoute roles = {["admin"]}><CuestionariosResponderAdmin/></PrivateRoute>}/>
