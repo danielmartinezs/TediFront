@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Alert, Button, ButtonGroup, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, Table } from 'react-bootstrap';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineRollback, AiOutlineSend } from 'react-icons/ai'
 import axios from '../../axios/axios';
+import { Question } from 'survey-core';
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
 const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
@@ -101,14 +102,11 @@ function CuestionariosEdicionAdmin() {
     const editarRespuesta = async () => {
         setShowOffEditR(false)
         setShowModalResEdit(false)
-        //console.log("respuesta editada"+respuestaEdit)
-        respuestas.opciones[cambioRespuesta].respuesta = respuestaEdit
-        //console.log(respuestas.opciones)
-        console.log(JSON.stringify(respuestas))
+        console.log(JSON.stringify(respuestasEdit))
         try{
         const response = await axios.post(EDIT_RESPUESTA_URL, {
             idr: idRespuestaEdit,
-            opciones: JSON.stringify(respuestas)
+            opciones: JSON.stringify(respuestasEdit)
         })
         if(response.status === 200){
             console.log(response)
@@ -117,6 +115,7 @@ function CuestionariosEdicionAdmin() {
             setMsg(response.data.message)
             setCambioRespuesta(0)
             setRespuestaEdit("")
+            setShowButtonSave(false)
         }
         }catch(error){
             if(!error?.response){
@@ -143,13 +142,12 @@ function CuestionariosEdicionAdmin() {
         console.log("edite y cree una nueva repsuesta")
         setShowOffEditR(false)
         setShowModalResEdit(false)
-        respuestas.opciones[cambioRespuesta].respuesta = respuestaEdit
-        console.log(JSON.stringify(respuestas))
+        console.log(JSON.stringify(respuestasEdit))
         try{
         const response = await axios.post(EDIT_CREATE_RESPUESTA_URL, {
             idc: idCuestionario,
             idr: idRespuestaEdit,
-            opciones: JSON.stringify(respuestas)
+            opciones: JSON.stringify(respuestasEdit)
         })
         if(response.status === 200){
             console.log(response)
@@ -158,6 +156,7 @@ function CuestionariosEdicionAdmin() {
             setMsg(response.data.message)
             setCambioRespuesta(0)
             setRespuestaEdit("")
+            setShowButtonSave(false)
             getQuestionnaireDetails()
         }
         }catch(error){
@@ -627,7 +626,9 @@ function CuestionariosEdicionAdmin() {
                 <Modal
                 show={showModalResEdit}
                 size="sm"
-                onHide={() => {setShowModalResEdit(false)}}>
+                onHide={() => {
+                    setShowModalRes(true)
+                    setShowModalResEdit(false)}}>
                     <Modal.Header closeButton>
                         <Modal.Title>Modificación detectada en el set de respuestas</Modal.Title>
                     </Modal.Header>
