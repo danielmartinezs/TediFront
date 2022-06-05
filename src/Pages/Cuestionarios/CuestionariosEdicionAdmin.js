@@ -8,6 +8,7 @@ import { Question } from 'survey-core';
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
 const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
+const EDIT_CREATE_PREGUNTA_URL = '/questionnaires/editcreatequestion'
 const EDIT_RESPUESTA_URL = '/questionnaires/editanswer'
 const EDIT_CREATE_RESPUESTA_URL = '/questionnaires/editcreateanswer'
 const DELETE_PREGUNTA_URL = '/questionnaires/deletequestionnaire'
@@ -99,6 +100,47 @@ function CuestionariosEdicionAdmin() {
         }
     }
 
+    const editarCrearPregunta = async () => {
+        setShowOffEditP(false)
+        setShowModalAddPreg(false)
+        try{
+        const response = await axios.post(EDIT_CREATE_PREGUNTA_URL, {
+            idp: idPreguntaEdit,
+            pregunta: preguntaEdit,
+            tipo: tipoPreguntaEdit
+        })
+        if(response.status === 200){
+            getQuestionnaireDetails()
+            console.log(response)
+            setShowA(true)
+            setVariante('success')
+            setMsg(response.data.message)
+        }
+        }catch(error){
+            if(!error?.response){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('No hay respuesta del servidor');
+            } else if(error.response?.status === 400){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 401){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('Usuario sin autorización');
+            } else if(error.response?.status === 403){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 404){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            }
+        }
+    }
+
     const editarRespuesta = async () => {
         setShowOffEditR(false)
         setShowModalResEdit(false)
@@ -122,19 +164,19 @@ function CuestionariosEdicionAdmin() {
                 setShowA(true)
                 setVariante('danger')
                 setMsg('No hay respuesta del servidor');
-              } else if(error.response?.status === 400){
+            } else if(error.response?.status === 400){
                 setShowA(true)
                 setVariante('danger')
                 setMsg(error.response.data.message);
-              } else if(error.response?.status === 401){
+            } else if(error.response?.status === 401){
                 setShowA(true)
                 setVariante('danger')
                 setMsg('Usuario sin autorización');
-              } else if(error.response?.status === 403){
+            } else if(error.response?.status === 403){
                 setShowA(true)
                 setVariante('danger')
                 setMsg(error.response.data.message);
-              }
+            }
         }
     }
 
@@ -142,10 +184,12 @@ function CuestionariosEdicionAdmin() {
         console.log("edite y cree una nueva repsuesta")
         setShowOffEditR(false)
         setShowModalResEdit(false)
+        console.log("idp es: "+idPreguntaEdit)
         console.log(JSON.stringify(respuestasEdit))
         try{
         const response = await axios.post(EDIT_CREATE_RESPUESTA_URL, {
             idc: idCuestionario,
+            idp: idPreguntaEdit,
             idr: idRespuestaEdit,
             opciones: JSON.stringify(respuestasEdit)
         })
@@ -187,6 +231,7 @@ function CuestionariosEdicionAdmin() {
     const handleSetRespuestas = (idres) => {
         getRespuesta(idres)
         console.log("El id de la respuesta es"+idres)
+        console.log("El ide de la pregunta a editar es"+idPreguntaEdit)
         setShowModalRes(true)
     }
 
@@ -387,6 +432,7 @@ function CuestionariosEdicionAdmin() {
                                 onClick={() => {
                                     setIdPreguntaEdit(values.idPregunta)
                                     setPreguntaEdit(values.pregunta)
+                                    setTipoPreguntaEdit(values.tipo)
                                     setShowOffEditP(true)
                                 }}
                                 >
@@ -398,6 +444,7 @@ function CuestionariosEdicionAdmin() {
                                 className='btnVisualizaRespuesta'
                                 variant="success"
                                 onClick={() => {
+                                    setIdPreguntaEdit(values.idPregunta)
                                     setTipoPreguntaEdit(values.tipo)
                                     setIdRespuestaEdit(values.idRespuesta)
                                     handleSetRespuestas(values.idRespuesta)
@@ -660,7 +707,8 @@ function CuestionariosEdicionAdmin() {
                         La pregunta ha sido moidificada, deseas cambiar la pregunta solo en esta pregunta, o aplicar el cambio en todas las preguntas?
                         <Button
                         className='btnAct'
-                        variant='success'>
+                        variant='success'
+                        onClick={editarCrearPregunta}>
                             Aplicar cambio en esta pregunta
                         </Button>
                         <Button
