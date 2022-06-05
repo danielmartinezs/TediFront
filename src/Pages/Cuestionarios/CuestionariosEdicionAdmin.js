@@ -8,6 +8,7 @@ const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
 const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
 const EDIT_RESPUESTA_URL = '/questionnaires/editanswer'
+const EDIT_CREATE_RESPUESTA_URL = '/questionnaires/editcreateanswer'
 const DELETE_PREGUNTA_URL = '/questionnaires/deletequestionnaire'
 const NEW_PREGUNTA_URL = '/questionnaires/addquestion'
 
@@ -15,9 +16,10 @@ function CuestionariosEdicionAdmin() {
 
     const [cuestionariosInfo, setCuestionariosInfo] = useState([]);
     const [respuestas, setRespuestas] = useState([]);
+    const [respuestasEdit, setRespuestasEdit] = useState([]);
     const [newRespuesta, setNewRespuesta] = useState([{ "respuesta": "" }]);
     const [newRespuestaFormatted, setNewRespuestaFormatted] = useState("{\"opciones\":[{\"respuesta\":\"\"}]}");
-    const [respuestaEdit, setRespuestaEdit] = useState([]);
+    const [respuestaEdit, setRespuestaEdit] = useState();
     const [idRespuestaEdit, setIdRespuestaEdit] = useState(0);
     const [cambioRespuesta, setCambioRespuesta] = useState(0);
     const [idPreguntaEdit, setIdPreguntaEdit] = useState(0);
@@ -27,8 +29,10 @@ function CuestionariosEdicionAdmin() {
     const [tipoPreguntaEdit, setTipoPreguntaEdit] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
+    const [showButtonSave, setShowButtonSave] = useState(false);
     const [showMDelete, setShowMDelete] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
+    const [showModalCerrar, setShowModalCerrar] = useState(false);
     const [showModalResEdit, setShowModalResEdit] = useState(false);
     const [showModalPregEdit, setShowModalPregEdit] = useState(false);
     const [showModalAddPreg, setShowModalAddPreg] = useState(false);
@@ -41,9 +45,9 @@ function CuestionariosEdicionAdmin() {
         getQuestionnaireDetails()
     }, [])
 
-    useEffect (() => {
+    /* useEffect (() => {
         console.log(newRespuesta)
-    }, [newRespuesta])
+    }, [newRespuesta]) */
 
     const getQuestionnaireDetails = () => {
         axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+idCuestionario).then((response) => {
@@ -54,6 +58,7 @@ function CuestionariosEdicionAdmin() {
     const getRespuesta = (idres) => {
         axios.get(GET_RESPUESTA_URL+"/"+idres).then((response) => {
             setRespuestas(JSON.parse(JSON.parse(JSON.stringify(response.data[0].opciones))))
+            setRespuestasEdit(JSON.parse(JSON.parse(JSON.stringify(response.data[0].opciones))))
         })
     }
 
@@ -96,10 +101,10 @@ function CuestionariosEdicionAdmin() {
     const editarRespuesta = async () => {
         setShowOffEditR(false)
         setShowModalResEdit(false)
-        //console.log(respuestas.opciones[cambioRespuesta].respuesta)
+        //console.log("respuesta editada"+respuestaEdit)
         respuestas.opciones[cambioRespuesta].respuesta = respuestaEdit
         //console.log(respuestas.opciones)
-        //console.log(JSON.stringify(respuestas))
+        console.log(JSON.stringify(respuestas))
         try{
         const response = await axios.post(EDIT_RESPUESTA_URL, {
             idr: idRespuestaEdit,
@@ -134,8 +139,55 @@ function CuestionariosEdicionAdmin() {
         }
     }
 
+    const editarCrearRespuesta = async () => {
+        console.log("edite y cree una nueva repsuesta")
+        setShowOffEditR(false)
+        setShowModalResEdit(false)
+        respuestas.opciones[cambioRespuesta].respuesta = respuestaEdit
+        console.log(JSON.stringify(respuestas))
+        try{
+        const response = await axios.post(EDIT_CREATE_RESPUESTA_URL, {
+            idc: idCuestionario,
+            idr: idRespuestaEdit,
+            opciones: JSON.stringify(respuestas)
+        })
+        if(response.status === 200){
+            console.log(response)
+            setShowA(true)
+            setVariante('success')
+            setMsg(response.data.message)
+            setCambioRespuesta(0)
+            setRespuestaEdit("")
+            getQuestionnaireDetails()
+        }
+        }catch(error){
+            if(!error?.response){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('No hay respuesta del servidor');
+            } else if(error.response?.status === 400){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 401){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('Usuario sin autorización');
+            } else if(error.response?.status === 403){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 404){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            }
+        }
+    }
+
     const handleSetRespuestas = (idres) => {
         getRespuesta(idres)
+        console.log("El id de la respuesta es"+idres)
         setShowModalRes(true)
     }
 
@@ -191,6 +243,14 @@ function CuestionariosEdicionAdmin() {
         setShowMDelete(false)
     }
 
+    const handleEditRespuesta = () => {
+        respuestasEdit.opciones[cambioRespuesta].respuesta = respuestaEdit
+        console.log(JSON.stringify(respuestasEdit))
+        setShowButtonSave(true)
+        setShowOffEditR(false)
+        setShowModalRes(true)
+    }
+
     const handleAddRespuesta = () => {
         setNewRespuesta([...newRespuesta, { respuesta: "" }])
     }
@@ -220,6 +280,15 @@ function CuestionariosEdicionAdmin() {
         setNewRespuestaFormatted(rep);
     }
 
+    const handleCloseWithoutSave = () => {
+        if(!showButtonSave){
+            setShowModalRes(false)
+        }
+        else{
+            setShowModalCerrar(true)
+        }
+    }
+
     return(
         <div>
             <div className='alertas'>
@@ -239,7 +308,7 @@ function CuestionariosEdicionAdmin() {
             {/* MODAL EDICION RESPUESTAS */}
             <Modal
             show={showModalRes}
-            onHide={() => {setShowModalRes(false)}}>
+            onHide={handleCloseWithoutSave}>
                 <ModalHeader closeButton>
                     <ModalTitle>
                         Set de Respuestas
@@ -251,9 +320,8 @@ function CuestionariosEdicionAdmin() {
                         Esta pregunta es abierta, por lo que no tiene respuestas editables
                     </div>:
                     <div>
-                        {respuestas.opciones?.map((values, index) => (
+                        {respuestasEdit.opciones?.map((values, index) => (
                         <div key={index}>
-                            {console.log(respuestas)}
                             <ListGroup className='displaySetRespuestas'>
                                 <ListGroupItem className='setRespuestas'>
                                     {(values.respuesta)}
@@ -280,6 +348,18 @@ function CuestionariosEdicionAdmin() {
                         </div>
                     ))
                     }
+                    {showButtonSave === true?
+                    <div>
+                        <Button
+                        className='btnAct'
+                        onClick={() => {
+                            setShowModalResEdit(true)
+                            setShowModalRes(false)}}>
+                            Guardar Cambios
+                            <AiOutlineSend/>
+                        </Button>
+                    </div> 
+                    :<br/>}
                     </div>}
                 </ModalBody>
             </Modal>
@@ -407,7 +487,7 @@ function CuestionariosEdicionAdmin() {
                         <Button 
                         size='sm' 
                         variant="success" 
-                        onClick={() => {setShowModalResEdit(true)}}>
+                        onClick={handleEditRespuesta}>
                             Guardar
                         </Button>
                     </Offcanvas.Body>
@@ -555,7 +635,8 @@ function CuestionariosEdicionAdmin() {
                         El set de respuestas ha sido modificado, deseas cambiar la respuesta en esta pregunta, o aplicar el cambio en todas las preguntas?
                         <Button
                         className='btnAct'
-                        variant='success'>
+                        variant='success'
+                        onClick={editarCrearRespuesta}>
                             Aplicar cambio en esta pregunta
                         </Button>
                         <Button
@@ -589,6 +670,35 @@ function CuestionariosEdicionAdmin() {
                         </Button>
                     </Modal.Body>
                 </Modal>
+                {/*MODAL CERRAR SIN CAMBIOS*/}
+                <Modal
+                show={showModalCerrar}
+                size="sm"
+                onHide={() => {setShowModalCerrar(false)}}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Cerrar sin cambios</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Hay cambios en la respuesta sin guardar, deseas cerrar la ventana sin guardar los cambios?
+                        <Button
+                        className='btnAct'
+                        variant='danger'
+                        onClick={() => 
+                        {setShowModalRes(false)
+                        setShowModalCerrar(false)
+                        setShowButtonSave(false)}}>
+                            Cerrar sin guardar
+                        </Button>
+                        <Button
+                        className='btnAct'
+                        variant='success'
+                        onClick={() => 
+                        {setShowModalCerrar(false)}}>
+                            Continuar
+                        </Button>
+                    </Modal.Body>
+                </Modal>
+                {/* BOTONES INFERIORES */}
                 <Button
                 className='btnAct'
                 onClick={() => {setShowModalAddPreg(true)}}>

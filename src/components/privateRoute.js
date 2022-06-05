@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom'
 
-function privateRoute({ children, roles }) {
+function PrivateRoute({ children, roles }) {
 
     const id = localStorage.getItem('id');
     const role = localStorage.getItem('role');
@@ -14,4 +14,4 @@ function privateRoute({ children, roles }) {
     return <Navigate to={'/login'}/>;
 }
 
-export default privateRoute;
+export default PrivateRoute;

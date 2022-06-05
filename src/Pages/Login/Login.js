@@ -51,7 +51,7 @@ export const Login = () =>{
         if(response.data.role === 'admin')
           navigate('/homeadmin');
         if(response.data.role === 'tutor')
-          navigate('/home')
+          navigate('/home');
       }
     } catch (error) {
         setShow(true)

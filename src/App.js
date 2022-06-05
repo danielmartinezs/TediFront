@@ -26,7 +26,7 @@ import PerfilCrearPerfilNuevo from './Pages/Perfil/PerfilCrearPerfilNuevo'
 import PerfilPadre from './Pages/Perfil/PerfilPadre'
 import GraphChart from './Pages/Progreso/GraphChart';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import privateRoute from './components/privateRoute.js';
+import PrivateRoute from './components/privateRoute.js';
 
 
 function App() {
@@ -41,28 +41,28 @@ function App() {
               <Routes>               
           
               <Route exact path="/Login" element={<Login/>}/>
-              <Route exact path="/HomeAdmin" element={<privateRoute roles = {["admin"]}><HomeAdmin/></privateRoute>}/>
+              <Route exact path="/HomeAdmin" element={<PrivateRoute roles = {["admin"]}><HomeAdmin/></PrivateRoute>}/>
                   {/*Aqui abajo es la pagina principal del usuario administrador*/}
 
-                  <Route exact path="/Alumnos" element={<privateRoute roles = {["admin"]}><Alumnos/></privateRoute>}/>
+                  <Route exact path="/Alumnos" element={<PrivateRoute roles = {["admin"]}><Alumnos/></PrivateRoute>}/>
 
-                  <Route exact path="/ReportesAdmin" element={<privateRoute roles = {["admin"]}><ReportesAdmin/></privateRoute>}/>
-                  <Route exact path="/ReportesAlumAdmin" element={<privateRoute roles ={["admin"]}><ReportesAlumAdmin/></privateRoute>}/>
-                  <Route exact path="/ReportesEdicionAdmin" element={<privateRoute roles ={["admin"]}><ReportesEdicionAdmin/></privateRoute>}/>
-                  <Route exact path="/ReportesNuevoAdmin" element={<privateRoute roles = {["admin"]}><ReportesNuevoAdmin/></privateRoute>}/>
+                  <Route exact path="/ReportesAdmin" element={<PrivateRoute roles = {["admin"]}><ReportesAdmin/></PrivateRoute>}/>
+                  <Route exact path="/ReportesAlumAdmin" element={<PrivateRoute roles ={["admin"]}><ReportesAlumAdmin/></PrivateRoute>}/>
+                  <Route exact path="/ReportesEdicionAdmin" element={<PrivateRoute roles ={["admin"]}><ReportesEdicionAdmin/></PrivateRoute>}/>
+                  <Route exact path="/ReportesNuevoAdmin" element={<PrivateRoute roles = {["admin"]}><ReportesNuevoAdmin/></PrivateRoute>}/>
 
-                  <Route exact path="/ProgresoAdmin" element={<privateRoute roles = {["admin"]}><ProgresoAdmin/></privateRoute>}/>
-                  <Route exact path="/ProgresoAlumAdmin" element={<privateRoute roles = {["admin"]}><ProgresoAlumAdmin/></privateRoute>}/>
+                  <Route exact path="/ProgresoAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoAdmin/></PrivateRoute>}/>
+                  <Route exact path="/ProgresoAlumAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoAlumAdmin/></PrivateRoute>}/>
 
-                  <Route exact path="/CuestionariosAdmin" element={<privateRoute roles = {["admin"]}><CuestionariosAdmin/></privateRoute>}/>
-                  <Route exact path="/CuestionariosCreacionAdmin" element={<privateRoute roles = {["admin"]}><CuestionariosCreacionAdmin/></privateRoute>}/>
-                  <Route exact path="/CuestionariosEdicionAdmin/:idCuestionario" element={<privateRoute roles = {["admin"]}><CuestionariosEdicionAdmin/></privateRoute>}/>
-                  <Route exact path="/CuestionariosResponderAdmin/:idAlumno" element={<privateRoute roles = {["admin"]}><CuestionariosResponderAdmin/></privateRoute>}/>
+                  <Route exact path="/CuestionariosAdmin" element={<PrivateRoute roles = {["admin"]}><CuestionariosAdmin/></PrivateRoute>}/>
+                  <Route exact path="/CuestionariosCreacionAdmin" element={<PrivateRoute roles = {["admin"]}><CuestionariosCreacionAdmin/></PrivateRoute>}/>
+                  <Route exact path="/CuestionariosEdicionAdmin/:idCuestionario" element={<PrivateRoute roles = {["admin"]}><CuestionariosEdicionAdmin/></PrivateRoute>}/>
+                  <Route exact path="/CuestionariosResponderAdmin/:idAlumno" element={<PrivateRoute roles = {["admin"]}><CuestionariosResponderAdmin/></PrivateRoute>}/>
 
-                  <Route exact path="/PerfilSeleccionAdmin" element={<privateRoute roles = {["admin"]}><PerfilSeleccionAdmin/></privateRoute>}/>
-                  <Route exact path="/PerfilCrearPerfilNuevo" element={<privateRoute roles = {["admin"]}><PerfilCrearPerfilNuevo/></privateRoute>}/>
-                  <Route exact path="/PerfilEditarAdmin" element={<privateRoute roles = {["admin"]}><PerfilEditarAdmin/></privateRoute>}/>
-                  <Route exact path="/PerfilEditarTutor" element={<privateRoute roles = {["admin"]}><PerfilEditarTutor/></privateRoute>}/>
+                  <Route exact path="/PerfilSeleccionAdmin" element={<PrivateRoute roles = {["admin"]}><PerfilSeleccionAdmin/></PrivateRoute>}/>
+                  <Route exact path="/PerfilCrearPerfilNuevo" element={<PrivateRoute roles = {["admin"]}><PerfilCrearPerfilNuevo/></PrivateRoute>}/>
+                  <Route exact path="/PerfilEditarAdmin" element={<PrivateRoute roles = {["admin"]}><PerfilEditarAdmin/></PrivateRoute>}/>
+                  <Route exact path="/PerfilEditarTutor" element={<PrivateRoute roles = {["admin"]}><PerfilEditarTutor/></PrivateRoute>}/>
               </Routes>
             </div>
           </div>
@@ -76,11 +76,11 @@ function App() {
           <Routes>  
           <Route exact path="/Login" element={<Login/>}/>    
             {/*Aqui abajo es la pagina principal del usuario padre*/}
-            <Route exact path="/Home" element={<privateRoute roles = {["tutor"]}><Home/></privateRoute>}/>
-            <Route exact path="/Reportes" element={<privateRoute roles = {["tutor"]}><Reportes/></privateRoute>}/>
-            <Route exact path="/Progreso" element={<privateRoute roles = {["tutor"]}><Progreso/></privateRoute>}/>
-            <Route exact path="/GraphChart" element={<privateRoute roles = {["tutor"]}><GraphChart/></privateRoute>}/>
-            <Route exact path="/PerfilPadre" element={<privateRoute roles = {["tutor"]}><PerfilPadre/></privateRoute>}/>
+            <Route exact path="/Home" element={<PrivateRoute roles = {["tutor"]}><Home/></PrivateRoute>}/>
+            <Route exact path="/Reportes" element={<PrivateRoute roles = {["tutor"]}><Reportes/></PrivateRoute>}/>
+            <Route exact path="/Progreso" element={<PrivateRoute roles = {["tutor"]}><Progreso/></PrivateRoute>}/>
+            <Route exact path="/GraphChart" element={<PrivateRoute roles = {["tutor"]}><GraphChart/></PrivateRoute>}/>
+            <Route exact path="/PerfilPadre" element={<PrivateRoute roles = {["tutor"]}><PerfilPadre/></PrivateRoute>}/>
               
           </Routes>
         </div>
