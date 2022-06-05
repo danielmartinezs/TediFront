@@ -103,18 +103,26 @@ function CuestionariosEdicionAdmin() {
     const editarCrearPregunta = async () => {
         setShowOffEditP(false)
         setShowModalAddPreg(false)
+        console.log("idredit"+idRespuestaEdit)
+        console.log("idpedit"+idPreguntaEdit)
         try{
         const response = await axios.post(EDIT_CREATE_PREGUNTA_URL, {
+            idc : idCuestionario,
             idp: idPreguntaEdit,
+            idr: idRespuestaEdit,
             pregunta: preguntaEdit,
             tipo: tipoPreguntaEdit
         })
         if(response.status === 200){
-            getQuestionnaireDetails()
             console.log(response)
             setShowA(true)
             setVariante('success')
             setMsg(response.data.message)
+            setIdRespuestaEdit(0)
+            setIdPreguntaEdit(0)
+            setPreguntaEdit("")
+            setTipoPreguntaEdit("")
+            getQuestionnaireDetails()
         }
         }catch(error){
             if(!error?.response){
@@ -200,6 +208,7 @@ function CuestionariosEdicionAdmin() {
             setMsg(response.data.message)
             setCambioRespuesta(0)
             setRespuestaEdit("")
+            setIdPreguntaEdit(0)
             setShowButtonSave(false)
             getQuestionnaireDetails()
         }
@@ -285,6 +294,7 @@ function CuestionariosEdicionAdmin() {
         setVariante('success')
         setMsg(response.data.message)
         setShowMDelete(false)
+        //navigate
     }
 
     const handleEditRespuesta = () => {
@@ -433,6 +443,7 @@ function CuestionariosEdicionAdmin() {
                                     setIdPreguntaEdit(values.idPregunta)
                                     setPreguntaEdit(values.pregunta)
                                     setTipoPreguntaEdit(values.tipo)
+                                    setIdRespuestaEdit(values.idRespuesta)
                                     setShowOffEditP(true)
                                 }}
                                 >
