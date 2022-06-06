@@ -5,11 +5,14 @@ import { AiOutlineDelete, AiOutlineEdit, AiOutlineLink, AiOutlinePlus, AiOutline
 import { BiMessageAltAdd } from 'react-icons/bi'
 import axios from '../../axios/axios';
 import "./cuestionarios.css"
+import { set } from 'date-fns';
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
 const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
 const EDIT_RESPUESTA_URL = '/questionnaires/editanswer'
+const DELETE_PREGUNTA_URL = '/questionnaires/borraquestion'
+const DELETE_RESPUESTA_URL = '/questionnaires/borraanswer'
 const CHECK_LINK_ANSWER = "/questionnaires/checklinkanswer"
 const CHECK_LINK_QUESTION = "/questionnaires/checklinkquestion"
 
@@ -25,6 +28,8 @@ function CuestionariosRegistrosAdmin() {
     const [idPreguntaEdit, setIdPreguntaEdit] = useState(0);
     const [idRespuestaEdit, setIdRespuestaEdit] = useState(0);
     const [cambioRespuesta, setCambioRespuesta] = useState(0);
+    const [idDeletePregunta, setIdDeletePregunta] = useState(0);
+    const [idDeleteRespuesta, setIdDeleteRespuesta] = useState(0);
     const [preguntaEdit, setPreguntaEdit] = useState("");
     const [tipoPreguntaEdit, setTipoPreguntaEdit] = useState("");
     const [respuestaEdit, setRespuestaEdit] = useState("");
@@ -33,6 +38,7 @@ function CuestionariosRegistrosAdmin() {
     const [showButtonSave, setShowButtonSave] = useState(false);
     const [showButtonUndo, setShowButtonUndo] = useState(false);
     const [showModalCerrar, setShowModalCerrar] = useState(false);
+    const [showModalBorrar, setShowModalBorrar] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
     const [showModalResEdit, setShowModalResEdit] = useState(false);
     const [showModalLinkA, setShowModalLinkA] = useState(false);
@@ -162,6 +168,28 @@ function CuestionariosRegistrosAdmin() {
 
     const deleteRespuesta = () => {
 
+    }
+
+    const handleDelete = async () => {
+       console.log("IDP"+idDeletePregunta+"IDR"+idDeleteRespuesta)
+        if(idDeleteRespuesta === 0 && idDeletePregunta !== 0){
+            const response = await axios.post(DELETE_PREGUNTA_URL+"/"+idPreguntaEdit)
+            setShowA(true)
+            setVariante('success')
+            setMsg(response.data.message)
+            setShowModalBorrar(false)
+            setIdDeletePregunta(0)
+            scrollToTop()
+        }
+        else if(idDeleteRespuesta !== 0 && idDeletePregunta === 0){
+            const response = await axios.post(DELETE_RESPUESTA_URL+"/"+idDeleteRespuesta)
+            setShowA(true)
+            setVariante('success')
+            setMsg(response.data.message)
+            setShowModalBorrar(false)
+            setIdDeleteRespuesta(0)
+            scrollToTop()
+        }
     }
 
     const checkLinkA = (ida) => {
@@ -300,12 +328,16 @@ function CuestionariosRegistrosAdmin() {
                                             </Button></td>
                                         <td><Button
                                             variant="outline-danger"
-                                            /* onClick={hola} */>
+                                            onClick={() => {
+                                                setIdDeletePregunta(question.idPregunta)
+                                                setShowModalBorrar(true)}}>
                                             <AiOutlineDelete />
                                             </Button></td>
                                         <td><Button
-                                            variant="outline-info"
-                                            onClick={() => {handleCheckLinks(question.idPregunta, 0)}}>
+                                            variant="outline-secondary"
+                                            onClick={() => {
+                                                setIdDeletePregunta(question.idPregunta)
+                                                handleCheckLinks(question.idPregunta, 0)}}>
                                             <AiOutlineLink />
                                             </Button></td>
                                     </tr>
@@ -352,12 +384,16 @@ function CuestionariosRegistrosAdmin() {
                                             </Button></td>
                                         <td><Button
                                             variant="outline-danger"
-                                            /* onClick={hola} */>
+                                            onClick={() => {
+                                                setIdDeleteRespuesta(answer.id)
+                                                setShowModalBorrar(true)}}>
                                             <AiOutlineDelete />
                                             </Button></td>
                                         <td><Button
-                                            variant="outline-info"
-                                            onClick={() => {handleCheckLinks(0, answer.id)}}>
+                                            variant="outline-secondary"
+                                            onClick={() => {
+                                                setIdDeleteRespuesta(answer.id)
+                                                handleCheckLinks(0, answer.id)}}>
                                             <AiOutlineLink />
                                             </Button></td>
                                     </tr>
@@ -397,14 +433,32 @@ function CuestionariosRegistrosAdmin() {
                     </Button>
                 </Modal.Body>
             </Modal>
+            {/*MODAL CONFIRMACIÓN BORRAR*/}
+            <Modal show={showModalBorrar} onHide={() => {setShowModalBorrar(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>¿Estás seguro que quieres borrar este registro?</Modal.Title>
+                </Modal.Header>
+                    <Modal.Body>Una vez borrado el registro y sus relaciones serán borradas</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="success" onClick={() => {setShowModalBorrar(false)}}>
+                        No
+                    </Button>
+                    <Button variant="danger" onClick={handleDelete}>
+                        Sí
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             {/* MODAL CHECK LINK ANSWER */}
             <Modal
             show={showModalLinkA}
-            onHide={() => {setShowModalLinkA(false)}}>
+            onHide={() => {
+                setIdDeleteRespuesta(0)
+                setShowModalLinkA(false)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>Check Link</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                {console.log("El idDelRes es"+idDeleteRespuesta)}
                     {!respuestasLink.length ? 
                         <div>
                             <Alert
@@ -413,7 +467,7 @@ function CuestionariosRegistrosAdmin() {
                             </Alert>
                             <Button
                             variant='danger'
-                            onClick={deleteRespuesta}>
+                            onClick={handleDelete}>
                                 Borrar respuesta
                                 <AiOutlineDelete/>
                             </Button>
@@ -427,17 +481,20 @@ function CuestionariosRegistrosAdmin() {
                                 </div>
                             )
                         })
-                    } 
+                    }
                 </Modal.Body>
             </Modal>
             {/* MODAL CHECK LINK QUESTION */}
             <Modal
             show={showModalLinkQ}
-            onHide={() => {setShowModalLinkQ(false)}}>
+            onHide={() => {
+                setIdDeletePregunta(0)
+                setShowModalLinkQ(false)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>Check Link</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                {console.log("El id DelPre es"+idDeletePregunta)}
                     {!preguntasLink.length ?
                         <div>
                             <Alert
@@ -446,7 +503,7 @@ function CuestionariosRegistrosAdmin() {
                             </Alert>
                             <Button
                             variant='danger'
-                            onClick={deleteRespuesta}>
+                            onClick={handleDelete}>
                                 Borrar pregunta
                                 <AiOutlineDelete/>
                             </Button>
