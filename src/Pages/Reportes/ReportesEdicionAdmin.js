@@ -5,7 +5,7 @@ import pdf from './ReporteSemestral.pdf'
 function ReportesEdicionAdmin() {
     return (
         <div>
-            <h1>Pagina de edición de Reportes</h1>
+            <h1>Edición de Reportes</h1>
             <Accordion defaultActiveKey={['0']} alwaysOpen>
                <Accordion.Item eventKey="3">
                 <Accordion.Item eventKey="0">

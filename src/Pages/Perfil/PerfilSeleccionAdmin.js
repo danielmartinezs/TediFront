@@ -9,7 +9,7 @@ import foto7 from '../../assets/foto7.jpg';
 function PerfilSeleccionAdmin() {
     return (
         <div>
-            <h1>Página de control de cuentas</h1>
+            <h1>Control de cuentas</h1>
             <Card border="primary" className="text-center" style={{ display:'flex'}}>
             <Card.Img variant="top" src={foto6} />
               <Card.Body>

@@ -14,7 +14,7 @@ function Reportes() {
 
     return (
         <div>
-            <h1>Página de reportes</h1>
+            <h1>Reportes</h1>
             <Accordion defaultActiveKey={['0']} alwaysOpen>
                 <Accordion.Item eventKey="3">
                 <Accordion.Item eventKey="0">

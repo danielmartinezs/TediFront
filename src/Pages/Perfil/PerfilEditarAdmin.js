@@ -98,7 +98,7 @@ function PerfilEditarAdmin() {
 
     return (
         <div>
-            <h1>Página de edición de perfiles admin</h1>
+            <h1>Edición de perfiles admin</h1>
             <div className='alertas'>
                 <Alert 
                 show={showA}

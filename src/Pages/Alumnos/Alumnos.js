@@ -92,7 +92,7 @@ function Alumnos() {
 
     return (
         <div>
-            <h1>Página Alumnos</h1>
+            <h1>Alumnos</h1>
             <div className='alertas'>
                 <Alert 
                 show={showA}

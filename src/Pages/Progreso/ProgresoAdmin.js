@@ -4,7 +4,7 @@ import {Accordion} from'react-bootstrap'
 function ProgresoAdmin() {
     return (
         <div>
-            <h1>Página de registro de progreso</h1>
+            <h1>Registro de progreso</h1>
             <Accordion defaultActiveKey={['0']} alwaysOpen>
                 <Accordion.Item eventKey="0">
                     <Accordion.Header>Enero</Accordion.Header>

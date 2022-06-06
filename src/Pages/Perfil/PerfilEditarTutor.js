@@ -162,7 +162,7 @@ function PerfilEditarTutor() {
 
     return (
         <div>
-            <h1>Página de edición de tutores/alumnos</h1>
+            <h1>Edición de tutores/alumnos</h1>
             <div className='alertas'>
             <Alert 
             show={showA}

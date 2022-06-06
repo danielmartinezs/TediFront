@@ -39,7 +39,7 @@ function ReportesAlumnosAdmin() {
 
     return (
         <div>
-            <h1>Página de reportes de Alumnos</h1>
+            <h1>Reportes de Alumnos</h1>
             <Alert 
                 show={show}
                 variant={variante}
