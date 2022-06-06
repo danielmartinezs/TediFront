@@ -22,6 +22,7 @@ function CuestionariosEdicionAdmin() {
     const [newRespuesta, setNewRespuesta] = useState([{ "respuesta": "" }]);
     const [newRespuestaFormatted, setNewRespuestaFormatted] = useState("{\"opciones\":[{\"respuesta\":\"\"}]}");
     const [respuestaEdit, setRespuestaEdit] = useState();
+    const [recentlyRemovedRes, setRecentlyRemovedRes] = useState();
     const [idRespuestaEdit, setIdRespuestaEdit] = useState(0);
     const [cambioRespuesta, setCambioRespuesta] = useState(0);
     const [idPreguntaEdit, setIdPreguntaEdit] = useState(0);
@@ -32,6 +33,7 @@ function CuestionariosEdicionAdmin() {
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [showButtonSave, setShowButtonSave] = useState(false);
+    const [showButtonUndo, setShowButtonUndo] = useState(false);
     const [showMDelete, setShowMDelete] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
     const [showModalCerrar, setShowModalCerrar] = useState(false);
@@ -41,6 +43,7 @@ function CuestionariosEdicionAdmin() {
     const [showOffEditR, setShowOffEditR] = useState(false);
     const [showOffEditP, setShowOffEditP] = useState(false);
     const [showA, setShowA] = useState(false);
+    const [showADelResp, setShowADelResp] = useState(false);
     const {idCuestionario} = useParams();
 
     useEffect (() => {
@@ -305,6 +308,38 @@ function CuestionariosEdicionAdmin() {
         setShowModalRes(true)
     }
 
+    const handleEditRemove = (change) => {
+        if(respuestasEdit.opciones.length > 2){
+            setCambioRespuesta(change)
+            console.log("el cambio es: "+change)
+            console.log("OG"+JSON.stringify(respuestasEdit))
+            setRecentlyRemovedRes(respuestasEdit.opciones[change].respuesta)
+            respuestasEdit.opciones.splice(change, 1)
+            console.log("CHANGED"+JSON.stringify(respuestasEdit))
+            setShowButtonSave(true)
+            setShowButtonUndo(true)
+            setShowADelResp(true)
+            setVariante('danger')
+            setMsg("Se eliminó la opción")
+        }
+        else{
+            setShowButtonUndo(false)
+            setShowADelResp(true)
+            setVariante('danger')
+            setMsg('Una pregunta de opción múltiple debe tener al menos dos opciones')
+        }
+    }
+
+    const handleUndoRemove = () => {
+        respuestasEdit.opciones.splice(cambioRespuesta, 0, {respuesta: recentlyRemovedRes})
+        console.log("UNDO"+JSON.stringify(respuestasEdit))
+        setShowButtonSave(true)
+        setShowButtonUndo(false)
+        setShowADelResp(true)
+        setVariante('success')
+        setMsg("Se restauró la opción")
+    }
+
     const handleAddRespuesta = () => {
         setNewRespuesta([...newRespuesta, { respuesta: "" }])
     }
@@ -359,64 +394,6 @@ function CuestionariosEdicionAdmin() {
             <div className="text-center">
                 <h3>{cuestionariosInfo[0]?.nombre}</h3>
             </div>
-            {/* MODAL EDICION RESPUESTAS */}
-            <Modal
-            show={showModalRes}
-            onHide={handleCloseWithoutSave}>
-                <ModalHeader closeButton>
-                    <ModalTitle>
-                        Set de Respuestas
-                    </ModalTitle>
-                </ModalHeader>
-                <ModalBody>
-                    {tipoPreguntaEdit === "Abierta" ?
-                    <div>
-                        Esta pregunta es abierta, por lo que no tiene respuestas editables
-                    </div>:
-                    <div>
-                        {respuestasEdit.opciones?.map((values, index) => (
-                        <div key={index}>
-                            <ListGroup className='displaySetRespuestas'>
-                                <ListGroupItem className='setRespuestas'>
-                                    {(values.respuesta)}
-                                    <div className='setRespuestasBotones'>
-                                        <Button
-                                        className='btnEdicion'
-                                        variant='success'
-                                        onClick={() => {
-                                            setRespuestaEdit(values.respuesta)
-                                            setCambioRespuesta(index)
-                                            setShowModalRes(false)
-                                            setShowOffEditR(true)
-                                        }}>
-                                            <AiOutlineEdit/>
-                                        </Button>
-                                        <Button
-                                        className='btnEdicion'
-                                        variant='danger'>
-                                            <AiOutlineDelete/>
-                                        </Button>
-                                    </div>
-                                </ListGroupItem>
-                            </ListGroup>
-                        </div>
-                    ))
-                    }
-                    {showButtonSave === true?
-                    <div>
-                        <Button
-                        className='btnAct'
-                        onClick={() => {
-                            setShowModalResEdit(true)
-                            setShowModalRes(false)}}>
-                            Guardar Cambios
-                            <AiOutlineSend/>
-                        </Button>
-                    </div> 
-                    :<br/>}
-                    </div>}
-                </ModalBody>
-            </Modal>
             {/*TABLA PREGUNTAS*/}
             <Table className="tabla">
                 <thead>
@@ -438,8 +415,8 @@ function CuestionariosEdicionAdmin() {
                             <td>{values.pregunta}</td>
                             <td>
                             <Button
-                            className='btnEditarPregunta'
-                            variant='success'
+                            /* className='btnEditarPregunta' */
+                            variant='outline-success'
                             onClick={() => {
                                 setIdPreguntaEdit(values.idPregunta)
                                 setPreguntaEdit(values.pregunta)
@@ -467,6 +444,83 @@ function CuestionariosEdicionAdmin() {
                     ))}
                 </tbody>
             </Table>
+            {/* MODAL EDICION RESPUESTAS */}
+            <Modal
+            show={showModalRes}
+            onHide={handleCloseWithoutSave}>
+                <ModalHeader closeButton>
+                    <ModalTitle>
+                        Set de Respuestas
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    <div className='alertas'>
+                        <Alert 
+                        show={showADelResp}
+                        variant={variante}
+                        onClose={() => setShowADelResp(false)}
+                        dismissible>
+                        <Alert.Heading>
+                            {msg}
+                            {showButtonUndo?
+                            <Button
+                            variant="outline-warning"
+                            className='btnEditarPregunta'
+                            onClick={handleUndoRemove}>
+                                Undo
+                            </Button>:<div/>}
+                        </Alert.Heading>
+                        </Alert>
+                    </div>
+                    {tipoPreguntaEdit === "Abierta" ?
+                    <div>
+                        Esta pregunta es abierta, por lo que no tiene respuestas editables
+                    </div>:
+                    <div>
+                        {respuestasEdit.opciones?.map((values, index) => (
+                        <div key={index}>
+                            <ListGroup className='displaySetRespuestas'>
+                                <ListGroupItem className='setRespuestas'>
+                                    {(values.respuesta)}
+                                    <div className='setRespuestasBotones'>
+                                        <Button
+                                        className='btnEdicion'
+                                        variant='success'
+                                        onClick={() => {
+                                            setRespuestaEdit(values.respuesta)
+                                            setCambioRespuesta(index)
+                                            setShowModalRes(false)
+                                            setShowOffEditR(true)
+                                        }}>
+                                            <AiOutlineEdit/>
+                                        </Button>
+                                        <Button
+                                        className='btnEdicion'
+                                        variant='danger'
+                                        onClick={() => {handleEditRemove(index)}}>
+                                            <AiOutlineDelete/>
+                                        </Button>
+                                    </div>
+                                </ListGroupItem>
+                            </ListGroup>
+                        </div>
+                        ))
+                        }
+                        {showButtonSave === true?
+                        <div>
+                            <Button
+                            className='btnAct'
+                            onClick={() => {
+                                setShowModalResEdit(true)
+                                setShowModalRes(false)}}>
+                                Guardar Cambios
+                                <AiOutlineSend/>
+                            </Button>
+                        </div> 
+                        :<br/>}
+                    </div>}
+                </ModalBody>
+            </Modal>
             {/*OFFCANVAS EDITAR PREGUNTA*/}
             <Offcanvas 
                 show={showOffEditP} 

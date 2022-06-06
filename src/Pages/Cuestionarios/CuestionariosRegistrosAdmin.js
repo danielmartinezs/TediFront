@@ -18,6 +18,7 @@ function CuestionariosRegistrosAdmin() {
     const [preguntasLink, setPreguntasLink] = useState([]);
     const [respuestasLink, setRespuestasLink] = useState([]);
     const [respuestasEdit, setRespuestasEdit] = useState([]);
+    const [recentlyRemovedRes, setRecentlyRemovedRes] = useState();
     const [idCheck, setIdCheck] = useState(0);
     const [idPreguntaEdit, setIdPreguntaEdit] = useState(0);
     const [idRespuestaEdit, setIdRespuestaEdit] = useState(0);
@@ -28,6 +29,7 @@ function CuestionariosRegistrosAdmin() {
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [showButtonSave, setShowButtonSave] = useState(false);
+    const [showButtonUndo, setShowButtonUndo] = useState(false);
     const [showModalCerrar, setShowModalCerrar] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
     const [showModalResEdit, setShowModalResEdit] = useState(false);
@@ -36,6 +38,7 @@ function CuestionariosRegistrosAdmin() {
     const [showOffEditP, setShowOffEditP] = useState(false);
     const [showOffEditR, setShowOffEditR] = useState(false);
     const [showA, setShowA] = useState(false);
+    const [showADelResp, setShowADelResp] = useState(false);
 
     useEffect (() => {
         getPreguntas()
@@ -196,6 +199,38 @@ function CuestionariosRegistrosAdmin() {
         setShowButtonSave(true)
         setShowOffEditR(false)
         setShowModalRes(true)
+    }
+
+    const handleEditRemove = (change) => {
+        if(respuestasEdit.opciones.length > 2){
+            setCambioRespuesta(change)
+            console.log("el cambio es: "+change)
+            console.log("OG"+JSON.stringify(respuestasEdit))
+            setRecentlyRemovedRes(respuestasEdit.opciones[change].respuesta)
+            respuestasEdit.opciones.splice(change, 1)
+            console.log("CHANGED"+JSON.stringify(respuestasEdit))
+            setShowButtonSave(true)
+            setShowButtonUndo(true)
+            setShowADelResp(true)
+            setVariante('danger')
+            setMsg("Se eliminó la opción")
+        }
+        else{
+            setShowButtonUndo(false)
+            setShowADelResp(true)
+            setVariante('danger')
+            setMsg('Una pregunta de opción múltiple debe tener al menos dos opciones')
+        }
+    }
+
+    const handleUndoRemove = () => {
+        respuestasEdit.opciones.splice(cambioRespuesta, 0, {respuesta: recentlyRemovedRes})
+        console.log("UNDO"+JSON.stringify(respuestasEdit))
+        setShowButtonSave(true)
+        setShowButtonUndo(false)
+        setShowADelResp(true)
+        setVariante('success')
+        setMsg("Se restauró la opción")
     }
 
     return(
@@ -404,7 +439,7 @@ function CuestionariosRegistrosAdmin() {
                             return(
                                 <div key={question.id}>
                                     <ListGroup>
-                                        <ListGroupItem>Ligada a la respuesta "{question.opciones}" en el cuestionario:<br/> {question.idCuestionario}. "{question.nombre}"</ListGroupItem>
+                                        <ListGroupItem>Ligada a la respuesta del cuestionario:<br/> {question.idCuestionario}. "{question.nombre}"</ListGroupItem>
                                     </ListGroup>
                                 </div>
                             )
@@ -463,6 +498,24 @@ function CuestionariosRegistrosAdmin() {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <div className='alertas'>
+                        <Alert 
+                        show={showADelResp}
+                        variant={variante}
+                        onClose={() => setShowADelResp(false)}
+                        dismissible>
+                        <Alert.Heading>
+                            {msg}
+                            {showButtonUndo?
+                            <Button
+                            variant="outline-warning"
+                            className='btnEditarPregunta'
+                            onClick={handleUndoRemove}>
+                                Undo
+                            </Button>:<div/>}
+                        </Alert.Heading>
+                        </Alert>
+                    </div>
                     <div>
                         {respuestasEdit.opciones?.map((values, index) => (
                         <div key={index}>
@@ -483,7 +536,8 @@ function CuestionariosRegistrosAdmin() {
                                         </Button>
                                         <Button
                                         className='btnEdicion'
-                                        variant='danger'>
+                                        variant='danger'
+                                        onClick={() => {handleEditRemove(index)}}>
                                             <AiOutlineDelete/>
                                         </Button>
                                     </div>
