@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, ButtonGroup, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, Table } from 'react-bootstrap';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineRollback, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
 import { BiMessageAltAdd } from 'react-icons/bi'
@@ -12,7 +12,7 @@ const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
 const EDIT_CREATE_PREGUNTA_URL = '/questionnaires/editcreatequestion'
 const EDIT_RESPUESTA_URL = '/questionnaires/editanswer'
 const EDIT_CREATE_RESPUESTA_URL = '/questionnaires/editcreateanswer'
-const DELETE_PREGUNTA_URL = '/questionnaires/deletequestionnaire'
+const DELETE_CUESTIONARIO_URL = '/questionnaires/deletequestionnaire'
 const NEW_PREGUNTA_URL = '/questionnaires/addquestion'
 
 function CuestionariosEdicionAdmin() {
@@ -48,6 +48,7 @@ function CuestionariosEdicionAdmin() {
     const [showA, setShowA] = useState(false);
     const [showADelResp, setShowADelResp] = useState(false);
     const {idCuestionario} = useParams();
+    const navigate = useNavigate();
 
     useEffect (() => {
         getQuestionnaireDetails()
@@ -295,12 +296,12 @@ function CuestionariosEdicionAdmin() {
     }
 
     const handleDeleteCuestionario = async () => {
-        const response = await axios.post(DELETE_PREGUNTA_URL+"/"+idCuestionario)
+        const response = await axios.post(DELETE_CUESTIONARIO_URL+"/"+idCuestionario)
         setShowA(true)
         setVariante('success')
         setMsg(response.data.message)
         setShowMDelete(false)
-        //navigate
+        navigate('/CuestionariosCreacionAdmin')
     }
 
     const handleEditRespuesta = () => {
