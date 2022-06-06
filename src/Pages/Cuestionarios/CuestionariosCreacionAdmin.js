@@ -579,7 +579,7 @@ function CrearCuestionario() {
             <br/>
             <Link to={"/CuestionariosRegistrosAdmin"}>
                 <Button className="btnAct">
-                    Registros de preguntas y respuestas
+                    Registro de preguntas y respuestas
                     <AiOutlineInfoCircle/>
                 </Button>
             </Link>
