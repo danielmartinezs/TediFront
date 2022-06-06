@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Alert, Button, ButtonGroup, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, Table } from 'react-bootstrap';
-import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineRollback, AiOutlineSend } from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineRollback, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
+import { BiMessageAltAdd } from 'react-icons/bi'
 import axios from '../../axios/axios';
 import { Question } from 'survey-core';
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
@@ -22,6 +23,7 @@ function CuestionariosEdicionAdmin() {
     const [newRespuesta, setNewRespuesta] = useState([{ "respuesta": "" }]);
     const [newRespuestaFormatted, setNewRespuestaFormatted] = useState("{\"opciones\":[{\"respuesta\":\"\"}]}");
     const [respuestaEdit, setRespuestaEdit] = useState();
+    const [respuestaEditAdd, setRespuestaEditAdd] = useState();
     const [recentlyRemovedRes, setRecentlyRemovedRes] = useState();
     const [idRespuestaEdit, setIdRespuestaEdit] = useState(0);
     const [cambioRespuesta, setCambioRespuesta] = useState(0);
@@ -42,6 +44,7 @@ function CuestionariosEdicionAdmin() {
     const [showModalAddPreg, setShowModalAddPreg] = useState(false);
     const [showOffEditR, setShowOffEditR] = useState(false);
     const [showOffEditP, setShowOffEditP] = useState(false);
+    const [showOffAddR, setShowOffAddR] = useState(false);
     const [showA, setShowA] = useState(false);
     const [showADelResp, setShowADelResp] = useState(false);
     const {idCuestionario} = useParams();
@@ -340,6 +343,19 @@ function CuestionariosEdicionAdmin() {
         setMsg("Se restauró la opción")
     }
 
+    const handleEditAdd = (offset) => {
+        console.log("OG"+JSON.stringify(respuestasEdit))
+        respuestasEdit.opciones.splice((cambioRespuesta+offset), 0, {respuesta: respuestaEditAdd})
+        console.log("CHANGED"+JSON.stringify(respuestasEdit))
+        setShowButtonSave(true)
+        setShowOffAddR(false)
+        setShowModalRes(true)
+        setShowADelResp(true)
+        setVariante('success')
+        setMsg("Se agregó la opción")
+        setRespuestaEditAdd("")
+    }
+
     const handleAddRespuesta = () => {
         setNewRespuesta([...newRespuesta, { respuesta: "" }])
     }
@@ -500,6 +516,15 @@ function CuestionariosEdicionAdmin() {
                                         onClick={() => {handleEditRemove(index)}}>
                                             <AiOutlineDelete/>
                                         </Button>
+                                        <Button
+                                        className='btnEdicion'
+                                        variant='warning'
+                                        onClick={() => {
+                                            setCambioRespuesta(index)
+                                            setShowModalRes(false)
+                                            setShowOffAddR(true)}}>
+                                            <BiMessageAltAdd/>
+                                        </Button>
                                     </div>
                                 </ListGroupItem>
                             </ListGroup>
@@ -599,6 +624,59 @@ function CuestionariosEdicionAdmin() {
                         onClick={handleEditRespuesta}>
                             Guardar
                         </Button>
+                </Offcanvas.Body>
+            </Offcanvas>
+            {/*OFFCANVAS AÑADIR RESPUESTA*/}
+            <Offcanvas 
+                show={showOffAddR} 
+                placement={'end'} 
+                onHide={() => setShowOffAddR(false)}>
+                <Offcanvas.Header closeButton>
+                     <Offcanvas.Title>Añadir Respuesta</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <Form>
+                        <Form.Group
+                        className="mb-3"
+                        controlId="newRespuesta">
+                            <Form.Label>Respuesta nueva</Form.Label>
+                            <br/>
+                            <Button 
+                            className='btnAct'
+                            size='sm'
+                            variant="success"
+                            onClick={() => {handleEditAdd(0)}}>
+                                Guardar encima de la respuesta seleccionada
+                                <AiOutlineVerticalAlignTop size={50}/>
+                            </Button>
+                            <Form.Control 
+                            as="textarea" 
+                            rows={1}
+                            placeholder="Respuesta nueva" 
+                            value={respuestaEditAdd}
+                            onChange={(e) => setRespuestaEditAdd(e.target.value)}>
+                                {respuestaEditAdd}
+                            </Form.Control>
+                            <br/>
+                            <Button 
+                            className='btnAct'
+                            size='sm' 
+                            variant="success" 
+                            onClick={() => {handleEditAdd(1)}}>
+                                Guardar debajo de la respuesta seleccionada
+                                <AiOutlineVerticalAlignBottom size={50}/>
+                            </Button>
+                        </Form.Group>
+                    </Form>
+                    <Button 
+                    size='sm'
+                    variant="danger"
+                    onClick={() => {
+                        setShowOffAddR(false)
+                        setShowModalRes(true)
+                        setRespuestaEditAdd('')}}>
+                        Cerrar
+                    </Button>
                 </Offcanvas.Body>
             </Offcanvas>
             {/*MODAL BORRAR CUESTIONARIO*/}
