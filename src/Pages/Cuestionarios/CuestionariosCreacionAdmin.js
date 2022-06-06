@@ -31,6 +31,7 @@ function CrearCuestionario() {
     const [variante, setVariante] = useState('');
     const [respuesta, setRespuesta] = useState([{ "respuesta": "" }]);
     const [respuestaFormatted, setRespuestaFormatted] = useState("{\"opciones\":[{\"respuesta\":\"\"}]}");
+    const [respuestaBank, setRespuestaBank] = useState([]);
     const [newCuestionario, setNewCuestionario] = useState(false);
     const [tipoPregunta, setTipoPregunta] = useState("");
     const [showA, setShowA] = useState(false);
@@ -167,31 +168,36 @@ function CrearCuestionario() {
             setMsg("No puedes registrar una pregunta sin su tipo")
             return
         }
-        if(idRespuesta === 0 && idPregunta === 0){
+        if(idRespuesta === 0 && idPregunta === 0){//si la respuesta y la pregunta son nuevas
+            console.log("in 00")
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta: (respuestasList.length)+maxIdRespuesta}])
             setMaxIdRespuesta(maxIdRespuesta+1)
             setMaxIdPregunta(maxIdPregunta+1)
         }
-        else if(idRespuesta === 0){
+        else if(idRespuesta === 0){//si solo la respuesta es nueva
+            console.log("in X0")
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: idPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta:(respuestasList.length)+maxIdRespuesta}])
             setMaxIdRespuesta(maxIdRespuesta+1)
         }
-        else if(idPregunta === 0 && idRespuesta !== 0){
-            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuesta), idRespuesta: idRespuesta}])
+        else if(idPregunta === 0 && idRespuesta !== 0){//si la pregunta es nueva y la respuesta existe
+            console.log("in 0#")
+            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuestaBank), idRespuesta: idRespuesta}])
             setMaxIdPregunta(maxIdPregunta+1)
         }
-        else if(idPregunta === 0){
+        else if(idPregunta === 0){//si solo la pregunta es nueva
+            console.log("in 0X")
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta: idRespuesta}])
             setMaxIdPregunta(maxIdPregunta+1)
         }
         else{
+            console.log("xd")
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: idPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuesta), idRespuesta: idRespuesta}])
         }
         setDetailsPane({isPaneOpen: true})
         //handleUploadNewCuestionario()
         setPregunta("")
         setRespuesta([{ respuesta: "" }])
-        setRespuestaFormatted("")
+        setRespuestaFormatted("{\"opciones\":[{\"respuesta\":\"\"}]}")
         setTipoPregunta("")
         setIdPregunta(0)
         setIdRespuesta(0)
@@ -209,9 +215,16 @@ function CrearCuestionario() {
 
     const handleSelectRespuesta = (values) =>{
         console.log(values)
-        //setRespuesta(values.opciones)
-        setRespuesta(JSON.parse(JSON.parse(JSON.stringify(values.opciones))))
+        //setRespuesta(JSON.parse(JSON.parse(JSON.stringify(values.opciones))))
+        setRespuestaBank(JSON.parse(JSON.parse(JSON.stringify(values.opciones))))
         setIdRespuesta(values.id)
+        if(values.id === 1){
+            setTipoPregunta("Abierta")
+            setRespuestaFormatted("{\"opciones\":[{\"respuesta\":\"\"}]}")
+        }
+        else{
+            setTipoPregunta("Opción Múltiple")
+        }
     }
 
     const handleAddRespuesta = () => {
@@ -309,42 +322,55 @@ function CrearCuestionario() {
                         <Button 
                         className="btnBancoPreguntas"
                         value="Opción múltiple" 
-                        onClick={(e) => setTipoPregunta(e.target.value)}>
+                        onClick={(e) => {
+                            setIdRespuesta(0)
+                            setRespuestaBank([])
+                            setTipoPregunta(e.target.value)}}>
                             Opción múltiple
                         </Button>
                         <Button 
                         className="btnBancoPreguntas"
                         value="Abierta"
-                        onClick={(e) => setTipoPregunta(e.target.value)}>
+                        onClick={(e) => {
+                            setIdRespuesta(0)
+                            setRespuestaBank([])
+                            setRespuesta([{ respuesta: "" }])
+                            setTipoPregunta(e.target.value)}}>
                             Abierta
+                        </Button>
+                        <Button
+                        className="btnBancoPreguntas"
+                        size="sm"
+                        onClick={() => {
+                            setRespuesta([{ respuesta: "" }])
+                            getRespuestas()
+                            setShowModalR(true)}}>
+                            Banco de respuestas
                         </Button>
                     </ButtonGroup>
                     <br/>
                     <br/>
                     <Form.Label><h3>Respuesta(s) nueva</h3></Form.Label>
                     <br/>
-                    <Button
-                    className="btnBancoPreguntas"
-                    size="sm"
-                    onClick={() => {
-                        getRespuestas()
-                        setShowModalR(true)
-                    }}>
-                        Banco de respuestas
-                    </Button>
-                    <br/>
+                    {(idRespuesta === 0)?
                     <FormControl
                     as="textarea"
                     disabled
                     value={JSON.stringify(respuesta)}
                     onChange={(e) => setRespuesta(e.target.value)}
-                    />
+                    />:
+                    <FormControl
+                    as="textarea"
+                    disabled
+                    value={JSON.stringify(respuestaBank)}
+                    //onChange={(e) => setRespuesta(e.target.value)}
+                    />}
                     <div>
                     {(idRespuesta !== 0) ?
                         <div>
-                            {console.log("Respuesta:"+respuesta.opciones)}
-                            {respuesta.opciones.map(values => (
-                                <div key={values}>
+                            {console.log("Respuesta:"+respuestaBank.opciones)}
+                            {respuestaBank.opciones.map(values => (
+                                <div key={values.respuesta}>
                                     <ListGroup>
                                         <ListGroupItem>
                                             {(values.respuesta)}
@@ -386,6 +412,7 @@ function CrearCuestionario() {
                     </Button>
                 </Form.Group>
             </Form>
+            {/*SLIDING PANE DE TABLA PREGUNTAS */}
             <SlidingPane
             className='sliding-pane'
             isOpen={detailsPane.isPaneOpen}
@@ -424,6 +451,7 @@ function CrearCuestionario() {
                 </Button>
                 </div>
             </SlidingPane>
+            {/*MODAL BANCO PREGUNTAS*/}
             <Modal 
             show={showModalP}
             size="sm"
@@ -443,7 +471,9 @@ function CrearCuestionario() {
                                 <br/>
                                 <Button 
                                 variant="success"
-                                onClick={() => handleSelectPregunta(values)}>
+                                onClick={() => {
+                                    setShowModalP(false)
+                                    handleSelectPregunta(values)}}>
                                     <AiOutlineSelect/>
                                  </Button>
                             </ListGroupItem>
@@ -454,6 +484,7 @@ function CrearCuestionario() {
                 </ModalBody>
             </Modal>
             <div className="inputPreguntas">
+            {/*MODAL BANCO RESPUESTAS*/}
             <Modal 
             show={showModalR}
             size="sm"
@@ -478,7 +509,9 @@ function CrearCuestionario() {
                                 <br/>
                                 <Button 
                                 variant="success"
-                                onClick={() => handleSelectRespuesta(values)}>
+                                onClick={() => {
+                                    setShowModalR(false)
+                                    handleSelectRespuesta(values)}}>
                                     <AiOutlineSelect/>
                                 </Button>
                                 </ListGroupItem>
@@ -489,6 +522,7 @@ function CrearCuestionario() {
                 </ModalBody>
             </Modal>
             <div>
+            {/*MODAL REGISTRO PREGUNTAS OPCIÓN MÚLTIPLE*/}
             <Modal
             show={showModalO}
             scrollable
