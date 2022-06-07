@@ -1,33 +1,41 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link, useNavigate } from 'react-router-dom';
-import { Alert, Button, ButtonGroup, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, Table } from 'react-bootstrap';
-import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineRollback, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
+import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, Table } from 'react-bootstrap';
+import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineQuestionCircle, AiOutlineRollback, AiOutlineSelect, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
 import { BiMessageAltAdd } from 'react-icons/bi'
+import SlidingPane from 'react-sliding-pane';
 import axios from '../../axios/axios';
-import { Question } from 'survey-core';
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
+const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
-const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
-const EDIT_CREATE_PREGUNTA_URL = '/questionnaires/editcreatequestion'
 const EDIT_RESPUESTA_URL = '/questionnaires/editanswer'
 const EDIT_CREATE_RESPUESTA_URL = '/questionnaires/editcreateanswer'
+const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
+const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
+const EDIT_CREATE_PREGUNTA_URL = '/questionnaires/editcreatequestion'
 const DELETE_CUESTIONARIO_URL = '/questionnaires/deletequestionnaire'
 const NEW_PREGUNTA_URL = '/questionnaires/addquestion'
+const ESTABLISH_KEY_URL = '/questionnaires/establishnewkey'
 
 function CuestionariosEdicionAdmin() {
 
     const [cuestionariosInfo, setCuestionariosInfo] = useState([]);
+    const [preguntasList, setPreguntasList] = useState([]);
+    const [respuestasList, setRespuestasList] = useState([]);
     const [respuestas, setRespuestas] = useState([]);
     const [respuestasEdit, setRespuestasEdit] = useState([]);
     const [newRespuesta, setNewRespuesta] = useState([{ "respuesta": "" }]);
     const [newRespuestaFormatted, setNewRespuestaFormatted] = useState("{\"opciones\":[{\"respuesta\":\"\"}]}");
+    const [newRespuestaBank, setNewRespuestaBank] = useState([]);
     const [respuestaEdit, setRespuestaEdit] = useState();
     const [respuestaEditAdd, setRespuestaEditAdd] = useState();
     const [recentlyRemovedRes, setRecentlyRemovedRes] = useState();
     const [idRespuestaEdit, setIdRespuestaEdit] = useState(0);
     const [cambioRespuesta, setCambioRespuesta] = useState(0);
     const [idPreguntaEdit, setIdPreguntaEdit] = useState(0);
+    const [newPreguntaId, setNewPreguntaId] = useState(0);
+    const [newRespuestaId, setNewRespuestaId] = useState(0);
     const [newPregunta, setNewPregunta] = useState("");
     const [preguntaEdit, setPreguntaEdit] = useState("");
     const [tipoNewPregunta, setTipoNewPregunta] = useState("");
@@ -42,21 +50,21 @@ function CuestionariosEdicionAdmin() {
     const [showModalResEdit, setShowModalResEdit] = useState(false);
     const [showModalPregEdit, setShowModalPregEdit] = useState(false);
     const [showModalAddPreg, setShowModalAddPreg] = useState(false);
+    const [showModalBancoR, setShowModalBancoR] = useState(false);
+    const [showModalBancoP, setShowModalBancoP] = useState(false);
+    const [showModalOpMul, setShowModalOpMul] = useState(false);
     const [showOffEditR, setShowOffEditR] = useState(false);
     const [showOffEditP, setShowOffEditP] = useState(false);
     const [showOffAddR, setShowOffAddR] = useState(false);
     const [showA, setShowA] = useState(false);
     const [showADelResp, setShowADelResp] = useState(false);
+    const [detailsPane, setDetailsPane] = useState({isPaneOpen: false});
     const {idCuestionario} = useParams();
     const navigate = useNavigate();
 
     useEffect (() => {
         getQuestionnaireDetails()
     }, [])
-
-    /* useEffect (() => {
-        console.log(newRespuesta)
-    }, [newRespuesta]) */
 
     const getQuestionnaireDetails = () => {
         axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+idCuestionario).then((response) => {
@@ -68,6 +76,18 @@ function CuestionariosEdicionAdmin() {
         axios.get(GET_RESPUESTA_URL+"/"+idres).then((response) => {
             setRespuestas(JSON.parse(JSON.parse(JSON.stringify(response.data[0].opciones))))
             setRespuestasEdit(JSON.parse(JSON.parse(JSON.stringify(response.data[0].opciones))))
+        })
+    }
+
+    const getPreguntas = () => {
+        axios.get(GET_PREGUNTAS_URL).then((response) => {
+            setPreguntasList(response.data)
+        })
+    }
+
+    const getRespuestas = () => {
+        axios.get(GET_RESPUESTAS_URL).then((response) => {
+            setRespuestasList(response.data)
         })
     }
 
@@ -252,14 +272,21 @@ function CuestionariosEdicionAdmin() {
     }
 
     const handleSubmitNewPregunta = async () => {
-        setShowModalAddPreg(false)
+        setDetailsPane({isPaneOpen: false})
         let newres = ""
-        if(tipoNewPregunta === "Opción múltiple"){
+        if(newRespuestaId === 1 || tipoNewPregunta === "Abierta"){
+            newres = newRespuestaFormatted;
+        }
+        else if(newRespuestaId === 0){
+            console.log("NEWRES: "+newRespuesta)
             newres = JSON.stringify(newRespuesta)
         }
         else{
-            newres = newRespuestaFormatted
+            newres = JSON.stringify(newRespuestaBank);
         }
+        console.log("El tipo de la pregunta es: "+tipoNewPregunta)
+        console.log("La respuesta es: "+newres)
+        console.log("La pregunta es: "+newPregunta)
         try{
         const response = await axios.post(NEW_PREGUNTA_URL, {
             idc: idCuestionario,
@@ -290,6 +317,51 @@ function CuestionariosEdicionAdmin() {
               } else if(error.response?.status === 403){
                 setShowA(true)
                 setVariante('danger')
+                setMsg(error.response.data.message);
+              }
+        }
+        establishKey()
+    }
+
+    const establishKey = async () => {
+        console.log("in establish keys")
+        let newres = "";
+        if(newRespuestaId === 1 || tipoNewPregunta === "Abierta"){
+            newres = newRespuestaFormatted;
+        }
+        else if(newRespuestaId === 0){
+            console.log("NEWRES: "+JSON.stringify(newRespuesta))
+        }
+        else{
+            newres = JSON.stringify(newRespuestaBank);
+        }
+        try{
+            const response = await axios.post(ESTABLISH_KEY_URL, {
+                idc: idCuestionario,
+                pregunta: newPregunta,
+                tipo: tipoNewPregunta,
+                respuesta: newres
+            })
+            if(response.status === 200){
+                console.log(response);
+                setShowA(true);
+                setVariante('success');
+                setMsg(response.data.message);
+                setNewPregunta("");
+                setNewRespuesta("");
+                setNewRespuestaId(0);
+                setNewPreguntaId(0);
+                setTipoNewPregunta("");
+                getQuestionnaireDetails();
+            }
+        }catch(error){
+            if(!error?.response){
+                setMsg('No hay respuesta del servidor');
+              } else if(error.response?.status === 400){
+                setMsg(error.response.data.message);
+              } else if(error.response?.status === 401){
+                setMsg('Usuario sin autorización');
+              } else if(error.response?.status === 403){
                 setMsg(error.response.data.message);
               }
         }
@@ -357,6 +429,25 @@ function CuestionariosEdicionAdmin() {
         setRespuestaEditAdd("")
     }
 
+    const handleSelectPregunta = (values) =>{
+        console.log(values)
+        setNewPregunta(values.pregunta)
+        setNewPreguntaId(values.idPregunta)
+    }
+
+    const handleSelectRespuesta = (values) =>{
+        //setRespuesta(JSON.parse(JSON.parse(JSON.stringify(values.opciones))))
+        setNewRespuestaBank(JSON.parse(JSON.parse(JSON.stringify(values.opciones))))
+        setNewRespuestaId(values.id)
+        if(values.id === 1){
+            setTipoNewPregunta("Abierta")
+            setNewRespuestaFormatted("{\"opciones\":[{\"respuesta\":\"\"}]}")
+        }
+        else{
+            setTipoNewPregunta("Opción Múltiple")
+        }
+    }
+
     const handleAddRespuesta = () => {
         setNewRespuesta([...newRespuesta, { respuesta: "" }])
     }
@@ -384,6 +475,7 @@ function CuestionariosEdicionAdmin() {
     const formatRespuesta = () => {
         const rep = "{\"opciones\":"+JSON.stringify(newRespuesta)+"}";
         setNewRespuestaFormatted(rep);
+        setShowModalOpMul(false);
     }
 
     const handleCloseWithoutSave = () => {
@@ -702,6 +794,136 @@ function CuestionariosEdicionAdmin() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            {/*SLIDING PANE AGREGAR PREGUNTA*/}
+            <SlidingPane
+            isOpen={detailsPane.isPaneOpen}
+            title="Agregar pregunta al cuestionario"
+            width={window.innerWidth < 600 ? "100%" : "750px"}
+            onRequestClose={() => {setDetailsPane({isPaneOpen: false})}}>
+                <Form
+                className="form"
+                onSubmit={handleSubmitNewPregunta}>
+                    <h3>Agregar pregunta</h3>
+                    <br/>
+                    <Form.Group controlId="newquestiondetails">
+                        <Form.Label><h3>Pregunta nueva</h3></Form.Label>
+                        <br/>
+                        <Button
+                        className="btnBancoPreguntas"
+                        size="sm"
+                        onClick={() => {
+                            getPreguntas()
+                            setShowModalBancoP(true)
+                            }}>
+                                Banco de preguntas
+                                <AiOutlineQuestionCircle size={20}/>
+                        </Button>
+                        <FormControl
+                        as="textarea"
+                        placeholder="Ingresa la pregunta"
+                        maxLength={250}
+                        value={newPregunta}
+                        onChange={(e) => {
+                            setNewPregunta(e.target.value)
+                        }}/>
+                        <br/>
+                        <Form.Label>Tipo de pregunta</Form.Label>
+                        <h3>{tipoNewPregunta}</h3>
+                        <ButtonGroup>
+                            <Button 
+                            className="btnBancoPreguntas"
+                            value="Opción múltiple" 
+                            onClick={(e) => {
+                                setNewRespuestaId(0)
+                                setNewRespuestaBank([])
+                                setTipoNewPregunta(e.target.value)}}>
+                                Opción múltiple
+                            </Button>
+                            <Button 
+                            className="btnBancoPreguntas"
+                            value="Abierta"
+                            onClick={(e) => {
+                                setNewRespuestaId(0)
+                                setNewRespuestaBank([])
+                                setNewRespuesta([{ respuesta: "" }])
+                                setTipoNewPregunta(e.target.value)}}>
+                                Abierta
+                            </Button>
+                            <Button
+                            className="btnBancoPreguntas"
+                            size="sm"
+                            onClick={() => {
+                                setNewRespuesta([{ respuesta: "" }])
+                                getRespuestas()
+                                setShowModalBancoR(true)}}>
+                                Banco de respuestas
+                            </Button>
+                        </ButtonGroup>
+                        <br/>
+                        <br/>
+                        <Form.Label><h3>Respuesta(s) nueva</h3></Form.Label>
+                        <br/>
+                        {(newRespuestaId === 0)?
+                        <FormControl
+                        as="textarea"
+                        disabled
+                        value={JSON.stringify(newRespuesta)}
+                        onChange={(e) => setNewRespuesta(e.target.value)}
+                        />:
+                        <FormControl
+                        as="textarea"
+                        disabled
+                        value={JSON.stringify(newRespuestaBank)}
+                        //onChange={(e) => setRespuesta(e.target.value)}
+                        />}
+                        <div>
+                        {(newRespuestaId !== 0) ?
+                            <div>
+                                {console.log("Respuesta:"+newRespuestaBank.opciones)}
+                                {newRespuestaBank.opciones.map(values => (
+                                    <div key={values.respuesta}>
+                                        <ListGroup>
+                                            <ListGroupItem>
+                                                {(values.respuesta)}
+                                            </ListGroupItem>
+                                        </ListGroup>
+                                    </div>
+                                ))
+                                }
+                            </div>:
+                            <div>
+                                {newRespuesta.map(values => (
+                                    <div key={values}>
+                                        <ListGroup>
+                                            <ListGroupItem>
+                                                {(values.respuesta)}
+                                            </ListGroupItem>
+                                        </ListGroup>
+                                    </div>
+                                ))
+                                }
+                            </div>
+                            }
+                        </div>
+                        {(tipoNewPregunta === "Opción múltiple") ? 
+                        <div>
+                        <Button
+                        className="btnRegistroRespuestas"
+                        onClick={() => {setShowModalOpMul(true)}}>
+                            Registrar Opciones
+                        </Button>
+                        </div>
+                        :<br/>
+                        }
+                        <Button 
+                        className="btnAct"
+                        onClick={handleSubmitNewPregunta}>
+                            Registrar pregunta nueva
+                            <AiOutlinePlus/>
+                        </Button>
+                    </Form.Group>
+                </Form>
+            </SlidingPane>
             {/*MODAL AGREGAR PREGUNTA*/}
             <Modal
             scrollable
@@ -747,6 +969,15 @@ function CuestionariosEdicionAdmin() {
                                     onClick={(e) => setTipoNewPregunta(e.target.value)}>
                                         Abierta
                                     </Button>
+                                    <Button
+                                    className="btnBancoPreguntas"
+                                    size="sm"
+                                    onClick={() => {
+                                        setNewRespuesta([{ respuesta: "" }])
+                                        getRespuestas()
+                                        setShowModalBancoR(true)}}>
+                                        Banco de respuestas
+                                    </Button>
                                 </ButtonGroup>
                         </Form.Group>
                         {tipoNewPregunta === 'Opción múltiple' ?
@@ -755,7 +986,8 @@ function CuestionariosEdicionAdmin() {
                             <br/>
                             <Form.Control
                             disabled
-                            placeholder='Escribe los registros de opción múltiple debajo'/>
+                            placeholder='Escribe los registros de opción múltiple debajo'
+                            value={JSON.stringify(newRespuesta)}/>
                             {newRespuesta.map((opcion, index) => (
                             <div key={index}
                             className="services">
@@ -793,7 +1025,7 @@ function CuestionariosEdicionAdmin() {
                                     className="remove-btn"
                                     variant="danger"
                                     onClick={() => handleRemoveRespuesta(index)}>
-                                        <span>Borrar</span>
+                                        <AiOutlineDelete/>
                                     </Button>)}
                                 </div>
                             </div>
@@ -808,6 +1040,134 @@ function CuestionariosEdicionAdmin() {
                         </Button>
                     </Form>
                 </Modal.Body>
+            </Modal>
+            {/*MODAL BANCO RESPUESTAS*/}
+            <Modal 
+            show={showModalBancoR}
+            size="sm"
+            scrollable
+            onHide={() => setShowModalBancoR(false)}>
+                <ModalHeader closeButton>
+                    <ModalTitle>
+                        Elige un set de respuestas de las siguientes opciones:
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    {respuestasList.map(values => (
+                        <div key={values.id}>
+                            <ListGroup>
+                                <ListGroupItem>
+                                    {values.id}. 
+                                <ListGroup>
+                                    <ListGroupItem>
+                                        {values.opciones}
+                                    </ListGroupItem>
+                                </ListGroup>
+                                <br/>
+                                <Button 
+                                variant="success"
+                                onClick={() => {
+                                    setShowModalBancoR(false)
+                                    handleSelectRespuesta(values)}}>
+                                    <AiOutlineSelect/>
+                                </Button>
+                                </ListGroupItem>
+                            </ListGroup>
+                            </div>
+                        ))
+                    }
+                </ModalBody>
+            </Modal>
+            {/*MODAL BANCO PREGUNTAS*/}
+            <Modal 
+            show={showModalBancoP}
+            size="sm"
+            scrollable
+            onHide={() => setShowModalBancoP(false)}>
+                <ModalHeader closeButton>
+                    <ModalTitle>
+                        Elige una pregunta de las siguientes opciones:
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    {preguntasList.map(values => (
+                        <div key={values.idPregunta}>
+                        <ListGroup>
+                            <ListGroupItem>
+                                {values.idPregunta}. {values.pregunta}
+                                <br/>
+                                <Button 
+                                variant="success"
+                                onClick={() => {
+                                    setShowModalBancoP(false)
+                                    handleSelectPregunta(values)}}>
+                                    <AiOutlineSelect/>
+                                 </Button>
+                            </ListGroupItem>
+                        </ListGroup>
+                        </div>
+                        ))
+                    }
+                </ModalBody>
+            </Modal>
+            {/*MODAL REGISTRO PREGUNTAS OPCIÓN MÚLTIPLE*/}
+            <Modal
+            show={showModalOpMul}
+            scrollable
+            onHide={() => setShowModalOpMul(false)}>
+                <ModalHeader>
+                    <ModalTitle>
+                        Registra las respuestas:
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    {newRespuesta.map((opcion, index) => (
+                        <div key={index} className="services">
+                            {console.log(opcion.opciones)}
+                            <div className="first-division">
+                            <input
+                                name="respuesta"
+                                type="text"
+                                id="opcion"
+                                value={opcion.opciones}
+                                onChange={(e) => handleChangeRespuesta(e, index)}
+                            />
+                            {newRespuesta.length-1 === index && 
+                            (<Button 
+                            size="sm"
+                            className="add-btn"
+                            variant="success"
+                            onClick={handleAddRespuesta}>
+                                <span>Nueva opción</span>
+                                <AiOutlinePlus/>
+                            </Button>)
+                            }
+                            <br/>
+                            {newRespuesta.length-1 === index && 
+                            (<Button 
+                            size="sm"
+                            className="add-btn"
+                            variant="success"
+                            onClick={formatRespuesta}>
+                                <span>Guardar registros</span>
+                                <AiOutlineSend/>
+                            </Button>)
+                            }
+                            </div>
+                            <div className="second-division">
+                                {newRespuesta.length > 1 && 
+                                (<Button 
+                                size="sm"
+                                className="remove-btn"
+                                variant="danger"
+                                onClick={() => handleRemoveRespuesta(index)}
+                                >
+                                    <AiOutlineDelete/>
+                                </Button>)}
+                            </div>
+                        </div>
+                    ))}
+                </ModalBody>
             </Modal>
             {/*MODAL CONFIRMACIÓN EDICION RESPUESTA*/}
             <Modal
@@ -890,7 +1250,7 @@ function CuestionariosEdicionAdmin() {
             {/* BOTONES INFERIORES */}
             <Button
             className='btnAct'
-            onClick={() => {setShowModalAddPreg(true)}}>
+            onClick={() => {setDetailsPane({isPaneOpen: true})}}>
                 Agregar Pregunta<AiOutlinePlus/>
             </Button>
             <Link to={'/CuestionariosCreacionAdmin'}>

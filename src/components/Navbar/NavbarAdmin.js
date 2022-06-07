@@ -1,3 +1,4 @@
+import { Button } from 'bootstrap';
 import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
@@ -26,6 +27,11 @@ const NavbarAdmin = () => {
                         <Nav.Link as={Link} to="/ProgresoAlumAdmin">Progreso</Nav.Link>
                         <Nav.Link as={Link} to="/CuestionariosCreacionAdmin">Cuestionarios</Nav.Link>
                         <Nav.Link as={Link} to="/PerfilSeleccionAdmin">Perfil</Nav.Link>
+                        <Nav.Link as={Link} to="/Login">
+                            <Button>
+                                Cerrar Sesión
+                            </Button>
+                        </Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
             </Container>

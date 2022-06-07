@@ -125,20 +125,20 @@ function CrearCuestionario() {
                 setMsg(error.response.data.message);
               }
         }
-        establishKey()
+        establishKeys()
     }
 
-    const establishKey = async () => {
+    const establishKeys = async () => {
         try{
-            const respose = await axios.post(ESTABLISH_KEYS_URL, {
+            const response = await axios.post(ESTABLISH_KEYS_URL, {
                 idc: cuestionariosList.length+1,
                 qa: preguntaRespuesta
             })
-            if(respose.status === 200){
-                console.log(respose)
+            if(response.status === 200){
+                console.log(response)
                 setShowA(true)
                 setVariante('success')
-                setMsg(respose.data.message)
+                setMsg(response.data.message)
             }
         }catch(error){
             if(!error?.response){
@@ -194,7 +194,6 @@ function CrearCuestionario() {
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: idPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuesta), idRespuesta: idRespuesta}])
         }
         setDetailsPane({isPaneOpen: true})
-        //handleUploadNewCuestionario()
         setPregunta("")
         setRespuesta([{ respuesta: "" }])
         setRespuestaFormatted("{\"opciones\":[{\"respuesta\":\"\"}]}")

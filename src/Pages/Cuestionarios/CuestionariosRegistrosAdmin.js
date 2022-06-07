@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, Offcanvas, Table } from 'react-bootstrap';
-import { AiOutlineDelete, AiOutlineEdit, AiOutlineLink, AiOutlinePlus, AiOutlineRollback, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
+import { AiOutlineCheckCircle, AiOutlineDelete, AiOutlineEdit, AiOutlineLink, AiOutlinePlus, AiOutlineRollback, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
 import { BiMessageAltAdd } from 'react-icons/bi'
 import axios from '../../axios/axios';
 import "./cuestionarios.css"
@@ -38,7 +38,8 @@ function CuestionariosRegistrosAdmin() {
     const [showButtonSave, setShowButtonSave] = useState(false);
     const [showButtonUndo, setShowButtonUndo] = useState(false);
     const [showModalCerrar, setShowModalCerrar] = useState(false);
-    const [showModalBorrar, setShowModalBorrar] = useState(false);
+    const [showModalBorrarP, setShowModalBorrarP] = useState(false);
+    const [showModalBorrarR, setShowModalBorrarR] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
     const [showModalResEdit, setShowModalResEdit] = useState(false);
     const [showModalLinkA, setShowModalLinkA] = useState(false);
@@ -166,30 +167,28 @@ function CuestionariosRegistrosAdmin() {
         }
     }
 
-    const deleteRespuesta = () => {
-
+    const deleteRespuesta = async () => {
+        setShowModalBorrarR(false)
+        console.log("ID RESPUESTA A BORRAR: "+idDeleteRespuesta)
+        const response = await axios.post(DELETE_RESPUESTA_URL+"/"+idDeleteRespuesta)
+        setShowA(true)
+        setVariante('danger')
+        setMsg(response.data.message)
+        setIdDeleteRespuesta(0)
+        scrollToTop()
+        getRespuestas()
     }
 
-    const handleDelete = async () => {
-       console.log("IDP"+idDeletePregunta+"IDR"+idDeleteRespuesta)
-        if(idDeleteRespuesta === 0 && idDeletePregunta !== 0){
-            const response = await axios.post(DELETE_PREGUNTA_URL+"/"+idPreguntaEdit)
-            setShowA(true)
-            setVariante('success')
-            setMsg(response.data.message)
-            setShowModalBorrar(false)
-            setIdDeletePregunta(0)
-            scrollToTop()
-        }
-        else if(idDeleteRespuesta !== 0 && idDeletePregunta === 0){
-            const response = await axios.post(DELETE_RESPUESTA_URL+"/"+idDeleteRespuesta)
-            setShowA(true)
-            setVariante('success')
-            setMsg(response.data.message)
-            setShowModalBorrar(false)
-            setIdDeleteRespuesta(0)
-            scrollToTop()
-        }
+    const deletePregunta = async () => {
+        setShowModalBorrarP(false)
+        console.log("ID PREGUNTA A BORRAR: "+idDeletePregunta)
+        const response = await axios.post(DELETE_PREGUNTA_URL+"/"+idDeletePregunta)
+        setShowA(true)
+        setVariante('danger')
+        setMsg(response.data.message)
+        setIdDeletePregunta(0)
+        scrollToTop()
+        getPreguntas()
     }
 
     const checkLinkA = (ida) => {
@@ -307,7 +306,7 @@ function CuestionariosRegistrosAdmin() {
                                 <th>Tipo</th>
                                 <th>Editar</th>
                                 <th>Borrar</th>
-                                <th>Link</th>
+                                <th>En uso</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -330,7 +329,7 @@ function CuestionariosRegistrosAdmin() {
                                             variant="outline-danger"
                                             onClick={() => {
                                                 setIdDeletePregunta(question.idPregunta)
-                                                setShowModalBorrar(true)}}>
+                                                setShowModalBorrarP(true)}}>
                                             <AiOutlineDelete />
                                             </Button></td>
                                         <td><Button
@@ -365,7 +364,7 @@ function CuestionariosRegistrosAdmin() {
                                 <th>Respuesta</th>
                                 <th>Editar</th>
                                 <th>Borrar</th>
-                                <th>Link</th>
+                                <th>En uso</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -386,7 +385,7 @@ function CuestionariosRegistrosAdmin() {
                                             variant="outline-danger"
                                             onClick={() => {
                                                 setIdDeleteRespuesta(answer.id)
-                                                setShowModalBorrar(true)}}>
+                                                setShowModalBorrarR(true)}}>
                                             <AiOutlineDelete />
                                             </Button></td>
                                         <td><Button
@@ -433,17 +432,36 @@ function CuestionariosRegistrosAdmin() {
                     </Button>
                 </Modal.Body>
             </Modal>
-            {/*MODAL CONFIRMACIÓN BORRAR*/}
-            <Modal show={showModalBorrar} onHide={() => {setShowModalBorrar(false)}}>
+            {/*MODAL CONFIRMACIÓN BORRAR PREGUNTA*/}
+            <Modal 
+            show={showModalBorrarP} 
+            onHide={() => {setShowModalBorrarP(false)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>¿Estás seguro que quieres borrar este registro?</Modal.Title>
+                    <Modal.Title>¿Estás seguro que quieres borrar esta pregunta?</Modal.Title>
                 </Modal.Header>
                     <Modal.Body>Una vez borrado el registro y sus relaciones serán borradas</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="success" onClick={() => {setShowModalBorrar(false)}}>
+                    <Button variant="success" onClick={() => {setShowModalBorrarP(false)}}>
                         No
                     </Button>
-                    <Button variant="danger" onClick={handleDelete}>
+                    <Button variant="danger" onClick={deletePregunta}>
+                        Sí
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/*MODAL CONFIRMACIÓN BORRAR RESPUESTA*/}
+            <Modal
+            show={showModalBorrarR}
+            onHide={() => {setShowModalBorrarR(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>¿Estás seguro que quieres borrar esta respuesta?</Modal.Title>
+                </Modal.Header>
+                    <Modal.Body>Una vez borrada la respuesta, no se mostrará los cuestionario en las que forma parte</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="success" onClick={() => {setShowModalBorrarR(false)}}>
+                        No
+                    </Button>
+                    <Button variant="danger" onClick={deleteRespuesta}>
                         Sí
                     </Button>
                 </Modal.Footer>
@@ -467,7 +485,7 @@ function CuestionariosRegistrosAdmin() {
                             </Alert>
                             <Button
                             variant='danger'
-                            onClick={handleDelete}>
+                            onClick={deleteRespuesta}>
                                 Borrar respuesta
                                 <AiOutlineDelete/>
                             </Button>
@@ -503,7 +521,7 @@ function CuestionariosRegistrosAdmin() {
                             </Alert>
                             <Button
                             variant='danger'
-                            onClick={handleDelete}>
+                            onClick={deletePregunta}>
                                 Borrar pregunta
                                 <AiOutlineDelete/>
                             </Button>
