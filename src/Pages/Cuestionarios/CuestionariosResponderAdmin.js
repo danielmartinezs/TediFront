@@ -22,28 +22,29 @@ function Respuesta () {
     const [respuestasEdit, setRespuestasEdit] = useState([]);
     const [comentariosEdit, setComentariosEdit] = useState([]);
     const [edicionList, setEdicionList] = useState([]);
-    const [descripcion, setDescripcion] = useState("");
     const [respuestaAbierta, setRespuestaAbierta] = useState([]);
+    const [puntaje, setPuntaje] = useState([]);
+    const [puntajeEdit, setPuntajeEdit] = useState([]);
     const [respuestaEdit, setRespuestaEdit] = useState();
-    const [showOffHito, setShowOffHito] = useState(false);
-    const [showOffRes, setShowOffRes] = useState(false);
-    const [showMEdit, setShowMEdit] = useState(false);
-    const [showA, setShowA] = useState(false);
+    const [descripcion, setDescripcion] = useState("");
+    const [comment, setComment] = useState("");
+    const [tiempoRegistro, setTiempoRegistro] = useState();
+    const [llaveCambio, setLlaveCambio] = useState(0);
     const [msg, setMsg] = useState("");
     const [variante, setVariante] = useState('');
     const [numeroPregunta, setNumeroPregunta] = useState(0);
     const [preguntaActual, setPreguntaActual] = useState(0);
-    const [puntaje, setPuntaje] = useState([]);
-    const [puntajeEdit, setPuntajeEdit] = useState([]);
     const [resultadoPuntaje, setResultadoPuntaje] = useState(0);
     const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(0);
+    const [showButtonEdit, setShowButtonEdit] = useState(false);
+    const [showOffHito, setShowOffHito] = useState(false);
+    const [showOffRes, setShowOffRes] = useState(false);
+    const [showMEdit, setShowMEdit] = useState(false);
+    const [showA, setShowA] = useState(false);
     const [isSelectedQuestionnaire, setIsSelectedQuestionnaire] = useState(true);
     const [isDone, setIsDone] = useState(false);
     const [isStart, setIsStart] = useState(false);
     const [isFinished, setIsFinished] = useState(false);
-    const [comment, setComment] = useState("");
-    const [tiempoRegistro, setTiempoRegistro] = useState();
-    const [llaveCambio, setLlaveCambio] = useState(0);
     const {idAlumno} = useParams();
 
     useEffect (() => {
@@ -136,6 +137,7 @@ function Respuesta () {
                 setShowA(true)
                 setVariante('success')
                 setMsg(response.data.message)
+                setShowButtonEdit(false)
             }
         }catch(error){
             if(!error?.response){
@@ -332,6 +334,7 @@ function Respuesta () {
         setLlaveCambio(0);
         setShowOffRes(false)
         setShowMEdit(true)
+        setShowButtonEdit(true)
     }
 
     const WrapItUp = () => {
@@ -471,23 +474,27 @@ function Respuesta () {
                         </div>
                     ))
                 }
-                <Button
-                className='btnEditarRespuesta'
-                size='lg'
-                onClick={() => {
-                    handleSubmitEdicion()
-                    setShowMEdit(false)
-                }}>
-                Guardar registros
-                <AiOutlineSend/>
-            </Button>
+                {console.log("SHOWBUTTONEDIT"+showButtonEdit)}
+                {showButtonEdit === true?
+                <div>
+                    <Button
+                    className='btnEditarRespuesta'
+                    size='lg'
+                    onClick={() => {
+                        handleSubmitEdicion()
+                        setShowMEdit(false)}}>
+                        Guardar registros
+                        <AiOutlineSend/>
+                    </Button>
+                </div>:
+                <div>
+                </div>}
             </ModalBody>
         </Modal>
         {/*OFFCANVAS EDITAR RESPUESTAS */}
         <Offcanvas
         show={showOffRes}
-        placement={'end'}
-        >
+        placement={'end'}>
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>Editar respuesta</Offcanvas.Title>
             </Offcanvas.Header>
