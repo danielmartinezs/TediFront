@@ -239,7 +239,12 @@ function CrearCuestionario() {
     const handleChangeRespuesta = (e, index) => {
         const { name, value } = e.target;
         const list = [...respuesta];
-        if(!isNaN(value)){
+        if(value === ""){
+            const nullval = ""
+            list[index][name] = nullval
+            setRespuesta(list)
+        }
+        else if(!isNaN(value)){
             const ivalue = parseInt(value);
             list[index][name] = ivalue;
             setRespuesta(list)
@@ -524,42 +529,38 @@ function CrearCuestionario() {
             {/*MODAL REGISTRO PREGUNTAS OPCIÓN MÚLTIPLE*/}
             <Modal
             show={showModalO}
-            scrollable
-            onHide={() => setShowModalO(false)}>
-                <ModalHeader>
+            scrollable>
+                <ModalHeader closeButton>
                     <ModalTitle>
                         Registra las respuestas:
                     </ModalTitle>
                 </ModalHeader>
                 <ModalBody>
-                    {respuesta.map((opcion, index) => (
+                    {respuesta?.map((opcion, index) => (
                         <div key={index} className="services">
-                            {console.log(opcion.opciones)}
+                            {console.log("OPCIONES: "+opcion.respuesta)}
                             <div className="first-division">
                             <input
-                                name="respuesta"
-                                type="text"
-                                id="opcion"
-                                value={opcion.opciones}
-                                onChange={(e) => handleChangeRespuesta(e, index)}
-                            />
+                            name="respuesta"
+                            type="text"
+                            id="opcion"
+                            value={opcion.respuesta}
+                            onChange={(e) => handleChangeRespuesta(e, index)}/>
                             {respuesta.length-1 === index && 
                             (<Button 
                             size="sm"
-                            className="add-btn"
                             variant="success"
                             onClick={handleAddRespuesta}>
-                                <span>Nueva opción</span>
+                                Nueva opción
                                 <AiOutlinePlus/>
                             </Button>)
                             }
                             <br/>
-                            {respuesta.length-1 === index && 
+                            {respuesta.length-1 === index && respuesta.length > 1 && 
                             (<Button 
                             size="sm"
-                            className="add-btn"
                             variant="success"
-                            onClick={() => {formatRespuesta(idRespuesta)}}>
+                            onClick={formatRespuesta}>
                                 <span>Guardar registros</span>
                                 <AiOutlineSend/>
                             </Button>)
@@ -569,7 +570,6 @@ function CrearCuestionario() {
                                 {respuesta.length > 1 && 
                                 (<Button 
                                 size="sm"
-                                className="remove-btn"
                                 variant="danger"
                                 onClick={() => handleRemoveRespuesta(index)}
                                 >
