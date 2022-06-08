@@ -1,6 +1,6 @@
-import React from "react"; 
+import React from "react";
+import { Link } from "react-router-dom";
 import { Button, Carousel } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.css';
 import foto1 from '../../assets/foto1.png';
 import foto2 from '../../assets/foto2.jpg';
 import foto9 from '../../assets/foto9.jpg';
@@ -10,8 +10,8 @@ import "./styles.css";
 function Home() {
 
   return (
-    <div style={{ display: 'center', width:1200, border:1, padding: 30 }}>
-      <Carousel>
+    <div style={{ display: 'center', padding: 10 }}>
+      <Carousel variant="dark">
         <Carousel.Item interval={15000}>
           <div>
             <img
@@ -21,11 +21,11 @@ function Home() {
            />
           </div>
           <Carousel.Caption>
-            <Button
-            className="buttons"
-            onClick={() => (window.location.href = "/Progreso")}>
+            <Link to="/Progreso">
+            <button className="buttonlink">
               Progreso
-            </Button>
+            </button>
+            </Link>
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item interval={15000}>
@@ -35,12 +35,11 @@ function Home() {
             alt="Image Two"
           />
           <Carousel.Caption>
-            <h3>Reportes</h3>
-            <Button
-            className="buttons"
-            onClick={() => (window.location.href = "/Reportes")}>
+            <Link to="/Reportes">
+            <button className="buttonlink">
               Reporte
-            </Button>
+            </button>
+            </Link>
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item interval={15000}>
@@ -50,12 +49,11 @@ function Home() {
             alt="Image three"
           />
           <Carousel.Caption>
-            <h3>Perfil</h3>
-            <Button
-            className="buttons"
-            onClick={() => (window.location.href = "/PerfilPadre")}>
+            <Link to="/PerfilPadre">
+            <button className="buttonlink">
               Perfil
-            </Button>
+            </button>
+            </Link>
           </Carousel.Caption>
         </Carousel.Item>
       </Carousel>

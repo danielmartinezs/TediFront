@@ -1,6 +1,6 @@
 import React from "react"; 
+import { Link } from "react-router-dom";
 import { Button, Carousel } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.css';
 import foto2 from '../../assets/foto2.jpg';
 import foto5 from '../../assets/foto5.jpg';
 import foto10 from '../../assets/foto10.png';
@@ -10,21 +10,22 @@ import "./styles.css";
 function HomeAdmin() {
 
   return (
-    <div style={{ display: 'center', width:1000, padding: 30 }}>
-      <Carousel>
+    <div style={{ display: 'center', padding: 10 }}>
+      <Carousel variant="dark">
         <Carousel.Item interval={15000}>
           <div>            
             <img
             className="d-block w-100"
             src={foto11}
+            alt="Image One"
            />
           </div>
           <Carousel.Caption>
-            <Button
-              className="buttons"
-              onClick={() => (window.location.href = "/Alumnos")}>
+            <Link to="/Alumnos">
+            <button className="buttonlink">
               Alumnos
-            </Button>
+            </button>
+            </Link>
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item interval={15000}>
@@ -34,25 +35,25 @@ function HomeAdmin() {
             alt="Image Two"
           />
           <Carousel.Caption>
-            <Button
-            className="buttons"
-            onClick={() => (window.location.href = "/CuestionariosCreacionAdmin")}>
+            <Link to="/CuestionariosCreacionAdmin">
+            <button className="buttonlink">
               Cuestionarios
-            </Button>
+            </button>
+            </Link>
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item interval={15000}>
           <img
             className="d-block w-100"
             src={foto10}
-            alt="Image Two"
+            alt="Image Three"
           />
           <Carousel.Caption>
-            <Button
-            className="buttons"
-            onClick={() => (window.location.href = "/ReportesAdmin")}>
+            <Link to="/ReportesAdmin">
+            <button className="buttonlink">
               Reportes
-            </Button>
+            </button>
+            </Link>
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item interval={15000}>
@@ -62,11 +63,11 @@ function HomeAdmin() {
             alt="Image five"
           />
           <Carousel.Caption>
-            <Button
-            className="buttons"
-            onClick={() => (window.location.href = "/PerfilSeleccionAdmin")}>
+            <Link to="/PerfilSeleccionAdmin">
+            <button className="buttonlink">
               Cuentas
-            </Button>
+            </button>
+            </Link>
           </Carousel.Caption>
         </Carousel.Item>
       </Carousel>

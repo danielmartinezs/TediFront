@@ -1,11 +1,18 @@
-.buttons{
+  .buttonlink{
     background-color:rgb(29,63,148);
     color: white;
-    padding: 15px 32px;
-  
+    padding: 15px 30px;
+    border-radius: 10%;
+    border-style: hidden;
+    text-align: center;
+  }
+  .buttonlink:hover{
+    background-color:rgb(17, 41, 114);
+    padding: 17px 35px;
+    color: white;
+    text-align: center;
   }
   .text{
     color:rgb(29,63,148);
     text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
-
   }
