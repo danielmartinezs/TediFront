@@ -1,23 +1,62 @@
-import { useState } from 'react';
-import surveyJson from '../../components/surveyjs';
-import { StylesManager, Model } from 'survey-core';
-import * as Survey  from 'survey-react';
-import 'survey-react/survey.css'
+import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-StylesManager.applyTheme("modern");
+import { Link } from 'react-router-dom'
+import { Button, Card } from "react-bootstrap";
+import { AiOutlineEdit, AiOutlineInfoCircle, AiOutlinePlus } from 'react-icons/ai';
+import axios from '../../axios/axios'
+import "./cuestionarios.css"
+const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 
 function CuestionariosAdmin() {
-    const [datos, setDatos] = useState([]);
+    const [cuestionariosList, setCuestionariosList] = useState([]);
 
-    const dataHandler = (e) => {
-        setDatos(e)
+    useEffect(() => {
+        getCuestionarios();
+    }, []);
+
+    const getCuestionarios = () => {
+        axios.get(GET_CUESTIONARIOS_URL).then(response => {
+            setCuestionariosList(response.data);
+        })
     }
 
     return(
         <div>
-            <Survey.Survey
-            json={surveyJson}
-            onComplete={(e) => dataHandler(e.valuesHash)}/>
+            {cuestionariosList.map(values => (
+                <div key={values.idCuestionario}>
+                    <Card 
+                    className="text-center"
+                    border = "warning"
+                    style={{ width: '100%' }}>
+                        <Card.Body>
+                            <Card.Header>Cuestionario #{values.idCuestionario}</Card.Header>
+                            <Card.Title><h1>{values.nombre}</h1></Card.Title>
+                            <Link to={`/CuestionariosEdicionAdmin/${values.idCuestionario}`}>
+                                <Button className="btnBancoPreguntas" >
+                                    Modificar
+                                    <AiOutlineEdit/>
+                                </Button>
+                            </Link>
+                        </Card.Body>
+                        <Card.Footer>
+                                 Materia: {values.materia}
+                        </Card.Footer>
+                    </Card>
+                </div>
+            ))}
+            <br/>
+            <Link to={"/CuestionariosRegistrosAdmin"}>
+                <Button className="btnAct">
+                    Registro de preguntas y respuestas
+                    <AiOutlineInfoCircle/>
+                </Button>
+            </Link>
+            <Link to={"/CuestionariosCreacionAdmin"}>
+                <Button className="btnAct">
+                    Crear cuestionario
+                    <AiOutlinePlus/>
+                </Button>
+            </Link>
         </div>
     )
 }

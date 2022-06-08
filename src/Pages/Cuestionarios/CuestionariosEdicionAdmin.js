@@ -427,6 +427,7 @@ function CuestionariosEdicionAdmin() {
         setShowOffAddR(false)
         setShowModalRes(true)
         setShowADelResp(true)
+        setShowButtonUndo(false)
         setVariante('success')
         setMsg("Se agregó la opción")
         setRespuestaEditAdd("")
@@ -753,9 +754,9 @@ function CuestionariosEdicionAdmin() {
                             <Form.Control 
                             as="textarea" 
                             rows={1}
-                            placeholder="Respuesta nueva" 
+                            placeholder="Respuesta nueva"
                             value={respuestaEditAdd}
-                            onChange={(e) => setRespuestaEditAdd(e.target.value)}>
+                            onChange={(e) => {setRespuestaEditAdd(e.target.value)}}>
                                 {respuestaEditAdd}
                             </Form.Control>
                             <br/>

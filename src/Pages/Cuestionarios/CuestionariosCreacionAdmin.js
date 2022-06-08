@@ -17,7 +17,6 @@ function CrearCuestionario() {
     const [nombrec, setNombreC] = useState("");
     const [materiac, setMateriaC] = useState("");
     const [cuestionariosList, setCuestionariosList] = useState([]);
-    const [cuestionariosInfo, setCuestionariosInfo] = useState([]);
     const [preguntasList, setPreguntasList] = useState([]);
     const [respuestasList, setRespuestasList] = useState([]);
     const [preguntaRespuesta, setPreguntaRespuesta] = useState([]);
@@ -32,7 +31,6 @@ function CrearCuestionario() {
     const [respuesta, setRespuesta] = useState([{ "respuesta": "" }]);
     const [respuestaFormatted, setRespuestaFormatted] = useState("{\"opciones\":[{\"respuesta\":\"\"}]}");
     const [respuestaBank, setRespuestaBank] = useState([]);
-    const [newCuestionario, setNewCuestionario] = useState(false);
     const [tipoPregunta, setTipoPregunta] = useState("");
     const [showA, setShowA] = useState(false);
     const [showModalP, setShowModalP] = useState(false)
@@ -68,7 +66,6 @@ function CrearCuestionario() {
                 response.data[i].opciones = JSON.parse(response.data[i].opciones)
                 console.log(response.data[i].opciones)
             }
-            setCuestionariosInfo(response.data)
         })
     }
 
@@ -261,7 +258,6 @@ function CrearCuestionario() {
         setShowModalO(false);
     }
 
-    if(newCuestionario)
     return(
         <main>
             <div className='alertas'>
@@ -583,46 +579,6 @@ function CrearCuestionario() {
             </div>
     </main>
     );
-
-    return(
-        <div>
-            {cuestionariosList.map(values => (
-                <div key={values.idCuestionario}>
-                    <Card 
-                    className="text-center"
-                    border = "warning"
-                    style={{ width: '100%' }}>
-                        <Card.Body>
-                            <Card.Header>Cuestionario #{values.idCuestionario}</Card.Header>
-                            <Card.Title><h1>{values.nombre}</h1></Card.Title>
-                            <Link to={`/CuestionariosEdicionAdmin/${values.idCuestionario}`}>
-                                <Button className="btnBancoPreguntas" >
-                                    Modificar
-                                    <AiOutlineEdit/>
-                                </Button>
-                            </Link>
-                        </Card.Body>
-                        <Card.Footer>
-                                 Materia: {values.materia}
-                        </Card.Footer>
-                    </Card>
-                </div>
-            ))}
-            <br/>
-            <Link to={"/CuestionariosRegistrosAdmin"}>
-                <Button className="btnAct">
-                    Registro de preguntas y respuestas
-                    <AiOutlineInfoCircle/>
-                </Button>
-            </Link>
-            <Button
-            className="btnAct"
-            onClick={() => setNewCuestionario(true)}>
-                Crear cuestionario
-                <AiOutlinePlus/>
-            </Button>
-        </div>
-    )
 }
 
 export default CrearCuestionario
