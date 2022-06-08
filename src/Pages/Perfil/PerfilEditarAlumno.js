@@ -13,7 +13,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { DatePicker } from "@material-ui/pickers";
 import { es } from 'date-fns/locale'
 import "./perfil.css"
-const GET_TUTORES_URL = '/profiles/gettutores'
+const GET_ALUMNOS_URL = '/profiles/getalumnos'
 const EDIT_TUTOR_URL = '/profiles/editatutor'
 const EDIT_ALUMNO_URL = 'profiles/editaalumno'
 const DELETE_TUTOR_URL = 'profiles/borratutor'
@@ -28,8 +28,8 @@ function PerfilEditarAlumno() {
     const [variante, setVariante] = useState('');
     const [showA, setShowA] = useState(false);
     const [showModalBorrar, setShowModalBorrar] = useState(false);
-    const [tutoresList, setTutoresList] = useState([]);
-    const [tutoresSearch, setTutoresSearch] = useState([]);
+    const [alumnosList, setAlumnosList] = useState([]);
+    const [alumnosSearch, setAlumnosSearch] = useState([]);
     const [busqueda, setBusqueda] = useState("")
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
@@ -43,21 +43,21 @@ function PerfilEditarAlumno() {
     const [detailsPane, setDetailsPane] = useState({isPaneOpen: false});
 
     useEffect (() => {
-        getTutores()
+        getAlumnos()
     }, [detailsPane])
 
-    const getTutores = () => {
-        axios.get(GET_TUTORES_URL).then((response) => {
-            setTutoresList(response.data)
-            setTutoresSearch(response.data)
+    const getAlumnos = () => {
+        axios.get(GET_ALUMNOS_URL).then((response) => {
+            setAlumnosList(response.data)
+            setAlumnosSearch(response.data)
         })
-        setFechaNac(tutoresList[llave-1]?.fechaNacimiento)
+        setFechaNac(alumnosList[llave-1]?.fechaNacimiento)
     }
 
     const openPane = (values) => {
         console.log(values)
         setDetailsPane({isPaneOpen: true});
-        setLlave(values.idTutor);
+        setLlave(values.idAlumno);
         console.log(llave)
     }
 
@@ -77,7 +77,7 @@ function PerfilEditarAlumno() {
         console.log("foto"+foto)
         try{
             const response = await axios.post(EDIT_ALUMNO_URL, {
-                idal: tutoresList[llave-1]?.idAlumno,
+                idal: alumnosList[llave-1]?.idAlumno,
                 nombrealu: nombre,
                 apellidoalu: apellido,
                 nacimiento: fechanac,
@@ -114,44 +114,6 @@ function PerfilEditarAlumno() {
         }
     }
 
-    const handleSubmitEditTutor = async (e) => {
-        e.preventDefault();
-        try{
-            const response = await axios.post(EDIT_TUTOR_URL, {
-                idtut: llave,
-                nombretut: nombre,
-                password: contrasenia,
-                confpassword: confpassword
-            })
-          if(response.status === 200){
-              console.log(response)
-              setShowA(true)
-              setVariante('success')
-              setMsg(response.data.message)
-              setNombre("")
-              setContrasenia("")
-              setConfPassword("")
-          }
-        }catch(error){
-          setShowA(true)
-          console.log(error)
-          if(!error?.response){
-            setMsg('No hay respuesta del servidor');
-            setVariante('danger');
-          } else if(error.response?.status === 400){
-            setMsg(error.response.data.message);
-            setVariante('danger');
-          } else if(error.response?.status === 401){
-            setMsg('Usuario sin autorización');
-            setVariante('danger');
-          } else if(error.response?.status === 403){
-            setMsg(error.response.data.message);
-            setVariante('danger');
-          }
-          console.log(msg)
-        }
-    }
-
     const handleDelete = async (llave) => {
         console.log(llave)
         const response = await axios.post(DELETE_TUTOR_URL+"/"+llave)
@@ -164,17 +126,17 @@ function PerfilEditarAlumno() {
 
     const filtrar = (terminoBusqueda) => {
         console.log("El termino es "+terminoBusqueda)
-        var resultadosBusqueda = tutoresList.filter( (elemento) => {
+        var resultadosBusqueda = alumnosList.filter( (elemento) => {
             if(terminoBusqueda === ""){
-                setTutoresSearch(tutoresList)
+                setAlumnosSearch(alumnosList)
                 return elemento;
             }
-            else if(elemento.usuario.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
             {
                 return elemento;
             }
         });
-        setTutoresSearch(resultadosBusqueda);
+        setAlumnosSearch(resultadosBusqueda);
     }
 
     const handleBuscar = (e) => {
@@ -185,7 +147,7 @@ function PerfilEditarAlumno() {
 
     return (
         <div>
-            <h1>Edición de tutores/alumnos</h1>
+            <h1>Edición de perfiles alumnos</h1>
             <div className='alertas'>
             <Alert 
             show={showA}
@@ -202,103 +164,40 @@ function PerfilEditarAlumno() {
                 <input
                     className="inputBuscar"
                     value={busqueda}
-                    placeholder="Buscar Tutor"
+                    placeholder="Buscar Alumno"
                     onChange={(e) => handleBuscar(e)}
                 />
                 <button className="btn">
                     <AiOutlineSearch/>
                 </button>
             </div>
-            {tutoresSearch && tutoresSearch.map(values => (
-                    <div className='admin' key={values.idAdministrador}>
-                        <div>
-                            <Accordion flush>
-                                <AccordionHeader>{values.usuario} - {values.nombre}</AccordionHeader>
-                                    <AccordionBody>
-                                    <ButtonGroup>
-                                        {botones.map((botones, idx) => (
-                                        <ToggleButton
-                                            key={idx}
-                                            id={`radio-${idx}`}
-                                            type="radio"
-                                            variant={idx % 2 ? 'outline-warning' : 'outline-warning'}
-                                            name="radio"
-                                            value={botones.value}
-                                            onChange={(e) => setBtnValue(e.currentTarget.value)}
-                                            onClick={() => openPane(values, botones.value)}
-                                        >
-                                            {botones.name}
-                                        </ToggleButton>
-                                        ))}
-                                    </ButtonGroup>
-                                    </AccordionBody>
-                            </Accordion>
-                            <br/>
-                        </div>
+            {alumnosSearch && alumnosSearch.map(values => (
+                    <div 
+                    className='admin' 
+                    key={values.idAlumno}>
+                            <Card
+                            className='text-center'
+                            border='warning'
+                            style={{width: '100%'}}>
+                                <Card.Header>
+                                    <Card.Title>{values.nombre}</Card.Title>
+                                </Card.Header>
+                                <Card.Body>
+                                    <Button
+                                    onClick={() => {openPane(values)}}>
+                                        Editar información
+                                        <AiOutlineEdit/>
+                                    </Button>
+                                </Card.Body>
+                            </Card>
                     </div>
                 )
             )}
-            {btnValue === '1' ? 
-            <SlidingPane
-                className='sliding-pane'
-                isOpen={detailsPane.isPaneOpen}
-                title={tutoresList[llave-1]?.usuario}
-                width={window.innerWidth < 600 ? "100%" : "500px"}
-                onRequestClose={closePane}
-            >
-                <div className='admin-details__info'>
-                    <div className='admin-details__box'>
-                        <Form 
-                        className="form"
-                        onSubmit={handleSubmitEditTutor}>
-                             <h3>Editar información</h3>
-                        <Form.Group controlId="nombreadmin">
-                                <Form.Label>Nombre del tutor</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder={tutoresList[llave-1]?.usuario}
-                                    value={nombre}
-                                    onChange={(e) => setNombre(e.target.value)}
-                                    ></Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="password">
-                                <Form.Label>Contraseña</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Escriba la contraseña"
-                                    value={contrasenia}
-                                    onChange={(e) => setContrasenia(e.target.value)}
-                                    ></Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="confirmpassword">
-                                <Form.Label>Repetir Contraseña</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Escriba la contraseña"
-                                    value={confpassword}
-                                    onChange={(e) => setConfPassword(e.target.value)}
-                                    ></Form.Control>
-                            </Form.Group>
-                            <br/>
-                            <Button
-                            className='button-edit'
-                            type='submit'
-                            onSubmit={handleSubmitEditTutor}>
-                                Editar
-                                <AiOutlineEdit size='2em'/>
-                            </Button>
-                        </Form>
-                    </div>
-                    <button className='button-delete'>
-                        Borrar  <AiOutlineDelete size='2em' />
-                    </button>
-                </div>
-            </SlidingPane>
-            : 
+            {/*SLIDING PANE EDICIÓN ALUMNO */}
             <SlidingPane
             className='sliding-pane'
             isOpen={detailsPane.isPaneOpen}
-            title={tutoresList[llave-1]?.nombre}
+            title={alumnosList[llave-1]?.nombre}
             width={window.innerWidth < 600 ? "100%" : "500px"}
             onRequestClose={closePane}
             >
@@ -310,7 +209,7 @@ function PerfilEditarAlumno() {
                              <h3>Editar información</h3>
                              <img 
                         className='admin-details__img'
-                        src={fotoPreview ?? (tutoresList[llave-1]?.fotografia)}/>
+                        src={fotoPreview ?? (alumnosList[llave-1]?.fotografia)}/>
                         <Form.Group 
                         controlId="formFileSm" 
                         className="custom-file-upload">
@@ -329,7 +228,7 @@ function PerfilEditarAlumno() {
                                 <Form.Label>Nombre del alumno</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder={tutoresList[llave-1]?.nombre}
+                                    placeholder={alumnosList[llave-1]?.nombre}
                                     value={nombre}
                                     onChange={(e) => setNombre(e.target.value)}
                                     ></Form.Control>
@@ -338,7 +237,7 @@ function PerfilEditarAlumno() {
                                 <Form.Label>Apellido del alumno</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder={tutoresList[llave-1]?.nombre}
+                                    placeholder={alumnosList[llave-1]?.nombre}
                                     value={apellido}
                                     onChange={(e) => setApellido(e.target.value)}
                                     ></Form.Control>
@@ -362,7 +261,7 @@ function PerfilEditarAlumno() {
                                 <Form.Label>Semestre Escolar</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder={tutoresList[llave-1]?.anioEscolar}
+                                    placeholder={alumnosList[llave-1]?.anioEscolar}
                                     value={semestre}
                                     onChange={(e) => setSemestre(e.target.value)}
                                     ></Form.Control>
@@ -384,7 +283,7 @@ function PerfilEditarAlumno() {
                 </button>
             </div>
         </SlidingPane>
-        }
+        {/*MODAL CONFIRMACIÓN BORRAR */}
         <Modal show={showModalBorrar} onHide={() => {setShowModalBorrar(false)}}>
             <Modal.Header closeButton>
                 <Modal.Title>¿Estás seguro que quieres borrar este registro?</Modal.Title>

@@ -71,49 +71,6 @@ function PerfilEditarTutor() {
         setSemestre("");
     }
 
-    const handleSubmitEditAlumno = async (e) => {
-        e.preventDefault();
-        console.log(fechanac)
-        console.log("foto"+foto)
-        try{
-            const response = await axios.post(EDIT_ALUMNO_URL, {
-                idal: tutoresList[llave-1]?.idAlumno,
-                nombrealu: nombre,
-                apellidoalu: apellido,
-                nacimiento: fechanac,
-                schoolmester: semestre,
-                foto: foto
-            })
-          if(response.status === 200){
-              console.log(response)
-              setShowA(true)
-              setVariante('success')
-              setMsg(response.data.message)
-              setNombre("")
-              setApellido("")
-              setFechaNac("")
-              setSemestre("")
-              setFoto("")
-          }
-        }catch(error){
-          setShowA(true)
-          console.log(error)
-          if(!error?.response){
-            setMsg('No hay respuesta del servidor');
-            setVariante('danger');
-          } else if(error.response?.status === 400){
-            setMsg(error.response.data.message);
-            setVariante('danger');
-          } else if(error.response?.status === 401){
-            setMsg('Usuario sin autorización');
-            setVariante('danger');
-          } else if(error.response?.status === 403){
-            setMsg(error.response.data.message);
-            setVariante('danger');
-          }
-        }
-    }
-
     const handleSubmitEditTutor = async (e) => {
         e.preventDefault();
         try{
@@ -185,7 +142,7 @@ function PerfilEditarTutor() {
 
     return (
         <div>
-            <h1>Edición de tutores/alumnos</h1>
+            <h1>Edición de tutores</h1>
             <div className='alertas'>
             <Alert 
             show={showA}
@@ -210,42 +167,35 @@ function PerfilEditarTutor() {
                 </button>
             </div>
             {tutoresSearch && tutoresSearch.map(values => (
-                    <div className='admin' key={values.idAdministrador}>
+                    <div
+                    className='admin'
+                    key={values.idTutor}>
                         <div>
-                            <Accordion flush>
-                                <AccordionHeader>{values.usuario} - {values.nombre}</AccordionHeader>
-                                    <AccordionBody>
-                                    <ButtonGroup>
-                                        {botones.map((botones, idx) => (
-                                        <ToggleButton
-                                            key={idx}
-                                            id={`radio-${idx}`}
-                                            type="radio"
-                                            variant={idx % 2 ? 'outline-warning' : 'outline-warning'}
-                                            name="radio"
-                                            value={botones.value}
-                                            onChange={(e) => setBtnValue(e.currentTarget.value)}
-                                            onClick={() => openPane(values, botones.value)}
-                                        >
-                                            {botones.name}
-                                        </ToggleButton>
-                                        ))}
-                                    </ButtonGroup>
-                                    </AccordionBody>
-                            </Accordion>
-                            <br/>
+                            <Card
+                            className='text-center'
+                            border='warning'
+                            style={{width: '100%'}}>
+                                <Card.Header>
+                                    <Card.Title>{values.usuario}</Card.Title>
+                                </Card.Header>
+                                <Card.Body>
+                                    <Button
+                                    onClick={() => {openPane(values)}}>
+                                        Editar información
+                                        <AiOutlineEdit/>
+                                    </Button>
+                                </Card.Body>
+                            </Card>
                         </div>
                     </div>
                 )
-            )}
-            {btnValue === '1' ? 
+            )} 
             <SlidingPane
-                className='sliding-pane'
-                isOpen={detailsPane.isPaneOpen}
-                title={tutoresList[llave-1]?.usuario}
-                width={window.innerWidth < 600 ? "100%" : "500px"}
-                onRequestClose={closePane}
-            >
+            className='sliding-pane'
+            isOpen={detailsPane.isPaneOpen}
+            title={tutoresList[llave-1]?.usuario}
+            width={window.innerWidth < 600 ? "100%" : "500px"}
+            onRequestClose={closePane}>
                 <div className='admin-details__info'>
                     <div className='admin-details__box'>
                         <Form 
@@ -294,97 +244,7 @@ function PerfilEditarTutor() {
                     </button>
                 </div>
             </SlidingPane>
-            : 
-            <SlidingPane
-            className='sliding-pane'
-            isOpen={detailsPane.isPaneOpen}
-            title={tutoresList[llave-1]?.nombre}
-            width={window.innerWidth < 600 ? "100%" : "500px"}
-            onRequestClose={closePane}
-            >
-            <div className='admin-details__info'>
-                <div className='admin-details__box'>
-                    <Form 
-                        className="form"
-                        onSubmit={handleSubmitEditAlumno}>
-                             <h3>Editar información</h3>
-                             <img 
-                        className='admin-details__img'
-                        src={fotoPreview ?? (tutoresList[llave-1]?.fotografia)}/>
-                        <Form.Group 
-                        controlId="formFileSm" 
-                        className="custom-file-upload">
-                            <Form.Control
-                                type="file"
-                                size="sm"
-                                accept='image/*'
-                                onChange={(e) => {
-                                    setFoto(e.target.files[0])
-                                    setFotoPreview(URL.createObjectURL(e.target.files[0]))
-                                }}
-                            >
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group controlId="nombre">
-                                <Form.Label>Nombre del alumno</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder={tutoresList[llave-1]?.nombre}
-                                    value={nombre}
-                                    onChange={(e) => setNombre(e.target.value)}
-                                    ></Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="apellido">
-                                <Form.Label>Apellido del alumno</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder={tutoresList[llave-1]?.nombre}
-                                    value={apellido}
-                                    onChange={(e) => setApellido(e.target.value)}
-                                    ></Form.Control>
-                            </Form.Group>
-                            <Form.Group>
-                            <Form.Label>Fecha de Nacimiento</Form.Label>
-                            <br/>
-                                <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
-                                        <DatePicker
-                                        disableFuture
-                                        openTo="year"
-                                        variant="dialog"
-                                        format="yyyy/MM/dd"
-                                        label="Fecha de Nacimiento"
-                                        views={["year", "month", "date"]}
-                                        value={fechanac}
-                                        onChange={setFechaNac}/>
-                                </MuiPickersUtilsProvider>
-                            </Form.Group>
-                            <Form.Group controlId="semestre">
-                                <Form.Label>Semestre Escolar</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder={tutoresList[llave-1]?.anioEscolar}
-                                    value={semestre}
-                                    onChange={(e) => setSemestre(e.target.value)}
-                                    ></Form.Control>
-                            </Form.Group>
-                            <br/>
-                            <Button
-                            className='button-edit'
-                            type='submit'
-                            onSubmit={handleSubmitEditAlumno}>
-                                Editar
-                                <AiOutlineEdit size='2em'/>
-                            </Button>
-                        </Form>
-                </div>
-                <button 
-                className='button-delete'
-                onClick={() => {setShowModalBorrar(true)}}>
-                    Borrar  <AiOutlineDelete size='2em' />
-                </button>
-            </div>
-        </SlidingPane>
-        }
+        {/*MODAL CONFIRMACIÓN BORRAR */}
         <Modal show={showModalBorrar} onHide={() => {setShowModalBorrar(false)}}>
             <Modal.Header closeButton>
                 <Modal.Title>¿Estás seguro que quieres borrar este registro?</Modal.Title>

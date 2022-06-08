@@ -62,41 +62,6 @@
     background: #e0e3f0;
   }
   
-  .bloc-tabs {
-    display: flex;
-  }
-  .tabs {
-    padding: 15px;
-    text-align: center;
-    width: 100%;
-    background: rgba(128, 128, 128, 0.075);
-    cursor: pointer;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.274);
-    box-sizing: content-box;
-    position: relative;
-    outline: none;
-  }
-  .tabs:not(:last-child){
-    border-right: 1px solid rgba(0, 0, 0, 0.274);
-  }
-  
-  .active-tabs  {
-    background: darkgoldenrod;
-    border-bottom: 1px solid transparent;
-  }
-  
-  .active-tabs::before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% + 2px);
-    height: 3px;
-    background: #FE9000;
-  }
-  
   .admin-details__info{
     padding: 21px;
   }
