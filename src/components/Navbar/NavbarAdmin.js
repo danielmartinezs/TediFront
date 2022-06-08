@@ -1,13 +1,16 @@
-import { Button } from 'bootstrap';
 import React from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap'
+import { Button, Container, Navbar, Nav } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../assets/LogoT.svg';
+import Login from '../Login/Login';
 
 const NavbarAdmin = () => {
 
-    {}
-        
+    function logout() {
+        localStorage.clear();
+        return <Login/>;
+    }
+    
     return(
         <Navbar 
         expand="md"
@@ -27,11 +30,11 @@ const NavbarAdmin = () => {
                         <Nav.Link as={Link} to="/ProgresoAlumAdmin">Progreso</Nav.Link>
                         <Nav.Link as={Link} to="/CuestionariosCreacionAdmin">Cuestionarios</Nav.Link>
                         <Nav.Link as={Link} to="/PerfilSeleccionAdmin">Perfil</Nav.Link>
-                        <Nav.Link as={Link} to="/Login">
-                            <Button>
-                                Cerrar Sesión
-                            </Button>
-                        </Nav.Link>
+                        <Button
+                        variant='outline-light'
+                        onClick={logout}>
+                            Cerrar Sesión
+                        </Button>
                         </Nav>
                     </Navbar.Collapse>
             </Container>

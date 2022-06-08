@@ -2,10 +2,10 @@ import React from 'react';
 import './App.css';
 import NavbarAdmin from "./components/Navbar/NavbarAdmin";
 import NavbarPadre from "./components/Navbar/NavbarPadre";
+import Login from './components/Login/Login';
 import { Routes, Route } from 'react-router-dom'
 import Home from './Pages/Home/Home'
 import Reportes from './Pages/Reportes/Reportes'
-import Login from './Pages/Login/Login'
 import Progreso from './Pages/Progreso/Progreso'
 import Alumnos from './Pages/Alumnos/Alumnos'
 import HomeAdmin from './Pages/Home/HomeAdmin'
@@ -39,9 +39,8 @@ function App() {
           <div className="App">
             <NavbarAdmin/>
             <div>
-              <Routes>               
-          
-              <Route exact path="/Login" element={<Login/>}/>
+              <Routes>
+             
               <Route exact path="/HomeAdmin" element={<PrivateRoute roles = {["admin"]}><HomeAdmin/></PrivateRoute>}/>
                   {/*Aqui abajo es la pagina principal del usuario administrador*/}
 
@@ -75,7 +74,7 @@ function App() {
         <NavbarPadre/>
         <div>
           <Routes>  
-          <Route exact path="/Login" element={<Login/>}/>    
+          
             {/*Aqui abajo es la pagina principal del usuario padre*/}
             <Route exact path="/Home" element={<PrivateRoute roles = {["tutor"]}><Home/></PrivateRoute>}/>
             <Route exact path="/Reportes" element={<PrivateRoute roles = {["tutor"]}><Reportes/></PrivateRoute>}/>

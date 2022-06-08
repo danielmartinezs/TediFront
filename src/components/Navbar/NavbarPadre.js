@@ -2,10 +2,14 @@ import React from 'react';
 import { Button, Container, Navbar, Nav } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../assets/LogoT.svg';
+import Login from '../Login/Login';
 
 const NavbarComp = () => {
 
-    {}
+    function logout() {
+        localStorage.clear();
+        return <Login/>;
+    }
         
     return(
         <Navbar 
@@ -24,12 +28,11 @@ const NavbarComp = () => {
                         <Nav.Link as={Link} to="/Reportes">Reportes</Nav.Link>
                         <Nav.Link as={Link} to="/Progreso">Progreso</Nav.Link>
                         <Nav.Link as={Link} to="/PerfilPadre">Perfil</Nav.Link>
-                        <Nav.Link as={Link} to="/Login">
-                            <Button
-                            variant='outline-light'>
-                                Cerrar Sesión
-                            </Button>
-                        </Nav.Link>
+                        <Button
+                        variant='outline-light'
+                        onClick={logout}>
+                            Cerrar Sesión
+                        </Button>
                         </Nav>
                     </Navbar.Collapse>
             </Container>
