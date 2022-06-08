@@ -66,6 +66,10 @@ function CuestionariosEdicionAdmin() {
         getQuestionnaireDetails()
     }, [])
 
+    useEffect (() => {
+        getQuestionnaireDetails()
+    }, [showA])
+
     const getQuestionnaireDetails = () => {
         axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+idCuestionario).then((response) => {
             setCuestionariosInfo(response.data)
@@ -100,7 +104,6 @@ function CuestionariosEdicionAdmin() {
             pregunta: preguntaEdit
         })
         if(response.status === 200){
-            getQuestionnaireDetails()
             console.log(response)
             setShowA(true)
             setVariante('success')
@@ -149,7 +152,6 @@ function CuestionariosEdicionAdmin() {
             setIdPreguntaEdit(0)
             setPreguntaEdit("")
             setTipoPreguntaEdit("")
-            getQuestionnaireDetails()
         }
         }catch(error){
             if(!error?.response){
@@ -237,7 +239,6 @@ function CuestionariosEdicionAdmin() {
             setRespuestaEdit("")
             setIdPreguntaEdit(0)
             setShowButtonSave(false)
-            getQuestionnaireDetails()
         }
         }catch(error){
             if(!error?.response){
@@ -299,7 +300,6 @@ function CuestionariosEdicionAdmin() {
             setShowA(true)
             setVariante('success')
             setMsg(response.data.message)
-            //getQuestionnaireDetails()
         }
         }catch(error){
             if(!error?.response){
@@ -331,10 +331,12 @@ function CuestionariosEdicionAdmin() {
         }
         else if(newRespuestaId === 0){
             console.log("NEWRES: "+JSON.stringify(newRespuesta))
+            newres = JSON.stringify(newRespuesta)
         }
         else{
             newres = JSON.stringify(newRespuestaBank);
         }
+        console.log("TRUE NEW RES:"+newres)
         try{
             const response = await axios.post(ESTABLISH_KEY_URL, {
                 idc: idCuestionario,
@@ -352,7 +354,6 @@ function CuestionariosEdicionAdmin() {
                 setNewRespuestaId(0);
                 setNewPreguntaId(0);
                 setTipoNewPregunta("");
-                getQuestionnaireDetails();
             }
         }catch(error){
             if(!error?.response){

@@ -486,7 +486,7 @@ function CuestionariosRegistrosAdmin() {
                         <div>
                             <Alert
                             variant='danger'>
-                                <Alert.Heading>La respuesta actualmente no se encuentra ligada a una pregunta, ¿deseas borrarala?</Alert.Heading>
+                                <Alert.Heading>La respuesta actualmente no se encuentra ligada a un cuestionario, ¿deseas borrarala?</Alert.Heading>
                             </Alert>
                             <Button
                             variant='danger'
