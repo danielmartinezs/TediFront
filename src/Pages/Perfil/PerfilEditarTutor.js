@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, Alert, Button, ToggleButton, ButtonGroup, Modal } from 'react-bootstrap';
-import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
+import { Accordion, Alert, Button, ButtonGroup, Card, Modal, ToggleButton } from 'react-bootstrap';
+import { AiOutlineEdit, AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai';
 import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from '../../axios/axios';
@@ -29,6 +29,8 @@ function PerfilEditarTutor() {
     const [showA, setShowA] = useState(false);
     const [showModalBorrar, setShowModalBorrar] = useState(false);
     const [tutoresList, setTutoresList] = useState([]);
+    const [tutoresSearch, setTutoresSearch] = useState([]);
+    const [busqueda, setBusqueda] = useState("")
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
     const [fechanac, setFechaNac] = useState();
@@ -47,7 +49,7 @@ function PerfilEditarTutor() {
     const getTutores = () => {
         axios.get(GET_TUTORES_URL).then((response) => {
             setTutoresList(response.data)
-            console.log(tutoresList)
+            setTutoresSearch(response.data)
         })
         setFechaNac(tutoresList[llave-1]?.fechaNacimiento)
     }
@@ -160,6 +162,27 @@ function PerfilEditarTutor() {
         setShowModalBorrar(false)
     }
 
+    const filtrar = (terminoBusqueda) => {
+        console.log("El termino es "+terminoBusqueda)
+        var resultadosBusqueda = tutoresList.filter( (elemento) => {
+            if(terminoBusqueda === ""){
+                setTutoresSearch(tutoresList)
+                return elemento;
+            }
+            else if(elemento.usuario.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            {
+                return elemento;
+            }
+        });
+        setTutoresSearch(resultadosBusqueda);
+    }
+
+    const handleBuscar = (e) => {
+        e.preventDefault()
+        setBusqueda(e.target.value);
+        filtrar(e.target.value);
+    }
+
     return (
         <div>
             <h1>Edición de tutores/alumnos</h1>
@@ -174,7 +197,19 @@ function PerfilEditarTutor() {
               </Alert.Heading>
             </Alert>
             </div>
-            {tutoresList.map(values => (
+            <div>
+                <div className="containerInput">
+                <input
+                    className="inputBuscar"
+                    value={busqueda}
+                    placeholder="Buscar Tutor"
+                    onChange={(e) => handleBuscar(e)}
+                />
+                <button className="btn">
+                    <AiOutlineSearch/>
+                </button>
+            </div>
+            {tutoresSearch && tutoresSearch.map(values => (
                     <div className='admin' key={values.idAdministrador}>
                         <div>
                             <Accordion flush>
@@ -364,6 +399,7 @@ function PerfilEditarTutor() {
                 </Button>
             </Modal.Footer>
         </Modal>
+        </div>
         </div>
     )
 }

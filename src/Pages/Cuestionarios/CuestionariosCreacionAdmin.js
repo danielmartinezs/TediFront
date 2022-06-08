@@ -607,7 +607,7 @@ function CrearCuestionario() {
                                  Materia: {values.materia}
                         </Card.Footer>
                     </Card>
-                </div>  
+                </div>
             ))}
             <br/>
             <Link to={"/CuestionariosRegistrosAdmin"}>
