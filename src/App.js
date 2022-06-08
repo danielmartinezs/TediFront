@@ -23,6 +23,7 @@ import CuestionariosEdicionAdmin from './Pages/Cuestionarios/CuestionariosEdicio
 import CuestionariosResponderAdmin from './Pages/Cuestionarios/CuestionariosResponderAdmin'
 import PerfilSeleccionAdmin from './Pages/Perfil/PerfilSeleccionAdmin'
 import PerfilEditarAdmin from './Pages/Perfil/PerfilEditarAdmin'
+import PerfilEditarAlumno from './Pages/Perfil/PerfilEditarAlumno'
 import PerfilEditarTutor from './Pages/Perfil/PerfilEditarTutor'
 import PerfilCrearPerfilNuevo from './Pages/Perfil/PerfilCrearPerfilNuevo'
 import PerfilPadre from './Pages/Perfil/PerfilPadre'
@@ -63,6 +64,7 @@ function App() {
                   <Route exact path="/PerfilSeleccionAdmin" element={<PrivateRoute roles = {["admin"]}><PerfilSeleccionAdmin/></PrivateRoute>}/>
                   <Route exact path="/PerfilCrearPerfilNuevo" element={<PrivateRoute roles = {["admin"]}><PerfilCrearPerfilNuevo/></PrivateRoute>}/>
                   <Route exact path="/PerfilEditarAdmin" element={<PrivateRoute roles = {["admin"]}><PerfilEditarAdmin/></PrivateRoute>}/>
+                  <Route exact path="/PerfilEditarAlumno" element={<PrivateRoute roles = {["admin"]}><PerfilEditarAlumno/></PrivateRoute>}/>
                   <Route exact path="/PerfilEditarTutor" element={<PrivateRoute roles = {["admin"]}><PerfilEditarTutor/></PrivateRoute>}/>
               </Routes>
             </div>

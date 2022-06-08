@@ -5,7 +5,6 @@ import { AiOutlineCheckCircle, AiOutlineDelete, AiOutlineEdit, AiOutlineLink, Ai
 import { BiMessageAltAdd } from 'react-icons/bi'
 import axios from '../../axios/axios';
 import "./cuestionarios.css"
-import { set } from 'date-fns';
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
