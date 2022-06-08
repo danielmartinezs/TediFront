@@ -1,14 +1,18 @@
-import React from 'react';
-import { Button, Container, Navbar, Nav } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Button, Container, Navbar, Nav, Modal } from 'react-bootstrap'
+import { BiLogOut } from 'react-icons/bi';
+import { Link, useNavigate } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../assets/LogoT.svg';
-import Login from '../Login/Login';
+import Logout from '../Login/Logout';
 
 const NavbarAdmin = () => {
 
+    const navigate = useNavigate();
+
     function logout() {
-        localStorage.clear();
-        return <Login/>;
+
+        navigate('/logout');
+        return <Logout/>;
     }
     
     return(
@@ -34,11 +38,12 @@ const NavbarAdmin = () => {
                         variant='outline-light'
                         onClick={logout}>
                             Cerrar Sesión
+                            <BiLogOut/>
                         </Button>
                         </Nav>
                     </Navbar.Collapse>
             </Container>
-        </Navbar>            
+        </Navbar>
     )
 }
 

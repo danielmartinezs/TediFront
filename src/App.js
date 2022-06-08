@@ -3,6 +3,7 @@ import './App.css';
 import NavbarAdmin from "./components/Navbar/NavbarAdmin";
 import NavbarPadre from "./components/Navbar/NavbarPadre";
 import Login from './components/Login/Login';
+import Logout from './components/Login/Logout';
 import { Routes, Route } from 'react-router-dom'
 import Home from './Pages/Home/Home'
 import Reportes from './Pages/Reportes/Reportes'
@@ -40,8 +41,8 @@ function App() {
             <NavbarAdmin/>
             <div>
               <Routes>
-             
-              <Route exact path="/HomeAdmin" element={<PrivateRoute roles = {["admin"]}><HomeAdmin/></PrivateRoute>}/>
+                <Route exact path="/logout" element={<PrivateRoute roles = {["admin"]}><Logout/></PrivateRoute>} />
+                <Route exact path="/HomeAdmin" element={<PrivateRoute roles = {["admin"]}><HomeAdmin/></PrivateRoute>}/>
                   {/*Aqui abajo es la pagina principal del usuario administrador*/}
 
                   <Route exact path="/Alumnos" element={<PrivateRoute roles = {["admin"]}><Alumnos/></PrivateRoute>}/>

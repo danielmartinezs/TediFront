@@ -7,7 +7,7 @@ import { Alert, Button, ToggleButton } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 const LOGIN_URL = '/login'
 
-  export const Login = () => {
+export const Login = () => {
 
     const { setAuth } = useContext(AuthContext);
     const userRef = useRef();
@@ -19,6 +19,7 @@ const LOGIN_URL = '/login'
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [show, setShow] = useState(false);
+    const [logged, setLogged] = useState(false);
     const botones = [
       { rol: 'admin', name: 'Administrador' },
       { rol: 'tutor', name: 'Tutor'}
@@ -27,10 +28,6 @@ const LOGIN_URL = '/login'
     useEffect(() => {
       userRef.current.focus();
     }, [])
-
-    useEffect(() => {
-      setMsg('');
-    }, [user, password])
     
     //HANDLES
     const handleSubmit = async (e) => {
@@ -55,6 +52,7 @@ const LOGIN_URL = '/login'
             navigate('/homeadmin');
           if(response.data.role === 'tutor')
             navigate('/home');
+          window.location.reload();
         }
       } catch (error) {
           setShow(true)

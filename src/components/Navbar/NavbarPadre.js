@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Container, Navbar, Nav } from 'react-bootstrap'
+import { BiLogOut } from 'react-icons/bi';
 import { Link } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../assets/LogoT.svg';
 import Login from '../Login/Login';
@@ -32,6 +33,7 @@ const NavbarComp = () => {
                         variant='outline-light'
                         onClick={logout}>
                             Cerrar Sesión
+                            <BiLogOut/>
                         </Button>
                         </Nav>
                     </Navbar.Collapse>
