@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Button, ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
-import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
+import { Alert, Button, Card, CardGroup, ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
+import { AiOutlineEdit, AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai';
 import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from '../../axios/axios';
@@ -11,6 +11,8 @@ const DELETE_ADMINS_URL = 'profiles/borraadmin'
 
 function PerfilEditarAdmin() {
     const [adminList, setAdminList] = useState([]);
+    const [adminSearch, setAdminSearch] = useState([]);
+    const [busqueda, setBusqueda] = useState("")
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [showA, setShowA] = useState(false);
@@ -28,7 +30,7 @@ function PerfilEditarAdmin() {
     const getAdmins = () => {
         axios.get(GET_ADMINS_URL).then((response) => {
             setAdminList(response.data)
-            console.log(adminList)
+            setAdminSearch(response.data)
         })
     }
 
@@ -96,6 +98,27 @@ function PerfilEditarAdmin() {
         }
     }
 
+    const filtrar = (terminoBusqueda) => {
+        console.log("El termino es "+terminoBusqueda)
+        var resultadosBusqueda = adminList.filter( (elemento) => {
+            if(terminoBusqueda === ""){
+                setAdminSearch(adminList)
+                return elemento;
+            }
+            else if(elemento.usuario.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            {
+                return elemento;
+            }
+        });
+        setAdminSearch(resultadosBusqueda);
+    }
+
+    const handleBuscar = (e) => {
+        e.preventDefault()
+        setBusqueda(e.target.value);
+        filtrar(e.target.value);
+    }
+
     return (
         <div>
             <h1>Edición de perfiles admin</h1>
@@ -110,33 +133,46 @@ function PerfilEditarAdmin() {
                 </Alert.Heading>
                 </Alert>
             </div>
-            {adminList.map(values => (
+            <div>
+                <div className="containerInput">
+                <input
+                    className="inputBuscar"
+                    value={busqueda}
+                    placeholder="Buscar Administrador"
+                    onChange={(e) => handleBuscar(e)}
+                />
+                <button className="btn">
+                    <AiOutlineSearch/>
+                </button>
+            </div>
+            {adminSearch && adminSearch.map(values => (
                     <div className='admin' key={values.idAdministrador}>
                         <div>
-                            <ListGroup flush>
-                                <ListGroupItem header="Head">
-                                    <div className="fw-bold">
-                                        {values.usuario}
-                                    </div>
+                            <Card
+                            className='text-center'
+                            border='warning'
+                            style={{width: '100%'}}>
+                                <Card.Body
+                                onClick={() => openPane(values)}>
+                                    <Card.Title className='fw-bold'>{values.usuario}</Card.Title>
                                     <Button className='button-icon'
                                         onClick={() => openPane(values)}>
                                             Editar información
                                             <AiOutlineEdit size='3em'/>
                                     </Button>
-                                </ListGroupItem>
-                            </ListGroup>
-                            <br/>
+                                </Card.Body>
+                            </Card>
                         </div>
                     </div>
                 )
             )}
+            {/*SLIDING PANE EDICION DATOS */}
             <SlidingPane
                 className='sliding-pane'
                 isOpen={detailsPane.isPaneOpen}
                 title={adminList[llave-1]?.usuario}
                 width={window.innerWidth < 600 ? "100%" : "500px"}
-                onRequestClose={closePane}
-            >
+                onRequestClose={closePane}>
                 <div className='admin-details__info'>
                     <div className='admin-details__box'>
                         <Form
@@ -189,6 +225,7 @@ function PerfilEditarAdmin() {
                     </button>
                 </div>
             </SlidingPane>
+            {/*MODAL CONFIRMACIÓN BORRAR*/}
             <Modal show={showModalBorrar} onHide={() => {setShowModalBorrar(false)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>¿Estás seguro que quieres borrar este registro?</Modal.Title>
@@ -203,6 +240,7 @@ function PerfilEditarAdmin() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+        </div>
         </div>
     )
 }

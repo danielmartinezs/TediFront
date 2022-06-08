@@ -80,7 +80,6 @@ function Alumnos() {
                 return elemento;
             }
         });
-        console.log("Resultado busqueda es: "+resultadosBusqueda)
         setAlumnSearch(resultadosBusqueda);
     }
 
@@ -117,9 +116,10 @@ function Alumnos() {
                 </button>
             </div>
             <Modal 
-                show={showM}
-            >
-                <Modal.Header>
+            show={showM}
+            onHide={() => setShowM(false)}
+            dismissible>
+                <Modal.Header closeButton>
                     <Modal.Title>Reportar Hito</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -155,6 +155,9 @@ function Alumnos() {
                                         <Button className="btnBancoPreguntas" onClick={() => handleNewHito(values.idAlumno)}>Reportar Hito</Button>
                                         <Link to={`/CuestionariosResponderAdmin/${values.idAlumno}`}>
                                             <Button className="btnBancoPreguntas" >Contestar cuestionario</Button>
+                                        </Link>
+                                        <Link to={`/PerfilEditarTutor`}>
+                                            <Button className="btnBancoPreguntas" >Editar información</Button>
                                         </Link>
                                     </ButtonGroup>
                                     </AccordionBody>
