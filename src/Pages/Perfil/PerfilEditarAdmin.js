@@ -5,6 +5,7 @@ import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from '../../axios/axios';
 import Form from 'react-bootstrap/Form';
+import "./perfil.css"
 const GET_ADMINS_URL = '/profiles/getadmins'
 const EDIT_ADMINS_URL = 'profiles/editaadmin'
 const DELETE_ADMINS_URL = 'profiles/borraadmin'

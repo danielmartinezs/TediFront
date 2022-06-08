@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom'
-import { Accordion, Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas } from "react-bootstrap";
-import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
-import AccordionItem from "react-bootstrap/esm/AccordionItem";
-import AccordionBody from 'react-bootstrap/esm/AccordionBody';
+import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas } from "react-bootstrap";
 import {  AiOutlineEdit, AiOutlineSend, AiTwotoneStar } from 'react-icons/ai';
 import "./cuestionarios.css";
 import axios from '../../axios/axios'
