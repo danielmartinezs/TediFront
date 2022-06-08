@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom'
-import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas } from "react-bootstrap";
+import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, OverlayTrigger, Tooltip } from "react-bootstrap";
 import {  AiOutlineEdit, AiOutlineSend, AiTwotoneStar } from 'react-icons/ai';
 import "./cuestionarios.css";
 import axios from '../../axios/axios'
@@ -76,8 +76,13 @@ function Respuesta () {
             console.log(response)
             setTiempoRegistro(response.data[0].ultimoregistro)
         })
-
     }
+
+    const renderTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+          Selecciona para cambiar la respuesta
+        </Tooltip>
+      );
 
     const formatQuestions = () => {
         const opc = preguntasList.map((lis) => JSON.parse(JSON.parse(JSON.stringify(lis.opciones))));
@@ -474,7 +479,6 @@ function Respuesta () {
                         </div>
                     ))
                 }
-                {console.log("SHOWBUTTONEDIT"+showButtonEdit)}
                 {showButtonEdit === true?
                 <div>
                     <Button
@@ -494,6 +498,7 @@ function Respuesta () {
         {/*OFFCANVAS EDITAR RESPUESTAS */}
         <Offcanvas
         show={showOffRes}
+        onHide={() => setShowOffRes(false)}
         placement={'end'}>
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>Editar respuesta</Offcanvas.Title>
@@ -510,14 +515,18 @@ function Respuesta () {
                         {(preguntasList[numeroPregunta]?.tipo === "Opción múltiple") ?
                         <div>{
                             formattedAnswers[numeroPregunta].opciones.map((Respuesta) => (
-                                <Button
-                                className='btnEditarRespuesta'
-                                variant='success'
-                                key={Respuesta.respuesta} 
-                                onClick = {(e) => {
-                                    handleEditRespuesta(Respuesta.respuesta, e)}}>
-                                    {Respuesta.respuesta}
-                                </Button>
+                                <OverlayTrigger
+                                placement='left'
+                                overlay={renderTooltip}>
+                                    <Button
+                                    className='btnEditarRespuesta'
+                                    variant='success'
+                                    key={Respuesta.respuesta} 
+                                    onClick = {(e) => {
+                                        handleEditRespuesta(Respuesta.respuesta, e)}}>
+                                        {Respuesta.respuesta}
+                                    </Button>
+                                </OverlayTrigger>
                             ))
                         }</div>:
                         <div>
@@ -532,7 +541,7 @@ function Respuesta () {
                             {respuestas[numeroPregunta]?.value}
                         </Form.Control>
                         </div>}
-                        <Form.Label>Comentario</Form.Label>
+                        <Form.Label>Comentarios</Form.Label>
                         <Form.Control 
                         as="textarea" 
                         rows={4}
