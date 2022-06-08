@@ -54,6 +54,11 @@ function CuestionariosRegistrosAdmin() {
         getRespuestas()
     }, [])
 
+    useEffect (() => {
+        getPreguntas()
+        getRespuestas()
+    }, [showA])
+
     const scrollToTop = () => {
         window.scroll({
           top: 0,
@@ -180,6 +185,7 @@ function CuestionariosRegistrosAdmin() {
 
     const deletePregunta = async () => {
         setShowModalBorrarP(false)
+        setShowModalLinkQ(false)
         console.log("ID PREGUNTA A BORRAR: "+idDeletePregunta)
         const response = await axios.post(DELETE_PREGUNTA_URL+"/"+idDeletePregunta)
         setShowA(true)
