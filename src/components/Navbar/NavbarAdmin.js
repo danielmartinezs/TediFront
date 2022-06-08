@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Container, Navbar, Nav, Modal } from 'react-bootstrap'
 import { BiLogOut } from 'react-icons/bi';
 import { Link, useNavigate } from 'react-router-dom'
@@ -10,7 +10,6 @@ const NavbarAdmin = () => {
     const navigate = useNavigate();
 
     function logout() {
-
         navigate('/logout');
         return <Logout/>;
     }
