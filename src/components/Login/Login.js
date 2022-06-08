@@ -105,7 +105,8 @@ export const Login = () => {
                 key={idx}
                 id={`radio-${idx}`}
                 type="radio"
-                variant={idx % 2 ? 'warning' : 'warning'}
+                variant={idx % 2 ? 'outline-warning' : 'outline-warning'}
+                checked={role === botones.rol}
                 name="radio"
                 value={botones.rol}
                 onClick={() => handleSelect(botones.rol)}>
