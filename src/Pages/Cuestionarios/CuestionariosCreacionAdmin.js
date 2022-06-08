@@ -538,7 +538,6 @@ function CrearCuestionario() {
                 <ModalBody>
                     {respuesta?.map((opcion, index) => (
                         <div key={index} className="services">
-                            {console.log("OPCIONES: "+opcion.respuesta)}
                             <div className="first-division">
                             <input
                             name="respuesta"

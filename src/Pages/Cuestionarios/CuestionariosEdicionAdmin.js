@@ -300,6 +300,12 @@ function CuestionariosEdicionAdmin() {
             setShowA(true)
             setVariante('success')
             setMsg(response.data.message)
+            establishKey()
+            setNewPregunta("");
+            setNewRespuesta([{ "respuesta": "" }]);
+            setNewRespuestaId(0);
+            setNewPreguntaId(0);
+            setTipoNewPregunta("");
         }
         }catch(error){
             if(!error?.response){
@@ -320,23 +326,19 @@ function CuestionariosEdicionAdmin() {
                 setMsg(error.response.data.message);
               }
         }
-        establishKey()
     }
 
     const establishKey = async () => {
-        console.log("in establish keys")
         let newres = "";
         if(newRespuestaId === 1 || tipoNewPregunta === "Abierta"){
             newres = newRespuestaFormatted;
         }
         else if(newRespuestaId === 0){
-            console.log("NEWRES: "+JSON.stringify(newRespuesta))
             newres = JSON.stringify(newRespuesta)
         }
         else{
             newres = JSON.stringify(newRespuestaBank);
         }
-        console.log("TRUE NEW RES:"+newres)
         try{
             const response = await axios.post(ESTABLISH_KEY_URL, {
                 idc: idCuestionario,
@@ -462,7 +464,12 @@ function CuestionariosEdicionAdmin() {
     const handleChangeRespuesta = (e, index) => {
         const { name, value } = e.target;
         const list = [...newRespuesta];
-        if(!isNaN(value)){
+        if(value === ""){
+            const nullval = ""
+            list[index][name] = nullval
+            setNewRespuesta(list)
+        }
+        else if(!isNaN(value)){
             const ivalue = parseInt(value);
             list[index][name] = ivalue;
             setNewRespuesta(list)
@@ -989,7 +996,7 @@ function CuestionariosEdicionAdmin() {
                             disabled
                             placeholder='Escribe los registros de opción múltiple debajo'
                             value={JSON.stringify(newRespuesta)}/>
-                            {newRespuesta.map((opcion, index) => (
+                            {newRespuesta?.map((opcion, index) => (
                             <div key={index}
                             className="services">
                                 <div className="first-division">
@@ -1122,7 +1129,7 @@ function CuestionariosEdicionAdmin() {
                     </ModalTitle>
                 </ModalHeader>
                 <ModalBody>
-                    {newRespuesta.map((opcion, index) => (
+                    {newRespuesta?.map((opcion, index) => (
                         <div key={index} className="services">
                             {console.log(opcion.opciones)}
                             <div className="first-division">
@@ -1130,13 +1137,12 @@ function CuestionariosEdicionAdmin() {
                                 name="respuesta"
                                 type="text"
                                 id="opcion"
-                                value={opcion.opciones}
+                                value={opcion.respuesta}
                                 onChange={(e) => handleChangeRespuesta(e, index)}
                             />
                             {newRespuesta.length-1 === index && 
                             (<Button 
                             size="sm"
-                            className="add-btn"
                             variant="success"
                             onClick={handleAddRespuesta}>
                                 <span>Nueva opción</span>
@@ -1144,10 +1150,9 @@ function CuestionariosEdicionAdmin() {
                             </Button>)
                             }
                             <br/>
-                            {newRespuesta.length-1 === index && 
+                            {newRespuesta.length-1 === index && newRespuesta.length > 1 && 
                             (<Button 
                             size="sm"
-                            className="add-btn"
                             variant="success"
                             onClick={formatRespuesta}>
                                 <span>Guardar registros</span>
