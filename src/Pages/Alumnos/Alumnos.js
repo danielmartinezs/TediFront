@@ -156,7 +156,7 @@ function Alumnos() {
                                         <Link to={`/CuestionariosResponderAdmin/${values.idAlumno}`}>
                                             <Button className="btnBancoPreguntas" >Contestar cuestionario</Button>
                                         </Link>
-                                        <Link to={`/PerfilEditarTutor`}>
+                                        <Link to={`/PerfilEditarAlumno`}>
                                             <Button className="btnBancoPreguntas" >Editar información</Button>
                                         </Link>
                                     </ButtonGroup>
