@@ -78,11 +78,17 @@ function Respuesta () {
         })
     }
 
-    const renderTooltip = (props) => (
+    const renderTooltipSelect = (props) => (
         <Tooltip id="button-tooltip" {...props}>
-          Selecciona para cambiar la respuesta
+            Selecciona para cambiar la respuesta
         </Tooltip>
-      );
+    );
+
+    const renderTooltipDisabled = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            La pregunta es de opción múltiple, para guardar los cambios selecciona una de las opciones
+        </Tooltip>
+    );
 
     const formatQuestions = () => {
         const opc = preguntasList.map((lis) => JSON.parse(JSON.parse(JSON.stringify(lis.opciones))));
@@ -501,7 +507,7 @@ function Respuesta () {
         onHide={() => setShowOffRes(false)}
         placement={'end'}>
             <Offcanvas.Header closeButton>
-                <Offcanvas.Title>Editar respuesta</Offcanvas.Title>
+                <Offcanvas.Title><h4>Editar Pregunta {numeroPregunta+1}</h4></Offcanvas.Title>
             </Offcanvas.Header>
                 <Offcanvas.Body>
                     <Form className="form">
@@ -513,11 +519,12 @@ function Respuesta () {
                         <br/>
                         <Form.Label>Respuesta Elegida: {respuestasEdit[numeroPregunta]?.value}</Form.Label>
                         {(preguntasList[numeroPregunta]?.tipo === "Opción múltiple") ?
-                        <div>{
+                        <div>
+                            {
                             formattedAnswers[numeroPregunta].opciones.map((Respuesta) => (
                                 <OverlayTrigger
                                 placement='left'
-                                overlay={renderTooltip}>
+                                overlay={renderTooltipSelect}>
                                     <Button
                                     className='btnEditarRespuesta'
                                     variant='success'
@@ -558,12 +565,24 @@ function Respuesta () {
                         }}>
                             Cerrar
                         </Button>
+                        {preguntasList[numeroPregunta]?.tipo === "Opción múltiple"?
+                        <OverlayTrigger
+                        placement='bottom'
+                        overlay={renderTooltipDisabled}>
+                            <Button 
+                            variant="success"
+                            className='btnEditarP'
+                            onClick={renderTooltipDisabled}>
+                                Guardar cambios
+                            </Button>
+                        </OverlayTrigger>
+                        :
                         <Button 
                         variant="success"
                         className='btnEditarP'
                         onClick={(e) => {handleEditRespuesta(respuestaEdit, e)}}>
                             Guardar cambios
-                        </Button>
+                        </Button>}
                 </Offcanvas.Body>
         </Offcanvas>
       </main>
