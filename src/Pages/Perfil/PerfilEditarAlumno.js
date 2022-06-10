@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, Alert, Button, ButtonGroup, Card, Modal, ToggleButton } from 'react-bootstrap';
+import { Accordion, Alert, Button, ButtonGroup, Card, Col, Container, Modal, Row, ToggleButton } from 'react-bootstrap';
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai';
 import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
@@ -171,15 +171,19 @@ function PerfilEditarAlumno() {
                     <AiOutlineSearch/>
                 </button>
             </div>
-            {alumnosSearch && alumnosSearch.map(values => (
-                    <div 
-                    className='admin' 
-                    key={values.idAlumno}>
+            <div>
+            <Container className='d-flow-root justify-content-center align-items-center'>
+                <Row>
+                    {alumnosSearch && alumnosSearch.map(values => (
+                        <div 
+                        className="col-md-4 col-sm-12"
+                        key={values.idAlumno}>
+                            <Col>
                             <Card
-                            className='text-center'
-                            border='warning'
-                            style={{width: '100%'}}>
-                                <Card.Header>
+                            style={{ width: '90%' }}
+                            border='warning'>
+                                <Card.Header
+                                className='text-center'>
                                     <Card.Title>{values.nombre}</Card.Title>
                                 </Card.Header>
                                 <Card.Body>
@@ -190,9 +194,13 @@ function PerfilEditarAlumno() {
                                     </Button>
                                 </Card.Body>
                             </Card>
-                    </div>
-                )
-            )}
+                            </Col>
+                        </div>
+                        ))
+                    }
+                </Row>
+            </Container>
+            </div>
             {/*SLIDING PANE EDICIÓN ALUMNO */}
             <SlidingPane
             className='sliding-pane'

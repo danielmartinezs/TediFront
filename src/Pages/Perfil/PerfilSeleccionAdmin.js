@@ -11,6 +11,7 @@ function PerfilSeleccionAdmin() {
     return (
         <div>
             <h1>Control de cuentas</h1>
+            <div>
             <Card border="primary" className="text-center" style={{ display:'flex' }}>
             <Card.Img variant="top" src={foto8} />
               <Card.Header>
@@ -69,6 +70,7 @@ function PerfilSeleccionAdmin() {
                 <AiOutlineUserAdd/>
               </Button>
             </Link>
+            </div>
         </div>
     )
 }
