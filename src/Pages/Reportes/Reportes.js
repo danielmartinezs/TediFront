@@ -1,14 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Accordion, Button } from 'react-bootstrap'
 import pdf from './ReporteSemestral.pdf'
-import axios from '../../axios/axios'
+import axios from '../../axios/axios';
 const GENERA_REPORTE_URL = 'reportes/holamundo';
 
 function Reportes() {
+    const [datos, setDatos] = useState([]);
     
     const handleDescarga = ()  => {
+        /* axios.get(GENERA_REPORTE_URL).then((response) => {
+            console.log(response);
+        }) */
         axios.get(GENERA_REPORTE_URL).then((response) => {
-            
+            window.open(response.data, '_blank');
+            console.log(response);
         })
     }
 

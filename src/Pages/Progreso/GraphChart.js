@@ -1,8 +1,8 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {useState,useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import {Bar} from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 const GRAFICA_URL = '/graphs/generareporte';
 
 function GraphChart(){
@@ -15,11 +15,16 @@ function GraphChart(){
     let [puntajeArray,setPuntajeArray] = useState([]);
     let [fechaDateArray,setFechaDateArray] = useState([]);
  
+    useEffect(() => {
+      graphDetails();
+    }, []); 
+
      const graphDetails = () => {
       axios.post(GRAFICA_URL+"/"+idTutor).then((response) => {
         console.log(response);
         setDatosGraph(response.data);
-const graphData = response.data;
+    
+    const graphData = response.data;
       let puntaje = [];
       let fecha = [];
       graphData.forEach(element => {
@@ -41,12 +46,8 @@ const graphData = response.data;
               }
              ]
         }); 
-       });
-       
+       }); 
      }
-     useEffect(() => {
-       graphDetails();
-    }, []); 
 
     const getDatosGraph = async() => {
       axios.post(GRAFICA_URL+"/"+idTutor).then((response) => {
