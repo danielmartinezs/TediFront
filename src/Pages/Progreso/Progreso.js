@@ -1,5 +1,5 @@
-import { Accordion, Button } from'react-bootstrap'
 import { useEffect, useState } from 'react'
+import { Accordion, Button, Card } from'react-bootstrap'
 import axios from '../../axios/axios';
 import "./progreso.css";
 import { format, parseISO } from 'date-fns';
@@ -24,7 +24,7 @@ function Progreso () {
     const [llave, setLlave] = useState(0);
     const [showMHito, setShowMHito] = useState(false)
     const [showA, setShowA] = useState(false);
-    var idTutor= localStorage.getItem('idTutor');
+    var idTutor= localStorage.getItem('id');
 
     useEffect (() => {
         getAlumno()
@@ -33,66 +33,53 @@ function Progreso () {
     const getAlumno = () => {
         axios.get(PERFIL_ALUMNO_URL+"/"+idTutor).then((response) => {
             setAlumno(response.data)
+            setAlumnSelect(response.data[0]?.idAlumno)
             console.log(response.data)
-    })
-
-    const getHitosList = (ida) => {
-        axios.get(GET_HITOS_ALUMNO_URL+"/"+ida).then((response) => {
-            setHitosList(response.data)
         })
-        setAlumnSelect(ida)
-        setShowMHito(true)
     }
+
+    const getHitosList = () => {
+        axios.get(GET_HITOS_ALUMNO_URL+"/"+alumnSelect).then((response) => {
+            setHitosList(response.data)
+
+        })
+    }
+
     return (
         <div>
             <h1>Progreso</h1>
-            <Accordion defaultActiveKey={['0']} alwaysOpen>
-                <Accordion.Item eventKey="0">
-                    <Accordion.Header>Enero</Accordion.Header>
-                        <Accordion.Body>
-                        
-                        <ul>
-                            <li>El alumno ha cumplido con su tarea     &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:23/04/22</li>
-                            <li>Nuevo nivel de lectura conseguido  &ensp; &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:23/04/22</li>
-                            <li>Puntaje superado en matematicas &emsp;   &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:24/04/22</li>
-                        </ul>
-                        </Accordion.Body>
-                </Accordion.Item>
-                    <Accordion.Item eventKey="1">
-                        <Accordion.Header>Febrero</Accordion.Header>
-                        <Accordion.Body>
-                        <ul>
-                            <li>El alumno ha cumplido con su tarea    &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:23/04/22</li>
-                            <li>Nuevo nivel de lectura conseguido  &ensp; &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:23/04/22</li>
-                            <li>Puntaje superado en matematicas &emsp;   &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:24/04/22</li>
-                        </ul>
-                        </Accordion.Body>
-                    </Accordion.Item>
-                    <Accordion.Item eventKey="2">
-                    <Accordion.Header>Marzo</Accordion.Header>
-                        <Accordion.Body>
-                        
-                        <ul>
-                            <li>El alumno ha cumplido con su tarea     &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:23/04/22</li>
-                            <li>Nuevo nivel de lectura conseguido  &ensp; &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:23/04/22</li>
-                            <li>Puntaje superado en matematicas &emsp;   &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:24/04/22</li>
-                        </ul>
-                        </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item eventKey="3">
-                    <Accordion.Header>Abril</Accordion.Header>
-                        <Accordion.Body>
-                        
-                        <ul>
-                            <li>El alumno ha cumplido con su tarea     &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:23/04/22</li>
-                            <li>Nuevo nivel de lectura conseguido  &ensp; &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:23/04/22</li>
-                            <li>Puntaje superado en matematicas &emsp;   &emsp;    &emsp;     &emsp;   &emsp;    &emsp;  Fecha:24/04/22</li>
-                        </ul>
-                        </Accordion.Body>
-                </Accordion.Item>
-                </Accordion>
+            <Card style={{ width: "50%", display: "flex" }}>
+                <Card.Header as="h5">Visualizar hitos de {alumno[0]?.nombre}</Card.Header>
+                <Card.Body>
+                    <Button onClick={getHitosList}>
+                        Visualizar hitos de {alumno[0]?.nombre}
+                    </Button>
+                    {hitosList.map((hito, idHito) => {
+                        return (
+                            <div key={idHito}>
+                                <Accordion>
+                                    <Accordion.Header>{hito.descripcion}</Accordion.Header>
+                                    <Accordion.Body eventKey={idHito}>
+                                        <div>
+                                        {format(parseISO(hito.fecha), 'PPPPp', { locale: es })}
+                                        </div>
+                                    </Accordion.Body>
+                                </Accordion>
+                            </div>
+                        )
+                    }
+                    )}
+                </Card.Body>
+            </Card>
+            <Card style={{ width: "50%", display: "flex" }}>
+                <Card.Header as="h5">Visualizar gráficas de progreso de {alumno[0]?.nombre}</Card.Header>
+                <Card.Body>
+                    <Button onClick={getHitosList}>
+                        Visualizar gráficas de progreso de {alumno[0]?.nombre}
+                    </Button>
+                </Card.Body>
+            </Card>
         </div>
     )
-}
 }
 export default Progreso;

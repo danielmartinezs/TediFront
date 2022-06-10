@@ -14,13 +14,12 @@ function PerfilPadre() {
     const [fechaNacimiento, setFechaNacimiento] = useState("");
     const [semestre, setSemestre] = useState("");
     const [foto, setFoto] = useState();
+    const [alumno, setAlumno] = useState([]);
     var idTutor = localStorage.getItem('id');
     
     useEffect (() => {
         getAlumno()
     }, [])
-
-    const [alumno, setAlumno] = useState([]);
 
     const getAlumno = () => {
         axios.get(PERFIL_ALUMNO_URL+"/"+idTutor).then((response) => {

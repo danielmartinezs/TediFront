@@ -55,7 +55,6 @@ function ReportesAlumnosAdmin() {
                             <Accordion flush>
                                 <AccordionHeader>{values.nombre}</AccordionHeader>
                                     <AccordionBody>
-                                        <Accordion.Body>
                                         <ul>
                                             <li>Reporte de nivel de lenguaje</li>
                                             <li>Reporte en la clase de Matematicas  </li>
@@ -65,7 +64,6 @@ function ReportesAlumnosAdmin() {
                                         <a href={pdf} download >Reporte de nivel Motor </a>
                                             <li>Reporte en la clase de Español  </li>
                                         </ul>
-                                        </Accordion.Body>
                                     </AccordionBody>
                             </Accordion>
                             <br/>
