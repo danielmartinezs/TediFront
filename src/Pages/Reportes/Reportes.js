@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import { Accordion, Button } from 'react-bootstrap'
+import { Accordion, Alert, Button } from 'react-bootstrap'
 import pdf from './ReporteSemestral.pdf'
 import axios from '../../axios/axios';
 const GENERA_REPORTE_URL = 'reportes/holamundo';
 
 function Reportes() {
-    const [datos, setDatos] = useState([]);
+    const [datos, setDatos] = useState();
     
     const handleDescarga = ()  => {
         /* axios.get(GENERA_REPORTE_URL).then((response) => {
@@ -14,11 +14,15 @@ function Reportes() {
         axios.get(GENERA_REPORTE_URL).then((response) => {
             window.open(response.data, '_blank');
             console.log(response);
+            setDatos(response.data);
         })
     }
 
     return (
         <div>
+            <Alert>
+                <h2>{datos}</h2>
+            </Alert>
             <h1>Reportes</h1>
             <Accordion defaultActiveKey={['0']} alwaysOpen>
                 <Accordion.Item eventKey="3">
@@ -43,7 +47,6 @@ function Reportes() {
                 </Accordion.Item>
                 </Accordion>
         <Button
-            
             onClick={handleDescarga}>
                 descarga PDF
         </Button> 

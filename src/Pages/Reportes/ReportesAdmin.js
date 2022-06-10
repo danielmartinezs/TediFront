@@ -1,35 +1,52 @@
-import React from 'react'
-import {Accordion} from'react-bootstrap'
-import pdf from './ReporteSemestral.pdf'
+import React, { useState } from 'react'
+import { Accordion, Alert, Button } from'react-bootstrap'
+import axios from '../../axios/axios';
+const GENERA_REPORTE_EVALUACION_ARTICULACION_URL = 'reportes/crearreporteea';
+const GENERA_REPORTE_HABLIDADES_PREVERBALES_URL = 'reportes/crearreportehpv';
+const GENERA_REPORTE_PRUEBA_URL = 'reportes/crearreporteprueba';
+const PRUEBA = 'reportes/helloworld'
 
 function ReportesAdmin() {
+    const [datos, setDatos] = useState();
+
+    const handleDescargaReporteEA = () => {
+        axios.post(GENERA_REPORTE_EVALUACION_ARTICULACION_URL).then((response) => {
+            window.open(response.data, '_blank');
+            console.log(response);
+            setDatos(response.data);
+        })
+    }
+
+    const handleDescargaReporteHPV = () => {
+        axios.post(GENERA_REPORTE_HABLIDADES_PREVERBALES_URL).then((response) => {
+            window.open(response.data, '_blank');
+            console.log(response);
+            setDatos(response.data);
+        })
+    }
+
+    const handleDescargaReportePrueba = () => {
+        axios.get(PRUEBA).then((response) => {
+            window.open(response.data, '_blank');
+            console.log(response);
+            setDatos(response.data);
+        })
+    }
+
     return (
         <div>
-            <h1>Reportes</h1>
-            <Accordion defaultActiveKey={['0']} alwaysOpen>
-               <Accordion.Item eventKey="3">
-                <Accordion.Item eventKey="0">
-                    <Accordion.Header>Enero</Accordion.Header>
-                        <Accordion.Body>
-                        <ul>
-                            <li>Reporte de nivel de lenguaje</li>
-                            <li>Reporte en la clase de Matematicas  </li>
-                     
-                        </ul>
-                        </Accordion.Body>
-                </Accordion.Item>
-                    <Accordion.Item eventKey="1">
-                        <Accordion.Header>Febrero</Accordion.Header>
-                        <Accordion.Body>
-                        <ul>
-                        <a href={pdf} download >Reporte de nivel Motor </a>
-                            <li>Reporte en la clase de Español  </li>
-                        </ul>
-                       
-                        </Accordion.Body>
-                    </Accordion.Item>
-                </Accordion.Item>
-                </Accordion>
+            <Alert>
+                <h2>{datos}</h2>
+            </Alert>
+            <Button onClick={handleDescargaReporteEA}>
+                descarga PDF Evaluación Articulación
+            </Button>
+            <Button onClick={handleDescargaReporteHPV}>
+                descarga PDF Habilidades Preverbales
+            </Button>
+            <Button onClick={handleDescargaReportePrueba}>
+                descarga PDF Prueba
+            </Button>
         </div>
     )
 }
