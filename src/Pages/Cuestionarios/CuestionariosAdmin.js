@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom'
-import { Button, Card } from "react-bootstrap";
-import { AiOutlineEdit, AiOutlineInfoCircle, AiOutlinePlus } from 'react-icons/ai';
+import { Button, Card, Modal } from "react-bootstrap";
+import { AiOutlineCheck, AiOutlineEdit, AiOutlineInfoCircle, AiOutlinePlus, AiOutlineSearch, AiOutlineSelect } from 'react-icons/ai';
 import axios from '../../axios/axios'
 import "./cuestionarios.css"
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
+const GET_ALUMNOS_URL = '/profiles/getalumnos';
 
 function CuestionariosAdmin() {
     const [cuestionariosList, setCuestionariosList] = useState([]);
+    const [alumnosList, setAlumnosList] = useState([]);
+    const [alumnSearch, setAlumnSearch] = useState([]);
+    const [alumnSelect, setAlumnSelect] = useState();
+    const [busqueda, setBusqueda] = useState("");
+    const [showM, setShowM] = useState(false);
 
     useEffect(() => {
         getCuestionarios();
@@ -18,6 +24,39 @@ function CuestionariosAdmin() {
         axios.get(GET_CUESTIONARIOS_URL).then(response => {
             setCuestionariosList(response.data);
         })
+    }
+
+    const getAlumnos = () => {
+        axios.get(GET_ALUMNOS_URL).then(response => {
+            setAlumnSearch(response.data);
+            setAlumnosList(response.data);
+        })
+    }
+
+    const filtrar = (terminoBusqueda) => {
+        console.log("El termino es "+terminoBusqueda)
+        var resultadosBusqueda = alumnosList.filter( (elemento) => {
+            if(terminoBusqueda === ""){
+                setAlumnSearch(alumnosList)
+                return elemento;
+            }
+            else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            {
+                return elemento;
+            }
+        });
+        setAlumnSearch(resultadosBusqueda);
+    }
+
+    const handleBuscar = (e) => {
+        e.preventDefault()
+        setBusqueda(e.target.value);
+        filtrar(e.target.value);
+    }
+
+    const handleDisplayAlumnos = () => {
+        getAlumnos();
+        setShowM(true);
     }
 
     return(
@@ -37,6 +76,12 @@ function CuestionariosAdmin() {
                                     <AiOutlineEdit/>
                                 </Button>
                             </Link>
+                            <Button 
+                            className="btnBancoPreguntas"
+                            onClick={handleDisplayAlumnos}>
+                                Contestar
+                                <AiOutlineCheck/>
+                            </Button>
                         </Card.Body>
                         <Card.Footer>
                                  Materia: {values.materia}
@@ -57,6 +102,57 @@ function CuestionariosAdmin() {
                     <AiOutlinePlus/>
                 </Button>
             </Link>
+            {/* MODAL CONTESTAR ALUMNO */}
+            <Modal 
+            show={showM}
+            onHide={() => setShowM(false)}
+            scrollable={true}
+            dismissible>
+                <Modal.Header closeButton>
+                    <Modal.Title>¿A qué alumno se le aplicará el cuestionario?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <div className="containerInput">
+                <input
+                    className="inputBuscar"
+                    value={busqueda}
+                    placeholder="Buscar Alumno"
+                    onChange={(e) => handleBuscar(e)}
+                />
+                <button className="btn">
+                    <AiOutlineSearch/>
+                </button>
+                </div>
+                {alumnSearch && alumnSearch.map(values => (
+                    <div key={values.idAlumno}>
+                        <Card
+                        className="text-center"
+                        border = "warning"
+                        style={{ width: '100%' }}>
+                            <Card.Body>
+                            <div>
+                                {values.nombre}
+                                <br/>
+                                <Button
+                                variant="success"
+                                onClick={() => {setAlumnSelect(values.idAlumno)}}>
+                                    <AiOutlineSelect/>
+                                </Button>
+                            </div>
+                            </Card.Body>
+                        </Card>
+                    </div>
+                    ))
+                }
+                </Modal.Body>
+                <Modal.Footer>
+                    <Link to={`/CuestionariosResponderAdmin/${alumnSelect}`}>
+                        <Button className='btnAct'>
+                            Aplicar cuestionario a {alumnosList[alumnSelect-1]?.nombre}
+                        </Button>
+                    </Link>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }

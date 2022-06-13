@@ -757,7 +757,7 @@ function CuestionariosRegistrosAdmin() {
                     </Button>
                 </Offcanvas.Body>
             </Offcanvas>
-            <Link to={'/CuestionariosCreacionAdmin'}>
+            <Link to={'/CuestionariosAdmin'}>
                     <Button
                     className='btnAct'>
                         Regresar<AiOutlineRollback/>

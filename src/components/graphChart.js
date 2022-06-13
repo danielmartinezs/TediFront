@@ -20,6 +20,8 @@ const GRAFICA_ADMIN_URL = '/graphs/generagraphadmin';
         ],
       });
 
+      console.log(datos)
+
       const options = {
         responsive: true,
       };

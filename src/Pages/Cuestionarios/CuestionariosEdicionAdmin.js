@@ -1260,7 +1260,7 @@ function CuestionariosEdicionAdmin() {
             onClick={() => {setDetailsPane({isPaneOpen: true})}}>
                 Agregar Pregunta<AiOutlinePlus/>
             </Button>
-            <Link to={'/CuestionariosCreacionAdmin'}>
+            <Link to={'/CuestionariosAdmin'}>
                 <Button
                 className='btnAct'>
                     Regresar<AiOutlineRollback/>
