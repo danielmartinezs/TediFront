@@ -1,3 +1,16 @@
+.btnVerHitos {
+    border-radius: 0.75%;
+    background-color: #0B7A75;
+    width: 100%;
+    margin: 0 auto;
+    align-self: center;
+}
+
+.btnVerHitos:hover{
+    background-color: #fefefe;
+    color: white;
+}
+
 .btnCrearP {
     border-radius: 0.75rem;
     background-color: #0B7A75;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Accordion, Button, Card } from'react-bootstrap'
+import { Link } from 'react-router-dom';
+import { Accordion, Button, Card, Container, Row } from'react-bootstrap'
 import axios from '../../axios/axios';
 import "./progreso.css";
 import { format, parseISO } from 'date-fns';
@@ -48,37 +49,48 @@ function Progreso () {
     return (
         <div>
             <h1>Progreso</h1>
-            <Card style={{ width: "50%", display: "flex" }}>
-                <Card.Header as="h5">Visualizar hitos de {alumno[0]?.nombre}</Card.Header>
-                <Card.Body>
-                    <Button onClick={getHitosList}>
-                        Visualizar hitos de {alumno[0]?.nombre}
-                    </Button>
-                    {hitosList.map((hito, idHito) => {
-                        return (
-                            <div key={idHito}>
-                                <Accordion>
-                                    <Accordion.Header>{hito.descripcion}</Accordion.Header>
-                                    <Accordion.Body eventKey={idHito}>
-                                        <div>
-                                        {format(parseISO(hito.fecha), 'PPPPp', { locale: es })}
-                                        </div>
-                                    </Accordion.Body>
-                                </Accordion>
-                            </div>
-                        )
-                    }
-                    )}
-                </Card.Body>
-            </Card>
-            <Card style={{ width: "50%", display: "flex" }}>
-                <Card.Header as="h5">Visualizar gráficas de progreso de {alumno[0]?.nombre}</Card.Header>
-                <Card.Body>
-                    <Button onClick={getHitosList}>
-                        Visualizar gráficas de progreso de {alumno[0]?.nombre}
-                    </Button>
-                </Card.Body>
-            </Card>
+            <Container>
+                <Row>
+                    <Card style={{ width: "50%", display: "flex" }}>
+                        <Card.Header as="h5">
+                            <Button 
+                            className='btnVerHitos'
+                            onClick={getHitosList}>
+                                Visualizar hitos de {alumno[0]?.nombre}
+                            </Button>
+                        </Card.Header>
+                    <Card.Body>
+                        {hitosList.map((hito, idHito) => {
+                            return (
+                                <div key={idHito}>
+                                    <Accordion>
+                                        <Accordion.Header>{hito.descripcion}</Accordion.Header>
+                                        <Accordion.Body eventKey={idHito}>
+                                            <div>
+                                            {format(parseISO(hito.fecha), 'PPPPp', { locale: es })}
+                                            </div>
+                                        </Accordion.Body>
+                                    </Accordion>
+                                </div>
+                            )
+                        }
+                        )}
+                    </Card.Body>
+                    </Card>
+                    <Card style={{ width: "50%", display: "flex" }}>
+                        <Card.Header as="h5">Visualizar gráficas de progreso de {alumno[0]?.nombre}</Card.Header>
+                    <Card.Body>
+                        <Link to={'/GraphChart'}>
+                            <Button 
+                            className='btnVerHitos'
+                            onClick={getHitosList}>
+                                Visualizar gráficas de progreso de {alumno[0]?.nombre}
+                            </Button>
+                        </Link>
+                    </Card.Body>
+                    </Card>
+                </Row>
+            </Container>
         </div>
     )
 }

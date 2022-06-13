@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Accordion, Alert, Button, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Offcanvas } from'react-bootstrap'
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
@@ -184,12 +185,14 @@ function ProgresoAlumAdmin() {
                                     <AccordionBody>
                                         <Button
                                         className='btnBancoPreguntas'
-                                        onClick={() => {getHitosList(values.idAlumno)}}
-                                        >Hitos</Button>
-                                        <Button
-                                        className='btnBancoPreguntas'>
-                                            Gráficas de progreso
+                                        onClick={() => {getHitosList(values.idAlumno)}}>
+                                            Hitos
                                         </Button>
+                                        <Link to={`/ProgresoGraphAdmin/${values.idAlumno}`}>
+                                            <Button className='btnBancoPreguntas'>
+                                                Gráficas de progreso
+                                            </Button>
+                                        </Link>
                                     </AccordionBody>
                             </Accordion>
                         </div>
