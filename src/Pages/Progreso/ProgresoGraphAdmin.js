@@ -32,9 +32,11 @@ function ProgresoGraphAdmin() {
 
   if(show){
     return (
-      <div>
+      <div style={ {width: 800} }>
         <GraphChart chartData={graphData} />
-        <Button variant="primary" onClick={() => setShow(false)}>
+        <Button 
+        className="btnBancoPreguntas"
+        onClick={() => setShow(false)}>
           Ocultar Gráfica
         </Button>
       </div>

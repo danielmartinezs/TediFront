@@ -200,63 +200,60 @@ function ProgresoAlumAdmin() {
                 )
             )}
             <Modal 
-                show={showMHito}
-                size="sm"
-                scrollable
-                onHide={() => setShowMHito(false)}
-                >
-                    <ModalHeader closeButton>
-                        <ModalTitle>
-                            Hitos del alumno:
-                        </ModalTitle>
-                    </ModalHeader>
-                    <ModalBody>
-                        {hitosList.map(values => (
-                            <div key={values.idHito}>
-                            <ListGroup>
-                                <ListGroupItem> 
-                                    <h3>{values.descripcion}</h3>
-                                    {format(parseISO(values.fecha), 'PPPPp', { locale: es })}
-                                    <br/>
-                                    <Button
-                                    className='btnEditarP'
-                                    onClick={() => {
-                                        setShowOffEdit(true)
-                                        setShowMHito(false)
-                                        setLlave(values.idHito)
-                                        setDescripcion(values.descripcion)
-                                        setTimestamp(values.fecha)
-                                    }}
-                                    variant='success'
-                                    >
-                                        <AiOutlineEdit/>
-                                    </Button>
-                                    <Button
-                                    className='btnBorrarP'
-                                    onClick={() => {
-                                        setShowMDelete(true)
-                                        setLlave(values.idHito)
-                                    }}
-                                    variant='danger'
-                                    >
-                                        <AiOutlineDelete/>
-                                    </Button>
-                                </ListGroupItem>
-                            </ListGroup>
-                            </div>
-                        ))
-                        }
-                        <Button 
-                        variant="success"
-                        className='btnCrearP'
-                        onClick={() => {
-                            setShowOffNew(true)
-                            setShowMHito(false)}}>
-                            Agregar nuevo hito
-                            <AiOutlinePlus/>
-                        </Button>
-                    </ModalBody>
-                </Modal>
+            show={showMHito}
+            size="sm"
+            scrollable
+            onHide={() => setShowMHito(false)}>
+                <ModalHeader closeButton>
+                    <ModalTitle>
+                        Hitos del alumno:
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    {hitosList.map(values => (
+                        <div key={values.idHito}>
+                        <ListGroup>
+                            <ListGroupItem>
+                                <h3>{values.descripcion}</h3>
+                                {format(parseISO(values.fecha), 'PPPPp', { locale: es })}
+                                <br/>
+                                <Button
+                                className='btnEditarP'
+                                onClick={() => {
+                                    setShowOffEdit(true)
+                                    setShowMHito(false)
+                                    setLlave(values.idHito)
+                                    setDescripcion(values.descripcion)
+                                    setTimestamp(values.fecha)
+                                }}
+                                variant='success'>
+                                    <AiOutlineEdit/>
+                                </Button>
+                                <Button
+                                className='btnBorrarP'
+                                onClick={() => {
+                                    setShowMDelete(true)
+                                    setLlave(values.idHito)
+                                }}
+                                variant='danger'>
+                                    <AiOutlineDelete/>
+                                </Button>
+                            </ListGroupItem>
+                        </ListGroup>
+                        </div>
+                    ))
+                    }
+                    <Button 
+                    variant="success"
+                    className='btnCrearP'
+                    onClick={() => {
+                        setShowOffNew(true)
+                        setShowMHito(false)}}>
+                        Agregar nuevo hito
+                        <AiOutlinePlus/>
+                    </Button>
+                </ModalBody>
+            </Modal>
                 <Offcanvas show={showOffNew} onHide={() => setShowOffNew(false)}>
                     <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Nuevo hito</Offcanvas.Title>

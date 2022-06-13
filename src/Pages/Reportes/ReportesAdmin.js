@@ -26,7 +26,7 @@ function ReportesAdmin() {
     }
 
     const handleDescargaReportePrueba = () => {
-        axios.get(PRUEBA).then((response) => {
+        axios.post(GENERA_REPORTE_PRUEBA_URL).then((response) => {
             window.open(response.data, '_blank');
             console.log(response);
             setDatos(response.data);
