@@ -11,6 +11,7 @@ const EDIT_QUESTIONNAIRES_URL = '/questionnaires/edituploadedquestionnaire'
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 const GET_RECENT_ENTRY_URL = 'questionnaires/getrecententry'
 const INGRESA_HITO_URL = '/profiles/newhito';
+const GENERA_REPORTE_URL = 'reportes/crearreporteprueba';
 
 function Respuesta () {
 
@@ -55,10 +56,6 @@ function Respuesta () {
        getQuestionnairesDetails()
     }, [selectedQuestionnaire])
 
-    useEffect (() => {
-        console.log(edicionList)
-    }, [preguntaActual])
-
     const getQuestionnairesDetails = () => {
         axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+selectedQuestionnaire).then((response) => {
             setPreguntasList(response.data)
@@ -77,18 +74,6 @@ function Respuesta () {
             setTiempoRegistro(response.data[0].ultimoregistro)
         })
     }
-
-    const renderTooltipSelect = (props) => (
-        <Tooltip id="button-tooltip" {...props}>
-            Selecciona para cambiar la respuesta
-        </Tooltip>
-    );
-
-    const renderTooltipDisabled = (props) => (
-        <Tooltip id="button-tooltip" {...props}>
-            La pregunta es de opción múltiple, para guardar los cambios selecciona una de las opciones
-        </Tooltip>
-    );
 
     const formatQuestions = () => {
         const opc = preguntasList.map((lis) => JSON.parse(JSON.parse(JSON.stringify(lis.opciones))));
@@ -169,6 +154,31 @@ function Respuesta () {
               } else if(error.response?.status === 500){
                 setShowA(true)
                 setVariante('error')
+                setMsg("Algo salió mal al cargar los datos");
+              }
+        }
+    }
+
+    const handleGenerarReporte = async () => {
+        try{
+            const response = await axios.post(GENERA_REPORTE_URL, {
+                timestamp: tiempoRegistro,
+            })
+            if(response.status === 200){
+                window.open(response.data, '_blank');
+                console.log(response);
+                //setDatos(response.data);
+            }
+        }catch(error){
+            if(!error?.response){
+                setMsg('No hay respuesta del servidor');
+              } else if(error.response?.status === 400){
+                setMsg(error.response.data.message);
+              } else if(error.response?.status === 401){
+                setMsg('Usuario sin autorización');
+              } else if(error.response?.status === 403){
+                setMsg(error.response.data.message);
+              } else if(error.response?.status === 500){
                 setMsg("Algo salió mal al cargar los datos");
               }
         }
@@ -356,6 +366,18 @@ function Respuesta () {
         getMostRecent()
     }
 
+    const renderTooltipSelect = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Selecciona para cambiar la respuesta
+        </Tooltip>
+    );
+
+    const renderTooltipDisabled = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            La pregunta es de opción múltiple, para guardar los cambios selecciona una de las opciones
+        </Tooltip>
+    );
+
     if(isSelectedQuestionnaire)
     return (
         <div>
@@ -436,6 +458,11 @@ function Respuesta () {
           className='buttonq' 
           onClick={() => {setShowMEdit(true)}}>
             Editar Respuestas
+          </Button>
+          <Button
+          className='buttonq'
+          onClick={handleGenerarReporte}>
+            Generar reporte
           </Button>
           <Link to={'/Alumnos'}>
             <Button 
