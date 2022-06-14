@@ -16,6 +16,7 @@ const GRAFICA_ADMIN_URL = '/graphs/generagraphadmin';
             label: 'Puntaje',
             data: chartData.map(item => item.puntaje),
             backgroundColor: ["#FE9000"],
+            minBarLength: '5',
           },
         ],
       });

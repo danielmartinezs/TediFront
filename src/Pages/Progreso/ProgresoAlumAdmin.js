@@ -65,6 +65,7 @@ function ProgresoAlumAdmin() {
 
     const handleEditHito = async (e) => {
         e.preventDefault()
+        setShowOffEdit(false)
         console.log(new Date(timestamp.setHours(timestamp.getHours()-5)).toISOString())
         try{
             const response = await axios.post(EDIT_HITO_URL, {
@@ -73,7 +74,6 @@ function ProgresoAlumAdmin() {
                 desc: descripcion
             })
             if(response.status === 200){
-                console.log(response)
                 setShowA(true)
                 setVariante('success')
                 setMsg(response.data.message)
@@ -199,6 +199,7 @@ function ProgresoAlumAdmin() {
                     </div>
                 )
             )}
+            {/*MODAL LISTA HITOS*/}
             <Modal 
             show={showMHito}
             size="sm"
@@ -254,40 +255,8 @@ function ProgresoAlumAdmin() {
                     </Button>
                 </ModalBody>
             </Modal>
-                <Offcanvas show={showOffNew} onHide={() => setShowOffNew(false)}>
-                    <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Nuevo hito</Offcanvas.Title>
-                    </Offcanvas.Header>
-                    <Offcanvas.Body>
-                        <Form className="form">
-                            <Form.Group
-                            className="mb-3"
-                            controlId="newHito"
-                            >
-                            <Form.Label>Detalles</Form.Label>
-                            <Form.Control as="textarea" rows={4} onChange={(e) => setDescripcion(e.target.value)}>
-                                {descripcion}
-                            </Form.Control>
-                            </Form.Group>
-                        </Form>
-                        <Button 
-                        variant="danger" 
-                        className='btnBorrarP'
-                        onClick={() => {
-                            setShowOffNew(false)
-                            setDescripcion('')
-                        }}>
-                            Cerrar
-                        </Button>
-                        <Button 
-                        variant="success"
-                        className='btnEditarP' 
-                        onClick={handleSubmitHito}>
-                            Guardar
-                        </Button>
-                    </Offcanvas.Body>
-                </Offcanvas>
-             <Modal 
+            {/*MODAL BORRAR HITO*/}
+            <Modal 
              show={showMDelete} 
              onHide={() => {setShowMDelete(false)}}>
                 <Modal.Header closeButton>
@@ -306,7 +275,41 @@ function ProgresoAlumAdmin() {
                         Sí
                     </Button>
                 </Modal.Footer>
-            </Modal> 
+            </Modal>
+            {/*OFFCANVAS NUEVO HITO*/}
+            <Offcanvas show={showOffNew} onHide={() => setShowOffNew(false)}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Nuevo hito</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <Form className="form">
+                        <Form.Group
+                        className="mb-3"
+                        controlId="newHito">
+                            <Form.Label>Detalles</Form.Label>
+                            <Form.Control as="textarea" rows={4} onChange={(e) => setDescripcion(e.target.value)}>
+                                {descripcion}
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
+                    <Button 
+                    variant="danger" 
+                    className='btnBorrarP'
+                    onClick={() => {
+                        setShowOffNew(false)
+                        setDescripcion('')
+                    }}>
+                        Cerrar
+                    </Button>
+                    <Button 
+                    variant="success"
+                    className='btnEditarP'
+                    onClick={handleSubmitHito}>
+                        Guardar
+                    </Button>
+                </Offcanvas.Body>
+            </Offcanvas> 
+            {/*OFFCANVAS EDITAR HITO*/}
             <Offcanvas 
             show={showOffEdit} 
             placement={'end'} 
@@ -314,12 +317,11 @@ function ProgresoAlumAdmin() {
                 <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Editar hito</Offcanvas.Title>
                 </Offcanvas.Header>
-                    <Offcanvas.Body>
-                        <Form className="form">
-                            <Form.Group
-                            className="mb-3"
-                            controlId="newHito"
-                            >
+                <Offcanvas.Body>
+                    <Form className="form">
+                        <Form.Group
+                        className="mb-3"
+                        controlId="newHito">
                             <Form.Label>Detalles</Form.Label>
                             <Form.Control 
                             as="textarea" 
@@ -328,37 +330,36 @@ function ProgresoAlumAdmin() {
                             onChange={(e) => setDescripcion(e.target.value)}>
                                 {descripcion}
                             </Form.Control>
-                            </Form.Group>
-                            <Form.Label>Fecha de registro</Form.Label>
-                            <br/>
-                            <MuiPickersUtilsProvider 
-                            locale={es}
-                            utils={DateFnsUtils}>
-                                <DateTimePicker
-                                disableFuture
-                                value={timestamp}
-                                onChange={setTimestamp}/>
-                                {console.log(timestamp)}
-                            </MuiPickersUtilsProvider>
-                        </Form>
+                        </Form.Group>
+                        <Form.Label>Fecha de registro</Form.Label>
                         <br/>
-                        <Button 
-                        variant="danger" 
-                        className='btnBorrarP'
-                        onClick={() => {
-                            setShowOffEdit(false)
-                            setDescripcion('')
-                        }}>
-                            Cerrar
-                        </Button>
-                        <Button 
-                        variant="success"
-                        className='btnEditarP' 
-                        onClick={handleEditHito}>
-                            Guardar
-                        </Button>
-                    </Offcanvas.Body>
-                </Offcanvas>
+                        <MuiPickersUtilsProvider 
+                        locale={es}
+                        utils={DateFnsUtils}>
+                            <DateTimePicker
+                            disableFuture
+                            value={timestamp}
+                            onChange={setTimestamp}/>
+                            {console.log("TS: "+timestamp)}
+                        </MuiPickersUtilsProvider>
+                    </Form>
+                    <br/>
+                    <Button 
+                    variant="danger" 
+                    className='btnBorrarP'
+                    onClick={() => {
+                        setShowOffEdit(false)
+                        setDescripcion('')}}>
+                        Cerrar
+                    </Button>
+                    <Button 
+                    variant="success"
+                    className='btnEditarP'
+                    onClick={handleEditHito}>
+                        Guardar
+                    </Button>
+                </Offcanvas.Body>
+            </Offcanvas>
         </div>
     )
 }

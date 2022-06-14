@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
-import { Button, Card } from 'react-bootstrap';
+import { Button, Card, Modal } from 'react-bootstrap';
 import { VscGraph } from 'react-icons/vsc'
 import GraphChart from '../../components/graphChart'
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from '@date-io/date-fns';
+import { DateTimePicker } from "@material-ui/pickers";
+import { es } from 'date-fns/locale'
 import axios from '../../axios/axios';
 const GRAFICA_ADMIN_URL = '/graphs/generagraphadmin';
 const GRAFICA_ADMIN_NON_URL = '/graphs/generagraphadminnon';
@@ -12,8 +16,11 @@ function ProgresoGraphAdmin() {
   const [graphData, setGraphData] = useState([]);
   const [graphDataNoN, setGraphDataNoN] = useState([]);
   const [labels, setLabels] = useState([]);
+  const [filterFechaStart, setFilterFechaStart] = useState();
+  const [filterFechaEnd, setFilterFechaEnd] = useState();
   const [show, setShow] = useState(false);
   const [showNoN, setShowNoN] = useState(false);
+  const [showMFilter, setShowMFilter] = useState(false);
   const {idAlumno} = useParams();
 
   useEffect (() => {
@@ -44,40 +51,124 @@ function ProgresoGraphAdmin() {
   if(show){
     return (
       <div>
-        <Card style={ {width: 800} }>
-          <Card.Header>
+        <Card style={{ display: 'flex'}}>
+          <Card.Header className='text-center'>
             <h2>Progreso de Alumno</h2>
           </Card.Header>
           <Card.Body>
-            <GraphChart chartData={graphData} />
             <Button 
             className="btnAct"
             onClick={() => setShow(false)}>
               Ocultar Gráfica
             </Button>
+            <Button 
+            className="btnAct"
+            onClick={() => setShowMFilter(true)}>
+              Filtrado de fechas
+            </Button>
+            <GraphChart chartData={graphData} />
           </Card.Body>
         </Card>
+        {/*MODAL FILTRADO FECHAS */}
+        <Modal
+        show={showMFilter}
+        onHide={() => {setShowMFilter(false)}}>
+          <Modal.Header closeButton>
+            <Modal.Title>Filtrado de fechas</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
+              <DateTimePicker
+              disableFuture
+              variant="dialog"
+              label="Fecha de inicio"
+              value={filterFechaStart}
+              onChange={setFilterFechaStart}/>
+            </MuiPickersUtilsProvider>
+            <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
+              <DateTimePicker
+              disableFuture
+              variant="dialog"
+              label="Fecha de fin"
+              value={filterFechaEnd}
+              onChange={setFilterFechaEnd}/>
+            </MuiPickersUtilsProvider>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+            variant="success"
+            className='btnAct'
+            onClick={() => {
+              /* getGraphData()
+              getGraphDataNoN() */
+              setShowMFilter(false)
+            }}>
+              Aplicar
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     )
   }
   if(showNoN){
     return (
       <div>
-        <Card style={ {width: 800} }>
-          <Card.Header>
+        <Card style={{ display: 'flex' }}>
+          <Card.Header className='text-center'>
             <h2>Progreso de Alumno</h2>
           </Card.Header>
           <Card.Body>
-            <GraphChart chartData={graphDataNoN} />
             <Button 
             className="btnAct"
-            onClick={() => {
-              setShow(false)
-              setShowNoN(false)}}>
+            onClick={() => setShowNoN(false)}>
               Ocultar Gráfica
             </Button>
+            <Button 
+            className="btnAct"
+            onClick={() => setShowMFilter(true)}>
+              Filtrado de fechas
+            </Button>
+            <GraphChart chartData={graphDataNoN} />
           </Card.Body>
         </Card>
+        {/*MODAL FILTRADO FECHAS */}
+        <Modal
+        show={showMFilter}
+        onHide={() => {setShowMFilter(false)}}>
+          <Modal.Header closeButton>
+            <Modal.Title>Filtrado de fechas</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
+              <DateTimePicker
+              disableFuture
+              variant="dialog"
+              label="Fecha de inicio"
+              value={filterFechaStart}
+              onChange={setFilterFechaStart}/>
+            </MuiPickersUtilsProvider>
+            <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
+              <DateTimePicker
+              disableFuture
+              variant="dialog"
+              label="Fecha de fin"
+              value={filterFechaEnd}
+              onChange={setFilterFechaEnd}/>
+            </MuiPickersUtilsProvider>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+            variant="success"
+            className='btnAct'
+            onClick={() => {
+              /* getGraphData()
+              getGraphDataNoN() */
+              setShowMFilter(false)
+            }}>
+              Aplicar
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     )
   }

@@ -23,7 +23,7 @@ function PerfilSeleccionAdmin() {
                 </Card.Text>
                 <Link to={'/PerfilEditarAlumno'}>
                   <Button size='lg' className="btnCrear" >
-                    Alumnnos
+                    Alumnos
                     <AiOutlineUser/>
                   </Button>
                 </Link>
