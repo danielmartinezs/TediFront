@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router';
 import { Button, Card, Modal } from 'react-bootstrap';
 import { VscGraph } from 'react-icons/vsc'
@@ -107,7 +107,7 @@ function ProgresoGraphAdmin() {
       className='text-center'
       style={{ width: "100%" }}>
         <Card.Header>
-          <h2>Visualizar Gráfica de preguntas de opción múltiple</h2>
+          <h2>Visualizar Gráfica de puntajes</h2>
         </Card.Header>
         <Card.Body>
           <Button

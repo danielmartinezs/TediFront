@@ -585,7 +585,7 @@ function CuestionariosEdicionAdmin() {
                             variant="outline-warning"
                             className='btnEditarPregunta'
                             onClick={handleUndoRemove}>
-                                Undo
+                                Cancelar
                             </Button>:<div/>}
                         </Alert.Heading>
                         </Alert>

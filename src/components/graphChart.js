@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { Chart as ChartJS } from 'chart.js/auto';
 import { Bar, Line } from 'react-chartjs-2';
@@ -31,8 +31,8 @@ const GRAFICA_ADMIN_URL = '/graphs/generagraphadmin';
     const options = {
       responsive: true,
     };
-
-    const graph = <Bar data={datos} options={options} />;
+    const ref = useRef(null);
+    const graph = <Bar data={datos} options={options} ref={ref}/>;
 
     function filtroFecha () {
       const fechaStartHour = new Date(filterFechaStart).getTime();
