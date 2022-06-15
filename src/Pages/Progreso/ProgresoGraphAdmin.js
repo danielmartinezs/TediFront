@@ -15,18 +15,18 @@ function ProgresoGraphAdmin() {
 
   const [graphData, setGraphData] = useState([]);
   const [graphDataNoN, setGraphDataNoN] = useState([]);
-  const [labels, setLabels] = useState([]);
-  const [filterFechaStart, setFilterFechaStart] = useState();
-  const [filterFechaEnd, setFilterFechaEnd] = useState();
+  const [graphDataFilter, setGraphDataFilter] = useState([]);
   const [show, setShow] = useState(false);
   const [showNoN, setShowNoN] = useState(false);
-  const [showMFilter, setShowMFilter] = useState(false);
   const {idAlumno} = useParams();
 
   useEffect (() => {
     getGraphData()
+  }, [show])
+
+  useEffect (() => {
     getGraphDataNoN()
-  }, [])
+  }, [showNoN])
 
   const getGraphData = () => {
       axios.post(GRAFICA_ADMIN_URL+"/"+idAlumno).then((response) => {
@@ -61,52 +61,9 @@ function ProgresoGraphAdmin() {
             onClick={() => setShow(false)}>
               Ocultar Gráfica
             </Button>
-            <Button 
-            className="btnAct"
-            onClick={() => setShowMFilter(true)}>
-              Filtrado de fechas
-            </Button>
             <GraphChart chartData={graphData} />
           </Card.Body>
         </Card>
-        {/*MODAL FILTRADO FECHAS */}
-        <Modal
-        show={showMFilter}
-        onHide={() => {setShowMFilter(false)}}>
-          <Modal.Header closeButton>
-            <Modal.Title>Filtrado de fechas</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-          <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
-              <DateTimePicker
-              disableFuture
-              variant="dialog"
-              label="Fecha de inicio"
-              value={filterFechaStart}
-              onChange={setFilterFechaStart}/>
-            </MuiPickersUtilsProvider>
-            <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
-              <DateTimePicker
-              disableFuture
-              variant="dialog"
-              label="Fecha de fin"
-              value={filterFechaEnd}
-              onChange={setFilterFechaEnd}/>
-            </MuiPickersUtilsProvider>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-            variant="success"
-            className='btnAct'
-            onClick={() => {
-              /* getGraphData()
-              getGraphDataNoN() */
-              setShowMFilter(false)
-            }}>
-              Aplicar
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </div>
     )
   }
@@ -123,52 +80,9 @@ function ProgresoGraphAdmin() {
             onClick={() => setShowNoN(false)}>
               Ocultar Gráfica
             </Button>
-            <Button 
-            className="btnAct"
-            onClick={() => setShowMFilter(true)}>
-              Filtrado de fechas
-            </Button>
             <GraphChart chartData={graphDataNoN} />
           </Card.Body>
         </Card>
-        {/*MODAL FILTRADO FECHAS */}
-        <Modal
-        show={showMFilter}
-        onHide={() => {setShowMFilter(false)}}>
-          <Modal.Header closeButton>
-            <Modal.Title>Filtrado de fechas</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-          <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
-              <DateTimePicker
-              disableFuture
-              variant="dialog"
-              label="Fecha de inicio"
-              value={filterFechaStart}
-              onChange={setFilterFechaStart}/>
-            </MuiPickersUtilsProvider>
-            <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
-              <DateTimePicker
-              disableFuture
-              variant="dialog"
-              label="Fecha de fin"
-              value={filterFechaEnd}
-              onChange={setFilterFechaEnd}/>
-            </MuiPickersUtilsProvider>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-            variant="success"
-            className='btnAct'
-            onClick={() => {
-              /* getGraphData()
-              getGraphDataNoN() */
-              setShowMFilter(false)
-            }}>
-              Aplicar
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </div>
     )
   }
@@ -176,7 +90,7 @@ function ProgresoGraphAdmin() {
     <div>
       <Card 
       className='text-center'
-      style={ { width: "100%" } }>
+      style={{ width: "100%" }}>
         <Card.Header>
           <h2>Visualizar Gráfica</h2>
         </Card.Header>
@@ -191,7 +105,7 @@ function ProgresoGraphAdmin() {
       </Card>
       <Card
       className='text-center'
-      style={ { width: "100%" } }>
+      style={{ width: "100%" }}>
         <Card.Header>
           <h2>Visualizar Gráfica de preguntas de opción múltiple</h2>
         </Card.Header>
