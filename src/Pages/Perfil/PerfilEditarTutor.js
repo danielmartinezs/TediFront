@@ -160,6 +160,7 @@ function PerfilEditarTutor() {
                     className="inputBuscar"
                     value={busqueda}
                     placeholder="Buscar Tutor"
+                    maxLength="100"
                     onChange={(e) => handleBuscar(e)}
                 />
                 <button className="btn">

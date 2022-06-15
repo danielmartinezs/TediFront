@@ -117,6 +117,7 @@ function CuestionariosAdmin() {
                     className="inputBuscar"
                     value={busqueda}
                     placeholder="Buscar Alumno"
+                    maxLength="100"
                     onChange={(e) => handleBuscar(e)}
                 />
                 <button className="btn">

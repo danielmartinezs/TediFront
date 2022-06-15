@@ -108,6 +108,7 @@ function Alumnos() {
                 <input
                     className="inputBuscar"
                     value={busqueda}
+                    maxLength="100"
                     placeholder="Buscar Alumno"
                     onChange={(e) => handleBuscar(e)}
                 />

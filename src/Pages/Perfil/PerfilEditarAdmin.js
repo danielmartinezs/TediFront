@@ -139,6 +139,7 @@ function PerfilEditarAdmin() {
                 <input
                     className="inputBuscar"
                     value={busqueda}
+                    maxLength="75"
                     placeholder="Buscar Administrador"
                     onChange={(e) => handleBuscar(e)}
                 />
