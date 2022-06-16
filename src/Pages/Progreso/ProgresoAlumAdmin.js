@@ -29,6 +29,7 @@ function ProgresoAlumAdmin() {
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [llave, setLlave] = useState(0);
+    const [index, setIndex] = useState(0);
     const [showMHito, setShowMHito] = useState(false)
     const [showMDelete, setShowMDelete] = useState(false);
     const [showOffNew, setShowOffNew] = useState(false);
@@ -66,11 +67,27 @@ function ProgresoAlumAdmin() {
     const handleEditHito = async (e) => {
         e.preventDefault()
         setShowOffEdit(false)
-        console.log(new Date(timestamp.setHours(timestamp.getHours()-5)).toISOString())
+        let newtimestamp = 0;
+        if(new Date (timestamp).getTime() === new Date (hitosList[index].fecha).getTime()){
+            console.log("iguales")
+            console.log(timestamp)
+            newtimestamp = new Date((hitosList[index].fecha));//.setHours());
+            console.log("ahora es fecha"+newtimestamp)
+            newtimestamp.setHours(newtimestamp.getHours()-5);
+            console.log("menos 5 horas"+newtimestamp)
+            newtimestamp = newtimestamp.toISOString();
+            console.log("ISO"+newtimestamp)
+        }
+        else{
+            console.log("distintos")
+            newtimestamp = new Date(timestamp.setHours(timestamp.getHours()-5)).toISOString();
+        }
+        console.log("TIMESTAMP: "+newtimestamp)
+        console.log("OG-"+hitosList[index].fecha)
         try{
             const response = await axios.post(EDIT_HITO_URL, {
                 idh: llave,
-                timestamp: new Date(timestamp),
+                timestamp: newtimestamp,
                 desc: descripcion
             })
             if(response.status === 200){
@@ -212,7 +229,7 @@ function ProgresoAlumAdmin() {
                     </ModalTitle>
                 </ModalHeader>
                 <ModalBody>
-                    {hitosList.map(values => (
+                    {hitosList.map((values, index) => (
                         <div key={values.idHito}>
                         <ListGroup>
                             <ListGroupItem>
@@ -225,6 +242,7 @@ function ProgresoAlumAdmin() {
                                     setShowOffEdit(true)
                                     setShowMHito(false)
                                     setLlave(values.idHito)
+                                    setIndex(index)
                                     setDescripcion(values.descripcion)
                                     setTimestamp(values.fecha)
                                 }}
@@ -341,7 +359,6 @@ function ProgresoAlumAdmin() {
                             disableFuture
                             value={timestamp}
                             onChange={setTimestamp}/>
-                            {console.log("TS: "+timestamp)}
                         </MuiPickersUtilsProvider>
                     </Form>
                     <br/>
