@@ -9,6 +9,7 @@ import axios from '../../axios/axios';
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
+const EDIT_NOMBRE_CUESTIONARIO_URL = '/questionnaires/editquestionairename'
 const EDIT_RESPUESTA_URL = '/questionnaires/editanswer'
 const EDIT_CREATE_RESPUESTA_URL = '/questionnaires/editcreateanswer'
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
@@ -36,6 +37,7 @@ function CuestionariosEdicionAdmin() {
     const [idPreguntaEdit, setIdPreguntaEdit] = useState(0);
     const [newPreguntaId, setNewPreguntaId] = useState(0);
     const [newRespuestaId, setNewRespuestaId] = useState(0);
+    const [nombrec, setNombreC] = useState("");
     const [newPregunta, setNewPregunta] = useState("");
     const [preguntaEdit, setPreguntaEdit] = useState("");
     const [tipoNewPregunta, setTipoNewPregunta] = useState("");
@@ -53,6 +55,7 @@ function CuestionariosEdicionAdmin() {
     const [showModalBancoR, setShowModalBancoR] = useState(false);
     const [showModalBancoP, setShowModalBancoP] = useState(false);
     const [showModalOpMul, setShowModalOpMul] = useState(false);
+    const [showOffEditC, setShowOffEditC] = useState(false);
     const [showOffEditR, setShowOffEditR] = useState(false);
     const [showOffEditP, setShowOffEditP] = useState(false);
     const [showOffAddR, setShowOffAddR] = useState(false);
@@ -73,6 +76,7 @@ function CuestionariosEdicionAdmin() {
     const getQuestionnaireDetails = () => {
         axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+idCuestionario).then((response) => {
             setCuestionariosInfo(response.data)
+            setNombreC(response.data[0].nombre)
         })
     }
 
@@ -94,6 +98,44 @@ function CuestionariosEdicionAdmin() {
             setRespuestasList(response.data)
         })
     }
+
+    const editarNombreCuestionario = async () => {
+        setShowOffEditC(false);
+        try{
+            const response = await axios.post(EDIT_NOMBRE_CUESTIONARIO_URL, {
+                id: idCuestionario,
+                nombre: nombrec
+            })
+            if(response.status === 200){
+                setShowA(true)
+                setVariante('success')
+                setMsg(response.data.message)
+            }
+        }catch(error){
+            if(!error?.response){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('No hay respuesta del servidor');
+              } else if(error.response?.status === 400){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+              } else if(error.response?.status === 401){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('Usuario sin autorización');
+              } else if(error.response?.status === 403){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+              } else if(error.response?.status === 404){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+              }
+        }
+    }
+
 
     const editarPregunta = async () => {
         setShowOffEditP(false)
@@ -366,6 +408,8 @@ function CuestionariosEdicionAdmin() {
                 setMsg('Usuario sin autorización');
               } else if(error.response?.status === 403){
                 setMsg(error.response.data.message);
+              } else if(error.response?.status === 404){
+                setMsg(error.response.data.message);
               }
         }
     }
@@ -377,6 +421,11 @@ function CuestionariosEdicionAdmin() {
         setMsg(response.data.message)
         setShowMDelete(false)
         navigate('/CuestionariosAdmin')
+    }
+
+    const handleEditarNombreC = () => {
+        setShowOffEditC(false)
+        editarNombreCuestionario()
     }
 
     const handleEditRespuesta = () => {
@@ -510,7 +559,12 @@ function CuestionariosEdicionAdmin() {
                 </Alert>
             </div>
             <div className="text-center">
-                <h3>{cuestionariosInfo[0]?.nombre}</h3>
+                <h3>{nombrec}</h3>
+                <Button
+                variant="outline-success"
+                onClick={() => setShowOffEditC(true)}>
+                    Editar nombre del cuestionario
+                </Button>
             </div>
             {/*TABLA PREGUNTAS*/}
             <Table className="tabla">
@@ -686,6 +740,46 @@ function CuestionariosEdicionAdmin() {
                         onClick={() => {setShowModalPregEdit(true)}}>
                             Guardar
                         </Button>
+                </Offcanvas.Body>
+            </Offcanvas>
+            {/*OFFCANVAS EDITAR NOMBRE CUESTIONARIO*/}
+            <Offcanvas 
+                show={showOffEditC} 
+                placement={'bottom'}
+                onHide={() => setShowOffEditC(false)}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Editar nombre del cuestionario</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                        <Form>
+                            <Form.Group
+                            className="mb-3"
+                            controlId="newHito">
+                                <Form.Label>Nombre del cuestionario</Form.Label>
+                                <Form.Control 
+                                as="textarea" 
+                                rows={1}
+                                maxLength="250"
+                                value={nombrec}
+                                onChange={(e) => setNombreC(e.target.value)}>
+                                    {nombrec}
+                                </Form.Control>
+                            </Form.Group>
+                            <Button 
+                            size='sm'
+                            variant="danger"
+                            onClick={() => {
+                            setShowOffEditC(false)
+                            setNombreC(cuestionariosInfo[0]?.nombre)}}>
+                                Cerrar
+                            </Button>
+                            <Button
+                            size='sm'
+                            variant="success"
+                            onClick={handleEditarNombreC}>
+                                Guardar
+                            </Button>
+                        </Form>
                 </Offcanvas.Body>
             </Offcanvas>
             {/*OFFCANVAS EDITAR RESPUESTA*/}
@@ -932,123 +1026,6 @@ function CuestionariosEdicionAdmin() {
                     </Form.Group>
                 </Form>
             </SlidingPane>
-            {/*MODAL AGREGAR PREGUNTA
-            <Modal
-            scrollable
-            show={showModalAddPreg}
-            onHide={() => {setShowModalAddPreg(false)}}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Agregar Pregunta</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form 
-                    className='form'
-                    onSubmit={handleSubmitNewPregunta}>
-                        <Form.Group
-                        className="mb-3"
-                        controlId="newHito">
-                            <Form.Label>Pregunta</Form.Label>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Control
-                            as="textarea"
-                            rows={3}
-                            maxLength="250"
-                            value={newPregunta}
-                            onChange={(e) => setNewPregunta(e.target.value)}>
-                                {newPregunta}
-                            </Form.Control>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Tipo de pregunta</Form.Label>
-                            <br/>
-                            <Form.Label>{tipoNewPregunta}</Form.Label>
-                            <br/>
-                                <ButtonGroup>
-                                    <Button 
-                                    className="btnBancoPreguntas" 
-                                    value="Opción múltiple" 
-                                    onClick={(e) => setTipoNewPregunta(e.target.value)}>
-                                        Opción múltiple
-                                    </Button>
-                                    <Button 
-                                    className="btnBancoPreguntas" 
-                                    value="Abierta" 
-                                    onClick={(e) => setTipoNewPregunta(e.target.value)}>
-                                        Abierta
-                                    </Button>
-                                    <Button
-                                    className="btnBancoPreguntas"
-                                    size="sm"
-                                    onClick={() => {
-                                        setNewRespuesta([{ respuesta: "" }])
-                                        getRespuestas()
-                                        setShowModalBancoR(true)}}>
-                                        Banco de respuestas
-                                    </Button>
-                                </ButtonGroup>
-                        </Form.Group>
-                        {tipoNewPregunta === 'Opción múltiple' ?
-                        <Form.Group>
-                            <Form.Label>Opciones</Form.Label>
-                            <br/>
-                            <Form.Control
-                            disabled
-                            placeholder='Escribe los registros de opción múltiple debajo'
-                            value={JSON.stringify(newRespuesta)}/>
-                            {newRespuesta?.map((opcion, index) => (
-                            <div key={index}
-                            className="services">
-                                <div className="first-division">
-                                <input
-                                name="respuesta"
-                                type="text"
-                                id="opcion"
-                                value={opcion.opciones}
-                                onChange={(e) => handleChangeRespuesta(e, index)}/>
-                                {newRespuesta.length-1 === index && 
-                                (<Button 
-                                size="sm"
-                                className="add-btn"
-                                variant="success"
-                                onClick={handleAddRespuesta}>
-                                    <span>Nueva opción</span>
-                                </Button>)
-                                }
-                                <br/>
-                                {newRespuesta.length-1 === index && 
-                                (<Button 
-                                size="sm"
-                                className="add-btn"
-                                variant="success"
-                                onClick={formatRespuesta}>
-                                    <span>Guardar registros</span>
-                                </Button>)
-                                }
-                                </div>
-                                <div className="second-division">
-                                    {newRespuesta.length > 1 && 
-                                    (<Button 
-                                    size="sm"
-                                    className="remove-btn"
-                                    variant="danger"
-                                    onClick={() => handleRemoveRespuesta(index)}>
-                                        <AiOutlineDelete/>
-                                    </Button>)}
-                                </div>
-                            </div>
-                            ))}
-                        </Form.Group>:<br/>}
-                        <Button
-                        className='button-edit'
-                        type='submit'
-                        onSubmit={handleSubmitNewPregunta}>
-                            Registrar pregunta
-                            <AiOutlineSend/>
-                        </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>*/}
             {/*MODAL BANCO RESPUESTAS*/}
             <Modal 
             show={showModalBancoR}
