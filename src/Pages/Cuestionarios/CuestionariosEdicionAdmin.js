@@ -279,8 +279,8 @@ function CuestionariosEdicionAdmin() {
             newres = newRespuestaFormatted;
         }
         else if(newRespuestaId === 0){
-            console.log("NEWRES: "+newRespuesta)
-            newres = JSON.stringify(newRespuesta)
+            console.log("NEWRES: "+newRespuestaFormatted)
+            newres = newRespuestaFormatted;
         }
         else{
             newres = JSON.stringify(newRespuestaBank);
@@ -334,7 +334,7 @@ function CuestionariosEdicionAdmin() {
             newres = newRespuestaFormatted;
         }
         else if(newRespuestaId === 0){
-            newres = JSON.stringify(newRespuesta)
+            newres = newRespuestaFormatted;
         }
         else{
             newres = JSON.stringify(newRespuestaBank);
@@ -836,7 +836,7 @@ function CuestionariosEdicionAdmin() {
                             setNewPregunta(e.target.value)
                         }}/>
                         <br/>
-                        <Form.Label>Tipo de pregunta</Form.Label>
+                        <Form.Label>Tipo de respuesta</Form.Label>
                         <h3>{tipoNewPregunta}</h3>
                         <ButtonGroup>
                             <Button 
@@ -870,7 +870,7 @@ function CuestionariosEdicionAdmin() {
                         </ButtonGroup>
                         <br/>
                         <br/>
-                        <Form.Label><h3>Respuesta(s) nueva</h3></Form.Label>
+                        <Form.Label><h3>Respuesta nueva</h3></Form.Label>
                         <br/>
                         {(newRespuestaId === 0)?
                         <FormControl
@@ -883,7 +883,6 @@ function CuestionariosEdicionAdmin() {
                         as="textarea"
                         disabled
                         value={JSON.stringify(newRespuestaBank)}
-                        //onChange={(e) => setRespuesta(e.target.value)}
                         />}
                         <div>
                         {(newRespuestaId !== 0) ?
@@ -933,7 +932,7 @@ function CuestionariosEdicionAdmin() {
                     </Form.Group>
                 </Form>
             </SlidingPane>
-            {/*MODAL AGREGAR PREGUNTA*/}
+            {/*MODAL AGREGAR PREGUNTA
             <Modal
             scrollable
             show={showModalAddPreg}
@@ -1049,7 +1048,7 @@ function CuestionariosEdicionAdmin() {
                         </Button>
                     </Form>
                 </Modal.Body>
-            </Modal>
+            </Modal>*/}
             {/*MODAL BANCO RESPUESTAS*/}
             <Modal 
             show={showModalBancoR}
