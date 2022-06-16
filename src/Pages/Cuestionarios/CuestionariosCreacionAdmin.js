@@ -18,7 +18,9 @@ function CrearCuestionario() {
     const [materiac, setMateriaC] = useState("");
     const [cuestionariosList, setCuestionariosList] = useState([]);
     const [preguntasList, setPreguntasList] = useState([]);
+    const [newPreguntasList, setNewPreguntasList] = useState([]);
     const [respuestasList, setRespuestasList] = useState([]);
+    const [newRespuestasList, setNewRespuestasList] = useState([]);
     const [preguntaRespuesta, setPreguntaRespuesta] = useState([]);
     const [maxIdPregunta, setMaxIdPregunta] = useState(1);
     const [maxIdRespuesta, setMaxIdRespuesta] = useState(1);
@@ -89,6 +91,8 @@ function CrearCuestionario() {
     };
 
     const handleUploadNewCuestionario = async () => {
+        scrollToTop()
+        setDetailsPane({isPaneOpen: false})
         try{
             const response = await axios.post(UPLOAD_NEW_QUESTIONNAIRE_URL, {
                 idc: cuestionariosList.length+1,
@@ -170,21 +174,26 @@ function CrearCuestionario() {
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta: (respuestasList.length)+maxIdRespuesta}])
             setMaxIdRespuesta(maxIdRespuesta+1)
             setMaxIdPregunta(maxIdPregunta+1)
+            setNewPreguntasList([...newPreguntasList, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta}])
+            setNewRespuestasList([...newRespuestasList, { id: (respuestasList.length)+maxIdRespuesta, opciones: respuestaFormatted}])
         }
         else if(idRespuesta === 0){//si solo la respuesta es nueva
             console.log("in X0")
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: idPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta:(respuestasList.length)+maxIdRespuesta}])
             setMaxIdRespuesta(maxIdRespuesta+1)
+            setNewRespuestasList([...newRespuestasList, { id: (respuestasList.length)+maxIdRespuesta, opciones: respuestaFormatted}])
         }
         else if(idPregunta === 0 && idRespuesta !== 0){//si la pregunta es nueva y la respuesta existe
             console.log("in 0#")
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuestaBank), idRespuesta: idRespuesta}])
             setMaxIdPregunta(maxIdPregunta+1)
+            setNewPreguntasList([...newPreguntasList, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta}])
         }
         else if(idPregunta === 0){//si solo la pregunta es nueva
             console.log("in 0X")
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta: idRespuesta}])
             setMaxIdPregunta(maxIdPregunta+1)
+            setNewPreguntasList([...newPreguntasList, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta}])
         }
         else{
             console.log("xd")
@@ -316,7 +325,7 @@ function CrearCuestionario() {
                         setPregunta(e.target.value)
                     }}/>
                     <br/>
-                    <Form.Label>Tipo de pregunta</Form.Label>
+                    <Form.Label>Tipo de respuesta</Form.Label>
                     <h3>{tipoPregunta}</h3>
                     <ButtonGroup>
                         <Button 
@@ -410,6 +419,13 @@ function CrearCuestionario() {
                         Guardar
                         <AiOutlinePlus/>
                     </Button>
+                    <Button
+                    className="btnAct"
+                    onClick={() => {
+                        setDetailsPane({isPaneOpen: true})
+                    }}>
+                        Ver cuestionario
+                    </Button>
                 </Form.Group>
             </Form>
             {/*SLIDING PANE DE TABLA PREGUNTAS */}
@@ -481,6 +497,26 @@ function CrearCuestionario() {
                         </div>
                         ))
                     }
+                    <br/>
+                    Preguntas recién generadas:
+                    {newPreguntasList.map(values => (
+                        <div key={values.idPregunta}>
+                        <ListGroup>
+                            <ListGroupItem>
+                                {values.idPregunta}. {values.pregunta}
+                                <br/>
+                                <Button
+                                variant="success"
+                                onClick={() => {
+                                    setShowModalP(false)
+                                    handleSelectPregunta(values)}}>
+                                    <AiOutlineSelect/>
+                                    </Button>
+                            </ListGroupItem>
+                        </ListGroup>
+                        </div>
+                        ))
+                    }
                 </ModalBody>
             </Modal>
             <div className="inputPreguntas">
@@ -508,6 +544,31 @@ function CrearCuestionario() {
                                 </ListGroup>
                                 <br/>
                                 <Button 
+                                variant="success"
+                                onClick={() => {
+                                    setShowModalR(false)
+                                    handleSelectRespuesta(values)}}>
+                                    <AiOutlineSelect/>
+                                </Button>
+                                </ListGroupItem>
+                            </ListGroup>
+                            </div>
+                        ))
+                    }
+                    <br/>
+                    Respuestas recién generadas:	
+                    {newRespuestasList.map(values => (
+                        <div key={values.id}>
+                            <ListGroup>
+                                <ListGroupItem>
+                                    {values.id}.
+                                <ListGroup>
+                                    <ListGroupItem>
+                                        {values.opciones}
+                                    </ListGroupItem>
+                                </ListGroup>
+                                <br/>
+                                <Button
                                 variant="success"
                                 onClick={() => {
                                     setShowModalR(false)

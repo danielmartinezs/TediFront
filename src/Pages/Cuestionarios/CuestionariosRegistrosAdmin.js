@@ -173,6 +173,7 @@ function CuestionariosRegistrosAdmin() {
 
     const deleteRespuesta = async () => {
         setShowModalBorrarR(false)
+        setShowModalLinkA(false)
         console.log("ID RESPUESTA A BORRAR: "+idDeleteRespuesta)
         const response = await axios.post(DELETE_RESPUESTA_URL+"/"+idDeleteRespuesta)
         setShowA(true)

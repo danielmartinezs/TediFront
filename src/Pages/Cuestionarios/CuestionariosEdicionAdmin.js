@@ -376,7 +376,7 @@ function CuestionariosEdicionAdmin() {
         setVariante('success')
         setMsg(response.data.message)
         setShowMDelete(false)
-        navigate('/CuestionariosCreacionAdmin')
+        navigate('/CuestionariosAdmin')
     }
 
     const handleEditRespuesta = () => {
