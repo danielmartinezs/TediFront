@@ -69,21 +69,13 @@ function ProgresoAlumAdmin() {
         setShowOffEdit(false)
         let newtimestamp = 0;
         if(new Date (timestamp).getTime() === new Date (hitosList[index].fecha).getTime()){
-            console.log("iguales")
-            console.log(timestamp)
-            newtimestamp = new Date((hitosList[index].fecha));//.setHours());
-            console.log("ahora es fecha"+newtimestamp)
+            newtimestamp = new Date((hitosList[index].fecha));
             newtimestamp.setHours(newtimestamp.getHours()-5);
-            console.log("menos 5 horas"+newtimestamp)
             newtimestamp = newtimestamp.toISOString();
-            console.log("ISO"+newtimestamp)
         }
         else{
-            console.log("distintos")
             newtimestamp = new Date(timestamp.setHours(timestamp.getHours()-5)).toISOString();
         }
-        console.log("TIMESTAMP: "+newtimestamp)
-        console.log("OG-"+hitosList[index].fecha)
         try{
             const response = await axios.post(EDIT_HITO_URL, {
                 idh: llave,
@@ -116,7 +108,6 @@ function ProgresoAlumAdmin() {
                 setMsg("Error interno");
                 setVariante('danger');
             }
-            console.log(msg)
         }
     }
 
@@ -148,7 +139,6 @@ function ProgresoAlumAdmin() {
     }
 
     const filtrar = (terminoBusqueda) => {
-        console.log("El termino es "+terminoBusqueda)
         var resultadosBusqueda = alumnosList.filter( (elemento) => {
             if(terminoBusqueda === ""){
                 setAlumnSearch(alumnosList)
@@ -159,7 +149,6 @@ function ProgresoAlumAdmin() {
                 return elemento;
             }
         });
-        console.log("Resultado busqueda es: "+resultadosBusqueda)
         setAlumnSearch(resultadosBusqueda);
     }
 
