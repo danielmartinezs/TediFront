@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, Offcanvas, Table } from 'react-bootstrap';
-import { AiOutlineCheckCircle, AiOutlineDelete, AiOutlineEdit, AiOutlineLink, AiOutlinePlus, AiOutlineRollback, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
+import { AiOutlineCheck, AiOutlineClose, AiOutlineDelete, AiOutlineEdit, AiOutlineLink, AiOutlinePlus, AiOutlineRollback, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
 import { BiMessageAltAdd } from 'react-icons/bi'
 import axios from '../../axios/axios';
 import "./cuestionarios.css"
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
+const GET_LINK_ANSWERS_URL = '/questionnaires/checklinkanswers'
+const GET_LINK_QUESTIONS_URL = '/questionnaires/checklinkquestions'
 const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
 const EDIT_RESPUESTA_URL = '/questionnaires/editanswer'
 const DELETE_PREGUNTA_URL = '/questionnaires/borraquestion'
@@ -20,6 +22,8 @@ function CuestionariosRegistrosAdmin() {
     const [respuestasList, setRespuestasList] = useState([]);
     const [preguntasLink, setPreguntasLink] = useState([]);
     const [respuestasLink, setRespuestasLink] = useState([]);
+    const [preguntasEnUso, setPreguntasEnUso] = useState([]);
+    const [respuestasEnUso, setRespuestasEnUso] = useState([]);
     const [respuestasEdit, setRespuestasEdit] = useState([]);
     const [respuestaEditAdd, setRespuestaEditAdd] = useState();
     const [recentlyRemovedRes, setRecentlyRemovedRes] = useState();
@@ -49,9 +53,11 @@ function CuestionariosRegistrosAdmin() {
     const [showA, setShowA] = useState(false);
     const [showADelResp, setShowADelResp] = useState(false);
 
-    useEffect (() => {
+    useLayoutEffect (() => {
         getPreguntas()
         getRespuestas()
+        getQuestionsLink()
+        getAnswersLink()
     }, [])
 
     useEffect (() => {
@@ -84,6 +90,19 @@ function CuestionariosRegistrosAdmin() {
     const getRespuestas = () => {
         axios.get(GET_RESPUESTAS_URL).then((response) => {
             setRespuestasList(response.data)
+        })
+    }
+
+    const getQuestionsLink = () => {
+        axios.get(GET_LINK_QUESTIONS_URL).then((response) => {
+            console.log(response.data)
+            setPreguntasEnUso(response.data)
+        })
+    }
+    
+    const getAnswersLink = () => {
+        axios.get(GET_LINK_ANSWERS_URL).then((response) => {
+            setRespuestasEnUso(response.data)
         })
     }
 
@@ -198,7 +217,7 @@ function CuestionariosRegistrosAdmin() {
     }
 
     const checkLinkA = (ida) => {
-        console.log("el idcheck es: "+ida)
+        //console.log("el idcheck es: "+ida)
         axios.get(CHECK_LINK_ANSWER+"/"+ida).then((response) => {
             setRespuestasLink(response.data)
         })
@@ -206,7 +225,7 @@ function CuestionariosRegistrosAdmin() {
     }
 
     const checkLinkQ = (idq) => {
-        console.log("el idcheck es: "+idq)
+        //console.log("el idcheck es: "+idq)
         axios.get(CHECK_LINK_QUESTION+"/"+idq).then((response) => {
             setPreguntasLink(response.data)
         })
@@ -221,6 +240,40 @@ function CuestionariosRegistrosAdmin() {
         else{
             checkLinkQ(idq)
         }
+    }
+
+    const handleCheckUsoQ = (id) => {
+        let usado = false;
+        const idpreguntas = [];
+        for(let i = 0; i < preguntasEnUso.length; i++){
+            idpreguntas.push(preguntasEnUso[i].idPregunta)
+        }
+        console.log(idpreguntas)
+        for(let i = 0; i < preguntasEnUso.length; i++){
+            if(idpreguntas[i] === id){
+                console.log("esta en uso")
+                usado = true;
+                break;
+            }
+        }
+        return usado;
+    }
+
+    const handleCheckUsoA = (id) => {
+        let usado = false;
+        const idrespuestas = [];
+        for(let i = 0; i < respuestasEnUso.length; i++){
+            idrespuestas.push(respuestasEnUso[i].idRespuesta)
+        }
+        console.log(idrespuestas)
+        for(let i = 0; i < respuestasEnUso.length; i++){
+            if(idrespuestas[i] === id){
+                console.log("esta en uso")
+                usado = true;
+                break;
+            }
+        }
+        return usado;
     }
 
     const handleSetRespuestas = (idres) => {
@@ -312,11 +365,12 @@ function CuestionariosRegistrosAdmin() {
                                 <th>Tipo</th>
                                 <th>Editar</th>
                                 <th>Borrar</th>
+                                <th>Vincular</th>
                                 <th>En uso</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {preguntasList.map((question) => {
+                            {preguntasList.map((question, index) => {
                                 return(
                                     <tr key={question.id}>
                                         <td>{question.idPregunta}</td>
@@ -344,7 +398,11 @@ function CuestionariosRegistrosAdmin() {
                                                 setIdDeletePregunta(question.idPregunta)
                                                 handleCheckLinks(question.idPregunta, 0)}}>
                                             <AiOutlineLink />
-                                            </Button></td>
+                                            </Button>
+                                        </td>
+                                        <td>
+                                            {handleCheckUsoQ(question.idPregunta) ? <AiOutlineCheck size='2em' color='green'/> : <AiOutlineClose size='2em' color='red'/>}
+                                        </td>
                                     </tr>
                                 )
                             }
@@ -370,6 +428,7 @@ function CuestionariosRegistrosAdmin() {
                                 <th>Respuesta</th>
                                 <th>Editar</th>
                                 <th>Borrar</th>
+                                <th>Vincular</th>
                                 <th>En uso</th>
                             </tr>
                         </thead>
@@ -400,7 +459,11 @@ function CuestionariosRegistrosAdmin() {
                                                 setIdDeleteRespuesta(answer.id)
                                                 handleCheckLinks(0, answer.id)}}>
                                             <AiOutlineLink />
-                                            </Button></td>
+                                            </Button>
+                                        </td>
+                                        <td>
+                                            {handleCheckUsoA(answer.id) ? <AiOutlineCheck size='2em' color='green'/> : <AiOutlineClose size='2em' color='red'/>}
+                                        </td>
                                     </tr>
                                 )
                             }
