@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
-import { Alert, Button, ButtonGroup, Card, DropdownButton, Dropdown, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Table, FormControl } from "react-bootstrap";
-import { AiOutlineEdit, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineSelect, AiOutlineSend, AiOutlineQuestionCircle } from 'react-icons/ai';
+import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Offcanvas, Table } from "react-bootstrap";
+import { AiOutlineEdit, AiOutlineEye, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineSelect, AiOutlineSend, AiOutlineQuestionCircle } from 'react-icons/ai';
 import SlidingPane from 'react-sliding-pane';
 import axios from '../../axios/axios'
 import "./cuestionarios.css"
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
-const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const UPLOAD_NEW_QUESTIONNAIRE_URL = '/questionnaires/uploadnewquestionnaire'
@@ -26,18 +25,21 @@ function CrearCuestionario() {
     const [maxIdRespuesta, setMaxIdRespuesta] = useState(1);
     const [idPregunta, setIdPregunta] = useState(0);
     const [idRespuesta, setIdRespuesta] = useState(0);
+    const [idEditar, setIdEditar] = useState(0);
     const [pregunta, setPregunta] = useState("");
-    const [selectedQuestionnaire, setSelectedQuestionnaire] = useState();
-    const [msg, setMsg] = useState('');
-    const [variante, setVariante] = useState('');
+    const [preguntaEdit, setPreguntaEdit] = useState("");
     const [respuesta, setRespuesta] = useState([{ "respuesta": "" }]);
     const [respuestaFormatted, setRespuestaFormatted] = useState("{\"opciones\":[{\"respuesta\":\"\"}]}");
     const [respuestaBank, setRespuestaBank] = useState([]);
     const [tipoPregunta, setTipoPregunta] = useState("");
+    const [msg, setMsg] = useState('');
+    const [variante, setVariante] = useState('');
     const [showA, setShowA] = useState(false);
     const [showModalP, setShowModalP] = useState(false)
     const [showModalR, setShowModalR] = useState(false)
     const [showModalO, setShowModalO] = useState(false)
+    const [showModalE, setShowModalE] = useState(false)
+    const [showOffEditP, setShowOffEditP] = useState(false);
     const [detailsPane, setDetailsPane] = useState({isPaneOpen: false});
 
     useEffect (() => {
@@ -51,23 +53,10 @@ function CrearCuestionario() {
         console.log("respuesta"+respuesta)
     }, [preguntaRespuesta])
 
-    useEffect (() => {
-        getQuestionnaireDetails()
-    }, [selectedQuestionnaire])
 
     const getQuestionnaires = () => {
         axios.get(GET_CUESTIONARIOS_URL).then((response) => {
             setCuestionariosList(response.data)
-        })
-    }
-
-    const getQuestionnaireDetails = () => {
-        axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+selectedQuestionnaire).then((response) => {
-            console.log("length"+response.data.length)
-            for(let i = 0; i<response.data.length; i++){
-                response.data[i].opciones = JSON.parse(response.data[i].opciones)
-                console.log(response.data[i].opciones)
-            }
         })
     }
 
@@ -105,6 +94,7 @@ function CrearCuestionario() {
                 setShowA(true)
                 setVariante('success')
                 setMsg("Se ha creado un nuevo cuestionario")
+                establishKeys()
             }
             console.log(response)
         }catch(error){
@@ -126,7 +116,6 @@ function CrearCuestionario() {
                 setMsg(error.response.data.message);
               }
         }
-        establishKeys()
     }
 
     const establishKeys = async () => {
@@ -218,8 +207,20 @@ function CrearCuestionario() {
         scrollToTop()
     }
 
-    const handleEditarPreguntaRespuesta = () => {
-        setPreguntaRespuesta([])
+    const handleEditarPreguntaRespuesta = (index) => {
+        setIdEditar(index)
+        setShowModalE(true)
+    }
+
+    const handleEditarPregunta = () => {
+        preguntaRespuesta[idEditar].pregunta = preguntaEdit;
+        //setPreguntaRespuesta([...preguntaRespuesta])
+        setShowOffEditP(false)
+        setShowA(true)
+        setVariante('success')
+        setMsg("Pregunta editada")
+        setShowModalE(false)
+        scrollToTop()
     }
 
     const handleSelectPregunta = (values) =>{
@@ -426,7 +427,7 @@ function CrearCuestionario() {
                     <Button 
                     className="btnAct"
                     onClick={newPreguntaRespuesta}>
-                        Guardar
+                        Guardar pregunta y respuesta
                         <AiOutlinePlus/>
                     </Button>
                     <Button
@@ -435,6 +436,7 @@ function CrearCuestionario() {
                         setDetailsPane({isPaneOpen: true})
                     }}>
                         Ver cuestionario
+                        <AiOutlineEye/>
                     </Button>
                 </Form.Group>
             </Form>
@@ -444,8 +446,9 @@ function CrearCuestionario() {
             isOpen={detailsPane.isPaneOpen}
             title="Preguntas registradas"
             width={window.innerWidth < 600 ? "100%" : "500px"}
-            onRequestClose={() => {setDetailsPane({isPaneOpen: false})}}
-            >
+            onRequestClose={() => {setDetailsPane({isPaneOpen: false})}}>
+            <div className="pane-content">
+                {(preguntaRespuesta.length > 0) ?
                 <div className="pane-content">
                 <Table>
                     <thead>
@@ -492,6 +495,12 @@ function CrearCuestionario() {
                     <AiOutlineSend/>
                 </Button>
                 </div>
+                :
+                <div className="text-center">
+                <h3>Actualmente no hay preguntas registradas en el cuestionario</h3>
+                </div>
+                }
+            </div>
             </SlidingPane>
             {/*MODAL BANCO PREGUNTAS*/}
             <Modal 
@@ -665,9 +674,82 @@ function CrearCuestionario() {
                     ))}
                 </ModalBody>
             </Modal>
+            {/*MODAL EDICION PREGUNTA RESPUESTA*/}
+            <Modal
+            show={showModalE}
+            onHide={() => {setShowModalE(false)}}
+            dismissible>
+                <ModalHeader closeButton>
+                    <ModalTitle>
+                        Edición de pregunta y respuesta
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    <div>
+                        <Button
+                        className="btnVisualizaRespuesta"
+                        onClick={() => {
+                            setPreguntaEdit(preguntaRespuesta[idEditar]?.pregunta)
+                            setShowOffEditP(true)
+                            setShowModalE(false)
+                        }}>
+                            Editar pregunta<AiOutlineEdit/>
+                        </Button>
+                        <br/>
+                        <Button
+                        className="btnVisualizaRespuesta">
+                            Editar respuesta<AiOutlineEdit/>
+                        </Button>
+                        Pregunta: {preguntaRespuesta[idEditar]?.pregunta}
+                        <br/>
+                        Respuesta: {preguntaRespuesta[idEditar]?.respuesta}
+                    </div>
+                </ModalBody>
+            </Modal>
+            {/*OFFCANVAS EDITAR PREGUNTA*/}
+            <Offcanvas 
+                show={showOffEditP} 
+                placement={'bottom'}
+                onHide={() => setShowOffEditP(false)}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Editar pregunta</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                        <Form>
+                            <Form.Group
+                            className="mb-3"
+                            controlId="newHito">
+                                <Form.Label>Pregunta</Form.Label>
+                                <Form.Control 
+                                as="textarea" 
+                                rows={1}
+                                maxLength="250"
+                                value={preguntaEdit}
+                                onChange={(e) => setPreguntaEdit(e.target.value)}>
+                                    {preguntaEdit}
+                                </Form.Control>
+                            </Form.Group>
+                        </Form>
+                        <Button 
+                        size='sm'
+                        variant="danger"
+                        onClick={() => {
+                        setShowOffEditP(false)
+                        setShowModalE(true)
+                        setPreguntaEdit("")}}>
+                            Cerrar
+                        </Button>
+                        <Button
+                        size='sm'
+                        variant="success"
+                        onClick={handleEditarPregunta}>
+                            Guardar
+                        </Button>
+                </Offcanvas.Body>
+            </Offcanvas>
             </div>
             </div>
-    </main>
+        </main>
     );
 }
 
