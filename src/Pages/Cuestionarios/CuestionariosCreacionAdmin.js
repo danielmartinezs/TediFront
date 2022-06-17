@@ -344,7 +344,8 @@ function CrearCuestionario() {
                         onClick={(e) => {
                             setIdRespuesta(0)
                             setRespuestaBank([])
-                            setTipoPregunta(e.target.value)}}>
+                            setTipoPregunta(e.target.value)
+                            setShowModalO(true)}}>
                             Opción múltiple
                         </Button>
                         <Button 
@@ -413,15 +414,14 @@ function CrearCuestionario() {
                         </div>
                         }
                     </div>
-                    {(tipoPregunta === "Opción múltiple") ? 
+                    {(tipoPregunta === "Opción múltiple") &&
                     <div>
                     <Button
                     className="btnRegistroRespuestas"
                     onClick={() => {setShowModalO(true)}}>
-                        Registrar Opciones
+                        Editar Opciones
                     </Button>
                     </div>
-                    :<br/>
                     }
                     <Button 
                     className="btnAct"
@@ -612,6 +612,10 @@ function CrearCuestionario() {
             {/*MODAL REGISTRO PREGUNTAS OPCIÓN MÚLTIPLE*/}
             <Modal
             show={showModalO}
+            onHide={() => {
+                setShowModalO(false)
+                setRespuesta([{ "respuesta": "" }])
+            }}
             scrollable>
                 <ModalHeader closeButton>
                     <ModalTitle>
@@ -653,8 +657,7 @@ function CrearCuestionario() {
                                 (<Button 
                                 size="sm"
                                 variant="danger"
-                                onClick={() => handleRemoveRespuesta(index)}
-                                >
+                                onClick={() => handleRemoveRespuesta(index)}>
                                     <AiOutlineDelete/>
                                 </Button>)}
                             </div>

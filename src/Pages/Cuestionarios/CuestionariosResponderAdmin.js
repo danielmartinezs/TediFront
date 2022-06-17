@@ -669,14 +669,11 @@ function Respuesta () {
                     onChange={(e) => setComment(e.target.value)}/>
                 </div>
                 <div>
-                    {isDone? 
+                    {isDone && 
                     <button className='button-previous'
                     onClick = {() => WrapItUp()}>
                         Enviar
-                    </button>
-                    : 
-                    <div>
-                    </div>}
+                    </button>}
                 </div>
             </div>
                 <div className='numero-pregunta'>

@@ -6,6 +6,7 @@ import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineQuestionCircle,
 import { BiMessageAltAdd } from 'react-icons/bi'
 import SlidingPane from 'react-sliding-pane';
 import axios from '../../axios/axios';
+import RegistroSetRespuestas from "../../components/registroSetRespuestas";
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
@@ -635,13 +636,13 @@ function CuestionariosEdicionAdmin() {
                         dismissible>
                         <Alert.Heading>
                             {msg}
-                            {showButtonUndo?
+                            {showButtonUndo &&
                             <Button
                             variant="outline-warning"
                             className='btnEditarPregunta'
                             onClick={handleUndoRemove}>
-                                Cancelar
-                            </Button>:<div/>}
+                                Restaurar
+                            </Button>}
                         </Alert.Heading>
                         </Alert>
                     </div>
@@ -688,7 +689,7 @@ function CuestionariosEdicionAdmin() {
                         </div>
                         ))
                         }
-                        {showButtonSave === true?
+                        {showButtonSave === true &&
                         <div>
                             <Button
                             className='btnAct'
@@ -699,7 +700,7 @@ function CuestionariosEdicionAdmin() {
                                 <AiOutlineSend/>
                             </Button>
                         </div> 
-                        :<br/>}
+                        }
                     </div>}
                 </ModalBody>
             </Modal>
@@ -1008,15 +1009,15 @@ function CuestionariosEdicionAdmin() {
                             </div>
                             }
                         </div>
-                        {(tipoNewPregunta === "Opción múltiple") ? 
+                        {(tipoNewPregunta === "Opción múltiple") && 
                         <div>
+                        {/* <RegistroSetRespuestas changeSet={newrespuesta => setNewRespuesta(newrespuesta)}/> */}
                         <Button
                         className="btnRegistroRespuestas"
                         onClick={() => {setShowModalOpMul(true)}}>
-                            Registrar Opciones
+                            Editar Opciones
                         </Button>
                         </div>
-                        :<br/>
                         }
                         <Button 
                         className="btnAct"
