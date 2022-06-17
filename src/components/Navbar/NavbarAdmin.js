@@ -30,7 +30,7 @@ const NavbarAdmin = () => {
                         <Nav className='mr-auto'>
                         <Nav.Link as={Link} to="/Alumnos">Alumnos</Nav.Link>
                         <Nav.Link as={Link} to="/ReportesAdmin">Reportes</Nav.Link>
-                        <Nav.Link as={Link} to="/ProgresoAlumAdmin">Progreso</Nav.Link>
+                        <Nav.Link as={Link} to="/ProgresoAdmin">Progreso</Nav.Link>
                         <Nav.Link as={Link} to="/CuestionariosAdmin">Cuestionarios</Nav.Link>
                         <Nav.Link as={Link} to="/PerfilSeleccionAdmin">Perfiles</Nav.Link>
                         <Button

@@ -9,7 +9,7 @@ import foto7 from '../../assets/foto7.jpg';
 
 function PerfilSeleccionAdmin() {
     return (
-        <div>
+        <div className='text-center'>
             <h1>Control de cuentas</h1>
             <div>
             <Card border="primary" className="text-center" style={{ display:'flex' }}>

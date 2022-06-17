@@ -16,6 +16,7 @@ import ReportesEdicionAdmin from './Pages/Reportes/ReportesEdicionAdmin'
 import ReportesNuevoAdmin from './Pages/Reportes/ReportesNuevoAdmin'
 import ProgresoAdmin from './Pages/Progreso/ProgresoAdmin'
 import ProgresoAlumAdmin from './Pages/Progreso/ProgresoAlumAdmin'
+import ProgresoGrupoAdmin from './Pages/Progreso/ProgresoGrupoAdmin'
 import ProgresoGraphAdmin from './Pages/Progreso/ProgresoGraphAdmin'
 import CuestionariosAdmin from './Pages/Cuestionarios/CuestionariosAdmin'
 import CuestionariosRegistrosAdmin from './Pages/Cuestionarios/CuestionariosRegistrosAdmin'
@@ -55,6 +56,7 @@ function App() {
 
                   <Route exact path="/ProgresoAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoAdmin/></PrivateRoute>}/>
                   <Route exact path="/ProgresoAlumAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoAlumAdmin/></PrivateRoute>}/>
+                  <Route exact path="/ProgresoGrupoAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoGrupoAdmin/></PrivateRoute>}/>
                   <Route exact path="/ProgresoGraphAdmin/:idAlumno" element={<PrivateRoute roles = {["admin"]}><ProgresoGraphAdmin/></PrivateRoute>}/>
 
                   <Route exact path='/CuestionariosAdmin' element={<PrivateRoute roles = {["admin"]}><CuestionariosAdmin/></PrivateRoute>}/>
