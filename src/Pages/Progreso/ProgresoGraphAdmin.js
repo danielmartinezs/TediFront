@@ -15,24 +15,13 @@ function ProgresoGraphAdmin() {
 
   const [graphData, setGraphData] = useState([]);
   const [graphDataNoN, setGraphDataNoN] = useState([]);
-  const [graphDataFilter, setGraphDataFilter] = useState([]);
-  const [show, setShow] = useState(false);
   const [showNoN, setShowNoN] = useState(false);
   const {idAlumno} = useParams();
 
-  useEffect (() => {
-    getGraphData()
-  }, [show])
 
   useEffect (() => {
     getGraphDataNoN()
   }, [showNoN])
-
-  const getGraphData = () => {
-      axios.post(GRAFICA_ADMIN_URL+"/"+idAlumno).then((response) => {
-        setGraphData(response.data);
-      });
-  }
 
   const getGraphDataNoN = () => {
     axios.post(GRAFICA_ADMIN_NON_URL+"/"+idAlumno).then((response) => {
@@ -40,33 +29,10 @@ function ProgresoGraphAdmin() {
     });
   }
 
-  const revealGraph = () => {
-    setShow(true);
-  }
-
   const revealGraphNoN = () => {
     setShowNoN(true);
   }
 
-  if(show){
-    return (
-      <div>
-        <Card style={{ display: 'flex'}}>
-          <Card.Header className='text-center'>
-            <h2>Progreso de Alumno</h2>
-          </Card.Header>
-          <Card.Body>
-            <Button 
-            className="btnAct"
-            onClick={() => setShow(false)}>
-              Ocultar Gráfica
-            </Button>
-            <GraphChart chartData={graphData} />
-          </Card.Body>
-        </Card>
-      </div>
-    )
-  }
   if(showNoN){
     return (
       <div>
@@ -88,21 +54,6 @@ function ProgresoGraphAdmin() {
   }
   return (
     <div>
-      <Card 
-      className='text-center'
-      style={{ width: "100%" }}>
-        <Card.Header>
-          <h2>Visualizar Gráfica</h2>
-        </Card.Header>
-        <Card.Body>
-          <Button
-          className='btnBancoPreguntas'
-          onClick={revealGraph}>
-            Ver
-            <VscGraph />
-          </Button>
-        </Card.Body>
-      </Card>
       <Card
       className='text-center'
       style={{ width: "100%" }}>
