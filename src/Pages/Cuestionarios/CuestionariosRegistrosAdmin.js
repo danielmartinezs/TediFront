@@ -550,13 +550,19 @@ function CuestionariosRegistrosAdmin() {
                         <div>
                             <Alert
                             variant='danger'>
-                                <Alert.Heading>La respuesta actualmente no se encuentra ligada a un cuestionario, ¿deseas borrarala?</Alert.Heading>
+                                <Alert.Heading>La respuesta actualmente no se encuentra ligada a un cuestionario, ¿deseas borrarala  o vnicularla a un cuestionario?</Alert.Heading>
                             </Alert>
                             <Button
                             variant='danger'
                             onClick={deleteRespuesta}>
                                 Borrar respuesta
                                 <AiOutlineDelete/>
+                            </Button>
+                            <Button
+                            variant='success'
+                            onClick={() => {setShowModalLinkA(false)}}>
+                                Vincular respuesta
+                                <AiOutlineLink/>
                             </Button>
                         </div>:
                         respuestasLink.map((answer) => {

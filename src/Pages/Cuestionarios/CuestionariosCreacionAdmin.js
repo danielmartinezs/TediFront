@@ -185,6 +185,7 @@ function CrearCuestionario() {
         }
         else if(idPregunta === 0 && idRespuesta !== 0){//si la pregunta es nueva y la respuesta existe
             console.log("in 0#")
+            console.log(respuestaBank)
             setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuestaBank), idRespuesta: idRespuesta}])
             setMaxIdPregunta(maxIdPregunta+1)
             setNewPreguntasList([...newPreguntasList, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta}])
@@ -208,8 +209,17 @@ function CrearCuestionario() {
         setIdRespuesta(0)
     }
 
-    const handleDisplayInfoCuestionario = (idcuestionario) => {
-        setSelectedQuestionnaire(idcuestionario)
+    const handleDeletePreguntaRespuesta = (index) => {
+        preguntaRespuesta.splice(index, 1)
+        setDetailsPane({isPaneOpen: false})
+        setShowA(true)
+        setVariante('danger')
+        setMsg("Pregunta eliminada")
+        scrollToTop()
+    }
+
+    const handleEditarPreguntaRespuesta = () => {
+        setPreguntaRespuesta([])
     }
 
     const handleSelectPregunta = (values) =>{
@@ -445,6 +455,8 @@ function CrearCuestionario() {
                             <th>Pregunta</th>
                             {/* <th>Id Respuesta</th> */}
                             <th>Respuesta</th>
+                            <th>Editar</th>
+                            <th>Borrar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -455,6 +467,20 @@ function CrearCuestionario() {
                                 <td>{pr.pregunta}</td>
                                 {/* <td>{pr.idRespuesta}</td> */}
                                 <td>{JSON.parse(JSON.stringify(pr.respuesta))}</td>
+                                <td>
+                                    <Button
+                                    variant="outline-success"
+                                    onClick={() => {handleEditarPreguntaRespuesta(index)}}>
+                                        <AiOutlineEdit />
+                                    </Button>
+                                </td>
+                                <td>
+                                    <Button
+                                    variant="outline-danger"
+                                    onClick={() => {handleDeletePreguntaRespuesta(index)}}>
+                                        <AiOutlineDelete />
+                                    </Button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

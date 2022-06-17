@@ -563,16 +563,17 @@ function CuestionariosEdicionAdmin() {
                 <Button
                 variant="outline-success"
                 onClick={() => setShowOffEditC(true)}>
-                    Editar nombre del cuestionario
+                    <AiOutlineEdit/>
                 </Button>
             </div>
             {/*TABLA PREGUNTAS*/}
             <Table className="tabla">
                 <thead>
                     <th>
-                        Pregunta
+                        Editar
                     </th>
                     <th>
+                        Pregunta
                     </th>
                     <th>
                         Tipo
@@ -584,7 +585,6 @@ function CuestionariosEdicionAdmin() {
                 <tbody>
                     {cuestionariosInfo.map((values) => (
                         <tr key={values.idPregunta+values.idRespuesta}>
-                            <td>{values.pregunta}</td>
                             <td>
                             <Button
                             /* className='btnEditarPregunta' */
@@ -598,6 +598,7 @@ function CuestionariosEdicionAdmin() {
                             }}>
                                 <AiOutlineEdit/>
                             </Button></td>
+                            <td>{values.pregunta}</td>
                             <td>{values.tipo}</td>
                             <td>
                             <Button
