@@ -29,7 +29,7 @@ function ProgresoAdmin() {
             <Card border="primary" className="text-center" style={{ display:'flex'}}>
             <Card.Img variant="top" src={foto12} />
               <Card.Header>
-                <h3>Perfiles Alumnos</h3>
+                <h3>Progreso por alumnos</h3>
               </Card.Header>
               <Card.Body>
                 <Card.Text>
