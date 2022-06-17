@@ -32,9 +32,7 @@ function Perfil(){
     return (
         <div>
             <h3>
-                {
-                    idTutor
-                }
+                {idTutor}
             </h3>
         <Table bordered>
             <thead>

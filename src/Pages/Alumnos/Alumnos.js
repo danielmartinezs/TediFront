@@ -90,7 +90,7 @@ function Alumnos() {
     }
 
     return (
-        <div>
+        <div className='text-center'>
             <h1>Alumnos</h1>
             <div className='alertas'>
                 <Alert 

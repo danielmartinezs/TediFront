@@ -47,7 +47,7 @@ function Progreso () {
     }
 
     return (
-        <div>
+        <div className='text-center'>
             <h1>Progreso</h1>
             <Container>
                 <Row>

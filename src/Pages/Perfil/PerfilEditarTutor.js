@@ -141,7 +141,7 @@ function PerfilEditarTutor() {
     }
 
     return (
-        <div>
+        <div className='text-center'>
             <h1>Edición de tutores</h1>
             <div className='alertas'>
             <Alert 

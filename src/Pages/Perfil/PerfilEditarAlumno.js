@@ -146,7 +146,7 @@ function PerfilEditarAlumno() {
     }
 
     return (
-        <div>
+        <div className='text-center'>
             <h1>Edición de perfiles alumnos</h1>
             <div className='alertas'>
             <Alert 

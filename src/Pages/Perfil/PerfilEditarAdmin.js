@@ -121,7 +121,7 @@ function PerfilEditarAdmin() {
     }
 
     return (
-        <div>
+        <div className='text-center'>
             <h1>Edición de perfiles admin</h1>
             <div className='alertas'>
                 <Alert 

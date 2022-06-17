@@ -159,7 +159,7 @@ function ProgresoAlumAdmin() {
     }
 
     return (
-        <div> 
+        <div className='text-center'> 
             <h1>Progreso por Alumno</h1>
             <div className='alertas'>
                 <Alert 

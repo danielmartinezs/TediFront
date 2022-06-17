@@ -30,46 +30,46 @@ function PerfilPadre() {
     return (
         <div>
             <Card>
-        <Card.Header as="h5">Perfil</Card.Header>
-        <Card.Body>
+                <Card.Header as="h5">Perfil</Card.Header>
+            <Card.Body>
             <Card.Title><h3>{alumno[0]?.nombre}</h3></Card.Title>
-            <Table bordered>
-            <thead>
-                <tr>
-                <th>
-                    Foto
-                </th>
-                <th>
-                    Nombre
-                </th>
-                <th>
-                    Semestre
-                </th>
-                <th>
-                    Fecha de Nacimiento
-                </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                <th scope="row">
-                    {alumno[0]?.foto}
-                </th>
-                <td>
-                    {alumno[0]?.nombre}
-                </td>
-                <td>
-                    {alumno[0]?.anioEscolar}
-                </td>
-                <td>
-                    {alumno[0]?.fechaNacimiento}
-                </td>
-                </tr>
-            </tbody>
-            </Table>
-        </Card.Body>
-        </Card>
-    </div>
+                <Table bordered>
+                    <thead>
+                        <tr>
+                            <th>
+                                Foto
+                            </th>
+                            <th>
+                                Nombre
+                            </th>
+                            <th>
+                                Semestre
+                            </th>
+                            <th>
+                                Fecha de Nacimiento
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">
+                                {alumno[0]?.foto}
+                            </th>
+                            <td>
+                                {alumno[0]?.nombre}
+                            </td>
+                            <td>
+                                {alumno[0]?.anioEscolar}
+                            </td>
+                            <td>
+                                {alumno[0]?.fechaNacimiento}
+                            </td>
+                        </tr>
+                    </tbody>
+                </Table>
+            </Card.Body>
+            </Card>
+        </div>
     )
 }
 
