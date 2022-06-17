@@ -561,7 +561,7 @@ function CuestionariosRegistrosAdmin() {
                             <Button
                             variant='success'
                             onClick={() => {setShowModalLinkA(false)}}>
-                                Vincular respuesta
+                                Vincular respuesta con pregunta
                                 <AiOutlineLink/>
                             </Button>
                         </div>:
@@ -599,6 +599,12 @@ function CuestionariosRegistrosAdmin() {
                             onClick={deletePregunta}>
                                 Borrar pregunta
                                 <AiOutlineDelete/>
+                            </Button>
+                            <Button
+                            variant='success'
+                            onClick={() => {setShowModalLinkA(false)}}>
+                                Vincular pregunta con respuesta
+                                <AiOutlineLink/>
                             </Button>
                         </div>:
                         preguntasLink.map((question) => {

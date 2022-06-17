@@ -17,6 +17,7 @@ const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
 const EDIT_CREATE_PREGUNTA_URL = '/questionnaires/editcreatequestion'
 const DELETE_CUESTIONARIO_URL = '/questionnaires/deletequestionnaire'
+const DELETE_QA_URL = '/questionnaires/deleteqa'
 const NEW_PREGUNTA_URL = '/questionnaires/addquestion'
 const ESTABLISH_KEY_URL = '/questionnaires/establishnewkey'
 
@@ -34,7 +35,9 @@ function CuestionariosEdicionAdmin() {
     const [respuestaEditAdd, setRespuestaEditAdd] = useState();
     const [recentlyRemovedRes, setRecentlyRemovedRes] = useState();
     const [idRespuestaEdit, setIdRespuestaEdit] = useState(0);
+    const [idRespuestaDelete, setIdRespuestaDelete] = useState(0);
     const [cambioRespuesta, setCambioRespuesta] = useState(0);
+    const [idPreguntaDelete, setIdPreguntaDelete] = useState(0);
     const [idPreguntaEdit, setIdPreguntaEdit] = useState(0);
     const [newPreguntaId, setNewPreguntaId] = useState(0);
     const [newRespuestaId, setNewRespuestaId] = useState(0);
@@ -48,6 +51,7 @@ function CuestionariosEdicionAdmin() {
     const [showButtonSave, setShowButtonSave] = useState(false);
     const [showButtonUndo, setShowButtonUndo] = useState(false);
     const [showMDelete, setShowMDelete] = useState(false);
+    const [showMDeleteQA, setShowMDeleteQA] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
     const [showModalCerrar, setShowModalCerrar] = useState(false);
     const [showModalResEdit, setShowModalResEdit] = useState(false);
@@ -424,6 +428,46 @@ function CuestionariosEdicionAdmin() {
         navigate('/CuestionariosAdmin')
     }
 
+    const handleDeleteQA = async () => {
+        try{
+            const response = await axios.post(DELETE_QA_URL, {
+                idc: idCuestionario,
+                idp: idPreguntaDelete,
+                idr: idRespuestaDelete
+            })
+            if(response.status === 200){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(response.data.message)
+                setIdPreguntaDelete(0)
+                setIdRespuestaDelete(0)
+                setShowMDeleteQA(false)
+            }
+        }catch(error){
+            if(!error?.response){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('No hay respuesta del servidor');
+            } else if(error.response?.status === 400){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 401){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('Usuario sin autorización');
+            } else if(error.response?.status === 403){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 404){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            }
+        }
+    }
+
     const handleEditarNombreC = () => {
         setShowOffEditC(false)
         editarNombreCuestionario()
@@ -574,6 +618,9 @@ function CuestionariosEdicionAdmin() {
                         Editar
                     </th>
                     <th>
+                        Borrar
+                    </th>
+                    <th>
                         Pregunta
                     </th>
                     <th>
@@ -587,18 +634,30 @@ function CuestionariosEdicionAdmin() {
                     {cuestionariosInfo.map((values) => (
                         <tr key={values.idPregunta+values.idRespuesta}>
                             <td>
-                            <Button
-                            /* className='btnEditarPregunta' */
-                            variant='outline-success'
-                            onClick={() => {
-                                setIdPreguntaEdit(values.idPregunta)
-                                setPreguntaEdit(values.pregunta)
-                                setTipoPreguntaEdit(values.tipo)
-                                setIdRespuestaEdit(values.idRespuesta)
-                                setShowOffEditP(true)
-                            }}>
-                                <AiOutlineEdit/>
-                            </Button></td>
+                                <Button
+                                /* className='btnEditarPregunta' */
+                                variant='outline-success'
+                                onClick={() => {
+                                    setIdPreguntaEdit(values.idPregunta)
+                                    setPreguntaEdit(values.pregunta)
+                                    setTipoPreguntaEdit(values.tipo)
+                                    setIdRespuestaEdit(values.idRespuesta)
+                                    setShowOffEditP(true)
+                                }}>
+                                    <AiOutlineEdit/>
+                                </Button>
+                            </td>
+                            <td>
+                                <Button
+                                variant='outline-danger'
+                                onClick={() => {
+                                    setIdPreguntaDelete(values.idPregunta)
+                                    setIdRespuestaDelete(values.idRespuesta)
+                                    setShowMDeleteQA(true)
+                                }}>
+                                    <AiOutlineDelete/>
+                                </Button>
+                            </td>
                             <td>{values.pregunta}</td>
                             <td>{values.tipo}</td>
                             <td>
@@ -877,6 +936,27 @@ function CuestionariosEdicionAdmin() {
                     </Button>
                 </Offcanvas.Body>
             </Offcanvas>
+             {/*MODAL BORRAR PREGUNTA RESPUESTA*/}
+             <Modal 
+            show={showMDeleteQA} 
+            onHide={() => {setShowMDeleteQA(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>¿Estás seguro que quieres borrar esta pregunta del cuestionario?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body><h3>Una vez borrada del cuestionario no podrá recuperarse</h3></Modal.Body>
+                <Modal.Footer>
+                    <Button 
+                    variant="success" 
+                    onClick={() => {setShowMDelete(false)}}>
+                        No, quiero conservar la pregunta en el cuestionario
+                    </Button>
+                    <Button 
+                    variant="danger" 
+                    onClick={handleDeleteQA}>
+                        Sí, quiero borrar la pregunta del cuestionario
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             {/*MODAL BORRAR CUESTIONARIO*/}
             <Modal 
             show={showMDelete} 
