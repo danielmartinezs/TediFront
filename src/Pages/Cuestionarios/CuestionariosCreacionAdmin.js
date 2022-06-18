@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
 import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Offcanvas, Table } from "react-bootstrap";
-import { AiOutlineEdit, AiOutlineEye, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineSelect, AiOutlineSend, AiOutlineQuestionCircle } from 'react-icons/ai';
+import { AiOutlineEdit, AiOutlineEye, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineQuestionCircle, AiOutlineSelect, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai';
+import { BiMessageAltAdd } from 'react-icons/bi'
 import SlidingPane from 'react-sliding-pane';
 import axios from '../../axios/axios'
 import "./cuestionarios.css"
@@ -26,20 +27,32 @@ function CrearCuestionario() {
     const [idPregunta, setIdPregunta] = useState(0);
     const [idRespuesta, setIdRespuesta] = useState(0);
     const [idEditar, setIdEditar] = useState(0);
+    const [cambioRespuesta, setCambioRespuesta] = useState(0);
     const [pregunta, setPregunta] = useState("");
     const [preguntaEdit, setPreguntaEdit] = useState("");
     const [respuesta, setRespuesta] = useState([{ "respuesta": "" }]);
     const [respuestaFormatted, setRespuestaFormatted] = useState("{\"opciones\":[{\"respuesta\":\"\"}]}");
+    const [respuestasEdit, setRespuestasEdit] = useState([]);
+    const [respuestaEdit, setRespuestaEdit] = useState();
+    const [respuestaEditAdd, setRespuestaEditAdd] = useState();
     const [respuestaBank, setRespuestaBank] = useState([]);
+    const [recentlyRemovedRes, setRecentlyRemovedRes] = useState();
     const [tipoPregunta, setTipoPregunta] = useState("");
+    const [tipoPreguntaEdit, setTipoPreguntaEdit] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [showA, setShowA] = useState(false);
+    const [showADelResp, setShowADelResp] = useState(false);
+    const [showButtonSave, setShowButtonSave] = useState(false);
+    const [showButtonUndo, setShowButtonUndo] = useState(false);
     const [showModalP, setShowModalP] = useState(false)
     const [showModalR, setShowModalR] = useState(false)
     const [showModalO, setShowModalO] = useState(false)
     const [showModalE, setShowModalE] = useState(false)
+    const [showAddR, setShowAddR] = useState(false);
     const [showOffEditP, setShowOffEditP] = useState(false);
+    const [showOffEditR, setShowOffEditR] = useState(false);
+    const [showOffEditO, setShowOffEditO] = useState(false);
     const [detailsPane, setDetailsPane] = useState({isPaneOpen: false});
 
     useEffect (() => {
@@ -223,6 +236,48 @@ function CrearCuestionario() {
         scrollToTop()
     }
 
+    const handleSetRespuestasEdit = () => {
+        setRespuestasEdit(JSON.parse(preguntaRespuesta[idEditar]?.respuesta))
+        console.log(JSON.parse(preguntaRespuesta[idEditar]?.respuesta))
+        setTipoPreguntaEdit(preguntaRespuesta[idEditar]?.tipop)
+        setShowOffEditO(true)
+        setShowModalE(false)
+    }
+
+    const handleEditRespuesta = () => {
+        respuestasEdit.opciones[cambioRespuesta].respuesta = respuestaEdit
+        console.log(JSON.stringify(respuestasEdit))
+        setShowButtonSave(true)
+        setShowOffEditR(false)
+        setShowOffEditO(true)
+    }
+
+    const handleEditAdd = (offset) => {
+        console.log("OG"+JSON.stringify(respuestasEdit))
+        respuestasEdit.opciones.splice((cambioRespuesta+offset), 0, {respuesta: respuestaEditAdd})
+        console.log("CHANGED"+JSON.stringify(respuestasEdit))
+        setShowButtonSave(true)
+        setShowAddR(false)
+        setShowOffEditO(true)
+        setShowADelResp(true)
+        setShowButtonUndo(false)
+        setVariante('success')
+        setMsg("Se agregó la opción")
+        setRespuestaEditAdd("")
+    }
+
+    const handleEditarRespuesta = () => {
+        preguntaRespuesta[idEditar].respuesta = JSON.stringify(respuestasEdit)
+        console.log(preguntaRespuesta[idEditar].respuesta)
+        setPreguntaRespuesta([...preguntaRespuesta]);
+        setShowOffEditO(false)
+        setShowButtonSave(false);
+        setShowA(true)
+        setVariante('success')
+        setMsg("Respuesta editada")
+        scrollToTop();
+    }
+
     const handleSelectPregunta = (values) =>{
         console.log(values)
         setPregunta(values.pregunta)
@@ -271,6 +326,38 @@ function CrearCuestionario() {
             setRespuesta(list);
         }
     };
+
+    const handleEditRemove = (change) => {
+        if(respuestasEdit.opciones.length > 2){
+            setCambioRespuesta(change)
+            console.log("el cambio es: "+change)
+            console.log("OG"+JSON.stringify(respuestasEdit))
+            setRecentlyRemovedRes(respuestasEdit.opciones[change].respuesta)
+            respuestasEdit.opciones.splice(change, 1)
+            console.log("CHANGED"+JSON.stringify(respuestasEdit))
+            setShowButtonSave(true)
+            setShowButtonUndo(true)
+            setShowADelResp(true)
+            setVariante('danger')
+            setMsg("Se eliminó la opción")
+        }
+        else{
+            setShowButtonUndo(false)
+            setShowADelResp(true)
+            setVariante('danger')
+            setMsg('Una pregunta de opción múltiple debe tener al menos dos opciones')
+        }
+    }
+
+    const handleUndoRemove = () => {
+        respuestasEdit.opciones.splice(cambioRespuesta, 0, {respuesta: recentlyRemovedRes})
+        console.log("UNDO"+JSON.stringify(respuestasEdit))
+        setShowButtonSave(true)
+        setShowButtonUndo(false)
+        setShowADelResp(true)
+        setVariante('success')
+        setMsg("Se restauró la opción")
+    }
 
     const formatRespuesta = () => {
         const rep = "{\"opciones\":"+JSON.stringify(respuesta)+"}";
@@ -533,7 +620,9 @@ function CrearCuestionario() {
                         ))
                     }
                     <br/>
-                    Preguntas recién generadas:
+                    <div className="text-center">
+                        <h5>Preguntas recién generadas:</h5>
+                    </div>
                     {newPreguntasList.map(values => (
                         <div key={values.idPregunta}>
                         <ListGroup>
@@ -591,7 +680,9 @@ function CrearCuestionario() {
                         ))
                     }
                     <br/>
-                    Respuestas recién generadas:	
+                    <div className="text-center">
+                        <h5>Respuestas recién generadas:</h5>
+                    </div>	
                     {newRespuestasList.map(values => (
                         <div key={values.id}>
                             <ListGroup>
@@ -685,9 +776,10 @@ function CrearCuestionario() {
                     </ModalTitle>
                 </ModalHeader>
                 <ModalBody>
-                    <div>
+                    <div className="text-center">
+                        <h5>Pregunta: {preguntaRespuesta[idEditar]?.pregunta}</h5>
                         <Button
-                        className="btnVisualizaRespuesta"
+                        className="btnAct"
                         onClick={() => {
                             setPreguntaEdit(preguntaRespuesta[idEditar]?.pregunta)
                             setShowOffEditP(true)
@@ -697,56 +789,226 @@ function CrearCuestionario() {
                         </Button>
                         <br/>
                         <Button
-                        className="btnVisualizaRespuesta">
+                        className="btnAct"
+                        onClick={() => {handleSetRespuestasEdit(idEditar)}}>
                             Editar respuesta<AiOutlineEdit/>
                         </Button>
-                        Pregunta: {preguntaRespuesta[idEditar]?.pregunta}
                         <br/>
-                        Respuesta: {preguntaRespuesta[idEditar]?.respuesta}
                     </div>
                 </ModalBody>
             </Modal>
             {/*OFFCANVAS EDITAR PREGUNTA*/}
             <Offcanvas 
-                show={showOffEditP} 
-                placement={'bottom'}
-                onHide={() => setShowOffEditP(false)}>
+            show={showOffEditP} 
+            placement={'bottom'}
+            onHide={() => setShowOffEditP(false)}>
+            <Offcanvas.Header closeButton>
+                <Offcanvas.Title>Editar pregunta</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+                <Form>
+                    <Form.Group
+                    className="mb-3"
+                    controlId="newHito">
+                        <Form.Label>Pregunta</Form.Label>
+                        <Form.Control 
+                        as="textarea" 
+                        rows={1}
+                        maxLength="250"
+                        value={preguntaEdit}
+                        onChange={(e) => setPreguntaEdit(e.target.value)}>
+                            {preguntaEdit}
+                        </Form.Control>
+                    </Form.Group>
+                </Form>
+                <Button 
+                size='sm'
+                variant="danger"
+                onClick={() => {
+                setShowOffEditP(false)
+                setShowModalE(true)
+                setPreguntaEdit("")}}>
+                    Cerrar
+                </Button>
+                <Button
+                size='sm'
+                variant="success"
+                onClick={handleEditarPregunta}>
+                    Guardar
+                </Button>
+            </Offcanvas.Body>
+            </Offcanvas>
+            {/*OFFCANVAS EDITAR RESPUESTAS OPCION MULTIPLE*/}
+            <Offcanvas
+            show={showOffEditO}
+            placement={'start'}
+            onHide={() => {showOffEditO(false)}}>
                 <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Editar pregunta</Offcanvas.Title>
+                    <Offcanvas.Title>Editar respuesta</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
+                <div className='alertas'>
+                    <Alert 
+                    show={showADelResp}
+                    variant={variante}
+                    onClose={() => setShowADelResp(false)}
+                    dismissible>
+                        <Alert.Heading>
+                        {msg}
+                        {showButtonUndo &&
+                        <Button
+                        variant="outline-warning"
+                        className='btnEditarPregunta'
+                        onClick={handleUndoRemove}>
+                            Restaurar
+                        </Button>}
+                        </Alert.Heading>
+                    </Alert>
+                </div>
+                {tipoPreguntaEdit === "Abierta" ?
+                <div>
+                    Esta pregunta es abierta, por lo que no contiene respuestas editables
+                </div>:
+                <div>
+                    {respuestasEdit.opciones?.map((values, index) => (
+                    <div key={index}>
+                        <ListGroup className='displaySetRespuestas'>
+                            <ListGroupItem className='setRespuestas'>
+                                {(values.respuesta)}
+                                <div className='setRespuestasBotones'>
+                                    <Button
+                                    className='btnEdicion'
+                                    variant='success'
+                                    onClick={() => {
+                                        setRespuestaEdit(values.respuesta)
+                                        setCambioRespuesta(index)
+                                        setShowOffEditO(false)
+                                        setShowOffEditR(true)
+                                    }}>
+                                        <AiOutlineEdit/>
+                                    </Button>
+                                    <Button
+                                    className='btnEdicion'
+                                    variant='danger'
+                                    onClick={() => {handleEditRemove(index)}}>
+                                        <AiOutlineDelete/>
+                                    </Button>
+                                    <Button
+                                    className='btnEdicion'
+                                    variant='warning'
+                                    onClick={() => {
+                                        setCambioRespuesta(index)
+                                        setShowButtonSave(false)
+                                        setShowAddR(true)}}>
+                                        <BiMessageAltAdd/>
+                                    </Button>
+                                </div>
+                            </ListGroupItem>
+                        </ListGroup>
+                    </div>
+                    ))
+                    }
+                    {showAddR &&
+                    <div>
                         <Form>
                             <Form.Group
                             className="mb-3"
-                            controlId="newHito">
-                                <Form.Label>Pregunta</Form.Label>
+                            controlId="newRespuesta">
+                                <Form.Label>Respuesta nueva</Form.Label>
+                                <br/>
+                                <Button 
+                                className='btnAct'
+                                size='sm'
+                                variant="success"
+                                onClick={() => {handleEditAdd(0)}}>
+                                    Guardar encima de la respuesta seleccionada
+                                    <AiOutlineVerticalAlignTop size={50}/>
+                                </Button>
                                 <Form.Control 
                                 as="textarea" 
                                 rows={1}
-                                maxLength="250"
-                                value={preguntaEdit}
-                                onChange={(e) => setPreguntaEdit(e.target.value)}>
-                                    {preguntaEdit}
+                                placeholder="Respuesta nueva"
+                                value={respuestaEditAdd}
+                                onChange={(e) => {setRespuestaEditAdd(e.target.value)}}>
+                                    {respuestaEditAdd}
                                 </Form.Control>
+                                <br/>
+                                <Button 
+                                className='btnAct'
+                                size='sm' 
+                                variant="success" 
+                                onClick={() => {handleEditAdd(1)}}>
+                                    Guardar debajo de la respuesta seleccionada
+                                    <AiOutlineVerticalAlignBottom size={50}/>
+                                </Button>
                             </Form.Group>
                         </Form>
                         <Button 
                         size='sm'
                         variant="danger"
                         onClick={() => {
-                        setShowOffEditP(false)
-                        setShowModalE(true)
-                        setPreguntaEdit("")}}>
+                            setShowAddR(false)
+                            setShowOffEditO(true)
+                            setRespuestaEditAdd('')}}>
                             Cerrar
                         </Button>
+                    </div>
+                    }
+                    {showButtonSave &&
+                    <div>
                         <Button
-                        size='sm'
-                        variant="success"
-                        onClick={handleEditarPregunta}>
-                            Guardar
+                        className='btnAct'
+                        onClick={handleEditarRespuesta}>
+                            Guardar Cambios
+                            <AiOutlineSend/>
                         </Button>
+                    </div> 
+                    }
+                </div>}
                 </Offcanvas.Body>
             </Offcanvas>
+            {/*OFFCANVAS EDITAR RESPUESTA*/}
+            <Offcanvas 
+            show={showOffEditR} 
+            placement={'bottom'} 
+            onHide={() => setShowOffEditR(false)}>
+            <Offcanvas.Header closeButton>
+                <Offcanvas.Title>Editar Respuesta</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+                    <Form>
+                        <Form.Group
+                        className="mb-3"
+                        controlId="newHito">
+                            <Form.Label>Respuesta</Form.Label>
+                            <Form.Control 
+                            as="textarea" 
+                            rows={1} 
+                            value={respuestaEdit}
+                            onChange={(e) => setRespuestaEdit(e.target.value)}>
+                                {respuestaEdit}
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
+                    <Button 
+                    size='sm'
+                    variant="danger"
+                    onClick={() => {
+                        setShowOffEditR(false)
+                        setShowOffEditO(true)
+                        setRespuestaEdit('')}}>
+                        Cerrar
+                    </Button>
+                    <Button 
+                    size='sm' 
+                    variant="success" 
+                    onClick={handleEditRespuesta}>
+                        Guardar
+                    </Button>
+            </Offcanvas.Body>
+            </Offcanvas>
+            {/*OFFCANVAS AGREGAR RESPUESTA*/}
+            
             </div>
             </div>
         </main>
