@@ -380,6 +380,11 @@
     font-size: x-large
   }
 
+  .setRespuestas:hover {
+    background-color: #FE9000;
+    color: #fff;
+  }
+
   .setRespuestasBotones {
     position: inherit;
     display: inherit;
@@ -388,4 +393,9 @@
     background-color: #fff;
     justify-content: flex-end;
     font-size: x-large;
+  }
+
+  .setRespuestasBotones:hover {
+    background-color: #FE9000;
+    color: #fff;
   }

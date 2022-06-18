@@ -429,6 +429,12 @@ function CuestionariosEdicionAdmin() {
     }
 
     const handleDeleteQA = async () => {
+        if(cuestionariosInfo.length < 2){
+            setShowA(true)
+            setVariante('danger')
+            setMsg('En cuestionario debe de tener al menos una pregunta')
+            return
+        }
         try{
             const response = await axios.post(DELETE_QA_URL, {
                 idc: idCuestionario,
@@ -623,6 +629,7 @@ function CuestionariosEdicionAdmin() {
             </div>
             <div className="text-center">
                 <h3>{nombrec}</h3>
+                {console.log("length"+cuestionariosInfo.length)}
                 <Button
                 variant="outline-success"
                 onClick={() => setShowOffEditC(true)}>
