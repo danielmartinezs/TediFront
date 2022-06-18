@@ -3,7 +3,7 @@ import AuthContext from "../../context/AuthProvider";
 import axios from '../../axios/axios';
 import './login.css';
 import  Logo from '../../assets/Logo.jpg';
-import { Alert, Button, ToggleButton } from 'react-bootstrap';
+import { Alert, Button, Overlay, OverlayTrigger, ToggleButton, Tooltip } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 const LOGIN_URL = '/login'
 
@@ -12,6 +12,7 @@ export const Login = () => {
     const { setAuth } = useContext(AuthContext);
     const userRef = useRef();
     const errRef = useRef();
+    const valRef = useRef();
     const navigate = useNavigate();
     const [user, setUser] = useState('');
     const [password, setPassword] = useState('');
@@ -19,6 +20,7 @@ export const Login = () => {
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [show, setShow] = useState(false);
+    const [showt, setShowT] = useState(false);
     const [logged, setLogged] = useState(false);
     const botones = [
       { rol: 'admin', name: 'Administrador' },
@@ -77,6 +79,12 @@ export const Login = () => {
       setRole(e)
     }
 
+    const renderTooltipLogin = (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+          La contraseña debe tener como mínimo 8 caracteres, una letra mayúscula, una letra minúscula, un número y un caracter especial
+      </Tooltip>
+    );
+
     return(
       <div>
         <div className='alertas'>
@@ -123,21 +131,27 @@ export const Login = () => {
                   value={user}
                   required onChange={(e) => setUser(e.target.value)}>
                 </input>
-                <input 
-                  className='input'
-                  type='password'
-                  name='pwd'
-                  placeholder='Contraseña...'
-                  value={password}
-                  required
-                  onChange={(e) => setPassword(e.target.value)}>
-                </input>
-              <Button
-              type = "submit"
-              className = "button"
-              onSubmit ={handleSubmit}>
-                Ingresar
-              </Button>
+                <OverlayTrigger
+                trigger='focus'
+                placement="right"
+                overlay={renderTooltipLogin}>
+                  <input 
+                    className='input'
+                    type='password'
+                    name='pwd'
+                    placeholder='Contraseña...'
+                    value={password}
+                    ref={valRef}
+                    required
+                    onChange={(e) => {setPassword(e.target.value)}}>
+                  </input>
+                </OverlayTrigger>
+                <Button
+                type = "submit"
+                className = "button"
+                onSubmit ={handleSubmit}>
+                  Ingresar
+                </Button>
               </form>
           </div>
       </div>
