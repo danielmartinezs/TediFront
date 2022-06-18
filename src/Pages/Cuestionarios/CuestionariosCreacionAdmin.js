@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
-import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Offcanvas, Table } from "react-bootstrap";
+import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Offcanvas, OverlayTrigger, Table, Tooltip } from "react-bootstrap";
 import { AiOutlineEdit, AiOutlineEye, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineQuestionCircle, AiOutlineSelect, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai';
 import { BiMessageAltAdd } from 'react-icons/bi'
 import SlidingPane from 'react-sliding-pane';
@@ -365,6 +365,24 @@ function CrearCuestionario() {
         setShowModalO(false);
     }
 
+    const renderTooltipEdit = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Haz click para editar el registro de la respuesta
+        </Tooltip>
+    );
+
+    const renderTooltipDelete = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Haz click para borrar la respuesta del set de opciones
+        </Tooltip>
+    );
+
+    const renderTooltipAdd = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Haz click para añadir una nueva opción dentro del set de opciones
+        </Tooltip>
+    );
+
     return(
         <main>
             <div className='alertas'>
@@ -531,7 +549,7 @@ function CrearCuestionario() {
             <SlidingPane
             className='sliding-pane'
             isOpen={detailsPane.isPaneOpen}
-            title="Preguntas registradas"
+            title="Registro de preguntas"
             width={window.innerWidth < 600 ? "100%" : "500px"}
             onRequestClose={() => {setDetailsPane({isPaneOpen: false})}}>
             <div className="pane-content">
@@ -876,32 +894,44 @@ function CrearCuestionario() {
                             <ListGroupItem className='setRespuestas'>
                                 {(values.respuesta)}
                                 <div className='setRespuestasBotones'>
-                                    <Button
-                                    className='btnEdicion'
-                                    variant='success'
-                                    onClick={() => {
-                                        setRespuestaEdit(values.respuesta)
-                                        setCambioRespuesta(index)
-                                        setShowOffEditO(false)
-                                        setShowOffEditR(true)
-                                    }}>
-                                        <AiOutlineEdit/>
-                                    </Button>
-                                    <Button
-                                    className='btnEdicion'
-                                    variant='danger'
-                                    onClick={() => {handleEditRemove(index)}}>
-                                        <AiOutlineDelete/>
-                                    </Button>
-                                    <Button
-                                    className='btnEdicion'
-                                    variant='warning'
-                                    onClick={() => {
-                                        setCambioRespuesta(index)
-                                        setShowButtonSave(false)
-                                        setShowAddR(true)}}>
-                                        <BiMessageAltAdd/>
-                                    </Button>
+                                    <OverlayTrigger
+                                    placement='bottom'
+                                    overlay={renderTooltipEdit}>
+                                        <Button
+                                        className='btnEdicion'
+                                        variant='success'
+                                        onClick={() => {
+                                            setRespuestaEdit(values.respuesta)
+                                            setCambioRespuesta(index)
+                                            setShowOffEditO(false)
+                                            setShowOffEditR(true)
+                                        }}>
+                                            <AiOutlineEdit/>
+                                        </Button>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger
+                                    placement='bottom'
+                                    overlay={renderTooltipDelete}>
+                                        <Button
+                                        className='btnEdicion'
+                                        variant='danger'
+                                        onClick={() => {handleEditRemove(index)}}>
+                                            <AiOutlineDelete/>
+                                        </Button>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger
+                                    placement='bottom'
+                                    overlay={renderTooltipAdd}>
+                                        <Button
+                                        className='btnEdicion'
+                                        variant='warning'
+                                        onClick={() => {
+                                            setCambioRespuesta(index)
+                                            setShowButtonSave(false)
+                                            setShowAddR(true)}}>
+                                            <BiMessageAltAdd/>
+                                        </Button>
+                                    </OverlayTrigger>
                                 </div>
                             </ListGroupItem>
                         </ListGroup>

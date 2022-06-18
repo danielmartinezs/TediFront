@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link, useNavigate } from 'react-router-dom';
-import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, Table } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineQuestionCircle, AiOutlineRollback, AiOutlineSelect, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
 import { BiMessageAltAdd } from 'react-icons/bi'
 import SlidingPane from 'react-sliding-pane';
@@ -590,6 +590,24 @@ function CuestionariosEdicionAdmin() {
         }
     }
 
+    const renderTooltipEdit = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Haz click para editar el registro de la respuesta
+        </Tooltip>
+    );
+
+    const renderTooltipDelete = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Haz click para borrar la respuesta del set de opciones
+        </Tooltip>
+    );
+
+    const renderTooltipAdd = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Haz click para añadir una nueva opción dentro del set de opciones
+        </Tooltip>
+    );
+
     return(
         <div>
             <div className='alertas'>
@@ -635,7 +653,6 @@ function CuestionariosEdicionAdmin() {
                         <tr key={values.idPregunta+values.idRespuesta}>
                             <td>
                                 <Button
-                                /* className='btnEditarPregunta' */
                                 variant='outline-success'
                                 onClick={() => {
                                     setIdPreguntaEdit(values.idPregunta)
@@ -716,37 +733,94 @@ function CuestionariosEdicionAdmin() {
                                 <ListGroupItem className='setRespuestas'>
                                     {(values.respuesta)}
                                     <div className='setRespuestasBotones'>
-                                        <Button
-                                        className='btnEdicion'
-                                        variant='success'
-                                        onClick={() => {
-                                            setRespuestaEdit(values.respuesta)
-                                            setCambioRespuesta(index)
-                                            setShowModalRes(false)
-                                            setShowOffEditR(true)
-                                        }}>
-                                            <AiOutlineEdit/>
-                                        </Button>
-                                        <Button
-                                        className='btnEdicion'
-                                        variant='danger'
-                                        onClick={() => {handleEditRemove(index)}}>
-                                            <AiOutlineDelete/>
-                                        </Button>
-                                        <Button
-                                        className='btnEdicion'
-                                        variant='warning'
-                                        onClick={() => {
-                                            setCambioRespuesta(index)
-                                            setShowModalRes(false)
-                                            setShowOffAddR(true)}}>
-                                            <BiMessageAltAdd/>
-                                        </Button>
+                                        <OverlayTrigger
+                                        placement='bottom'
+                                        overlay={renderTooltipEdit}>
+                                            <Button
+                                            className='btnEdicion'
+                                            variant='success'
+                                            onClick={() => {
+                                                setRespuestaEdit(values.respuesta)
+                                                setCambioRespuesta(index)
+                                                setShowModalRes(false)
+                                                setShowOffEditR(true)}}>
+                                                <AiOutlineEdit/>
+                                            </Button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger
+                                        placement='bottom'
+                                        overlay={renderTooltipDelete}>
+                                            <Button
+                                            className='btnEdicion'
+                                            variant='danger'
+                                            onClick={() => {handleEditRemove(index)}}>
+                                                <AiOutlineDelete/>
+                                            </Button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger
+                                        placement='bottom'
+                                        overlay={renderTooltipAdd}>
+                                            <Button
+                                            className='btnEdicion'
+                                            variant='warning'
+                                            onClick={() => {
+                                                setCambioRespuesta(index)
+                                                setShowButtonSave(false)
+                                                setShowOffAddR(true)}}>
+                                                <BiMessageAltAdd/>
+                                            </Button>
+                                        </OverlayTrigger>
                                     </div>
                                 </ListGroupItem>
                             </ListGroup>
                         </div>
                         ))
+                        }
+                        {showOffAddR &&
+                        <div>
+                            <Form>
+                                <Form.Group
+                                className="mb-3"
+                                controlId="newRespuesta">
+                                    <Form.Label>Respuesta nueva</Form.Label>
+                                    <br/>
+                                    <Button 
+                                    className='btnAct'
+                                    size='sm'
+                                    variant="success"
+                                    onClick={() => {handleEditAdd(0)}}>
+                                        Guardar encima de la respuesta seleccionada
+                                        <AiOutlineVerticalAlignTop size={50}/>
+                                    </Button>
+                                    <Form.Control 
+                                    as="textarea" 
+                                    rows={1}
+                                    placeholder="Respuesta nueva"
+                                    value={respuestaEditAdd}
+                                    onChange={(e) => {setRespuestaEditAdd(e.target.value)}}>
+                                        {respuestaEditAdd}
+                                    </Form.Control>
+                                    <br/>
+                                    <Button 
+                                    className='btnAct'
+                                    size='sm' 
+                                    variant="success" 
+                                    onClick={() => {handleEditAdd(1)}}>
+                                        Guardar debajo de la respuesta seleccionada
+                                        <AiOutlineVerticalAlignBottom size={50}/>
+                                    </Button>
+                                </Form.Group>
+                            </Form>
+                            <Button 
+                            size='sm'
+                            variant="danger"
+                            onClick={() => {
+                                setShowOffAddR(false)
+                                setShowModalRes(true)
+                                setRespuestaEditAdd('')}}>
+                                Cerrar
+                            </Button>
+                        </div>
                         }
                         {showButtonSave === true &&
                         <div>
@@ -881,59 +955,6 @@ function CuestionariosEdicionAdmin() {
                         onClick={handleEditRespuesta}>
                             Guardar
                         </Button>
-                </Offcanvas.Body>
-            </Offcanvas>
-            {/*OFFCANVAS AÑADIR RESPUESTA*/}
-            <Offcanvas 
-                show={showOffAddR} 
-                placement={'end'} 
-                onHide={() => setShowOffAddR(false)}>
-                <Offcanvas.Header closeButton>
-                     <Offcanvas.Title>Añadir Respuesta</Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                    <Form>
-                        <Form.Group
-                        className="mb-3"
-                        controlId="newRespuesta">
-                            <Form.Label>Respuesta nueva</Form.Label>
-                            <br/>
-                            <Button 
-                            className='btnAct'
-                            size='sm'
-                            variant="success"
-                            onClick={() => {handleEditAdd(0)}}>
-                                Guardar encima de la respuesta seleccionada
-                                <AiOutlineVerticalAlignTop size={50}/>
-                            </Button>
-                            <Form.Control 
-                            as="textarea" 
-                            rows={1}
-                            placeholder="Respuesta nueva"
-                            value={respuestaEditAdd}
-                            onChange={(e) => {setRespuestaEditAdd(e.target.value)}}>
-                                {respuestaEditAdd}
-                            </Form.Control>
-                            <br/>
-                            <Button 
-                            className='btnAct'
-                            size='sm' 
-                            variant="success" 
-                            onClick={() => {handleEditAdd(1)}}>
-                                Guardar debajo de la respuesta seleccionada
-                                <AiOutlineVerticalAlignBottom size={50}/>
-                            </Button>
-                        </Form.Group>
-                    </Form>
-                    <Button 
-                    size='sm'
-                    variant="danger"
-                    onClick={() => {
-                        setShowOffAddR(false)
-                        setShowModalRes(true)
-                        setRespuestaEditAdd('')}}>
-                        Cerrar
-                    </Button>
                 </Offcanvas.Body>
             </Offcanvas>
              {/*MODAL BORRAR PREGUNTA RESPUESTA*/}
