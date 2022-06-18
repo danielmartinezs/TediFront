@@ -8,14 +8,16 @@ import "./cuestionarios.css"
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
-const GET_LINK_ANSWERS_URL = '/questionnaires/checklinkanswers'
-const GET_LINK_QUESTIONS_URL = '/questionnaires/checklinkquestions'
+const WHERE_LINK_ANSWER_URL = '/questionnaires/whereanswerlink'
+const WHERE_LINK_QUESTION_URL = '/questionnaires/wherequestionlink'
 const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
 const EDIT_RESPUESTA_URL = '/questionnaires/editanswer'
 const DELETE_PREGUNTA_URL = '/questionnaires/borraquestion'
 const DELETE_RESPUESTA_URL = '/questionnaires/borraanswer'
 const CHECK_LINK_ANSWER = "/questionnaires/checklinkanswer"
 const CHECK_LINK_QUESTION = "/questionnaires/checklinkquestion"
+const GET_QUESTIONS_USED_URL = '/questionnaires/questionsused'
+const GET_ANSWERS_USED_URL = '/questionnaires/answersused'
 
 function CuestionariosRegistrosAdmin() {
     const [preguntasList, setPreguntasList] = useState([]);
@@ -56,8 +58,8 @@ function CuestionariosRegistrosAdmin() {
     useLayoutEffect (() => {
         getPreguntas()
         getRespuestas()
-        getQuestionsLink()
-        getAnswersLink()
+        getQuestionsUsed()
+        getAnswersUsed()
     }, [])
 
     useEffect (() => {
@@ -93,15 +95,15 @@ function CuestionariosRegistrosAdmin() {
         })
     }
 
-    const getQuestionsLink = () => {
-        axios.get(GET_LINK_QUESTIONS_URL).then((response) => {
+    const getQuestionsUsed = () => {
+        axios.get(GET_QUESTIONS_USED_URL).then((response) => {
             console.log(response.data)
             setPreguntasEnUso(response.data)
         })
     }
     
-    const getAnswersLink = () => {
-        axios.get(GET_LINK_ANSWERS_URL).then((response) => {
+    const getAnswersUsed = () => {
+        axios.get(GET_ANSWERS_USED_URL).then((response) => {
             setRespuestasEnUso(response.data)
         })
     }
@@ -217,19 +219,36 @@ function CuestionariosRegistrosAdmin() {
     }
 
     const checkLinkA = (ida) => {
-        //console.log("el idcheck es: "+ida)
         axios.get(CHECK_LINK_ANSWER+"/"+ida).then((response) => {
-            setRespuestasLink(response.data)
+            whereLinkA(response.data, ida)
         })
         setShowModalLinkA(true)
     }
 
+    const whereLinkA = (respuestas, ida) => {
+        for(let i = 0; i < respuestas.length; i++){
+            axios.get(WHERE_LINK_ANSWER_URL+"/"+respuestas[i].idPregunta+"/"+ida).then((response) => {
+                respuestas[i].idCuestionario = response.data[0]?.idCuestionario
+            })
+        }
+        console.log(respuestas)
+        setRespuestasLink(respuestas)
+    }
+
     const checkLinkQ = (idq) => {
-        //console.log("el idcheck es: "+idq)
         axios.get(CHECK_LINK_QUESTION+"/"+idq).then((response) => {
-            setPreguntasLink(response.data)
+            whereLinkQ(response.data, idq)
         })
         setShowModalLinkQ(true)
+    }
+
+    const whereLinkQ = (preguntas, idq) => {
+        for(let i = 0; i < preguntas.length; i++){
+            axios.get(WHERE_LINK_QUESTION_URL+"/"+preguntas[i].idRespuesta+"/"+idq).then((response) => {
+                preguntas[i].idCuestionario = response.data[0]?.idCuestionario;
+            })
+        }
+        setPreguntasLink(preguntas)
     }
 
     const handleCheckLinks = (idq, ida) => {
@@ -248,10 +267,8 @@ function CuestionariosRegistrosAdmin() {
         for(let i = 0; i < preguntasEnUso.length; i++){
             idpreguntas.push(preguntasEnUso[i].idPregunta)
         }
-        console.log(idpreguntas)
         for(let i = 0; i < preguntasEnUso.length; i++){
             if(idpreguntas[i] === id){
-                console.log("esta en uso")
                 usado = true;
                 break;
             }
@@ -265,10 +282,8 @@ function CuestionariosRegistrosAdmin() {
         for(let i = 0; i < respuestasEnUso.length; i++){
             idrespuestas.push(respuestasEnUso[i].idRespuesta)
         }
-        console.log(idrespuestas)
         for(let i = 0; i < respuestasEnUso.length; i++){
             if(idrespuestas[i] === id){
-                console.log("esta en uso")
                 usado = true;
                 break;
             }
@@ -545,7 +560,7 @@ function CuestionariosRegistrosAdmin() {
                     <Modal.Title>Check Link</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                {console.log("El idDelRes es"+idDeleteRespuesta)}
+                {console.log(respuestasLink)}
                     {!respuestasLink.length ? 
                         <div>
                             <Alert
@@ -569,7 +584,9 @@ function CuestionariosRegistrosAdmin() {
                             return(
                                 <div key={answer.id}>
                                     <ListGroup>
-                                        <ListGroup.Item>Ligada a la pregunta "{answer.pregunta}" en el cuestionario:<br/> {answer.idCuestionario}. "{answer.nombre}"</ListGroup.Item>
+                                        <ListGroup.Item>Ligada a la pregunta #{answer.idPregunta}. "{answer.pregunta}"</ListGroup.Item>
+                                        <ListGroup.Item>La cual se encuentra en el cuestionario #{answer.idCuestionario}</ListGroup.Item>
+                                        <br/>
                                     </ListGroup>
                                 </div>
                             )
