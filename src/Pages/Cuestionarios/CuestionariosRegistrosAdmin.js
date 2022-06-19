@@ -19,8 +19,7 @@ const CHECK_LINK_ANSWER = "/questionnaires/checklinkanswer"
 const CHECK_LINK_QUESTION = "/questionnaires/checklinkquestion"
 const GET_QUESTIONS_USED_URL = '/questionnaires/questionsused'
 const GET_ANSWERS_USED_URL = '/questionnaires/answersused'
-const VINCULAR_PREGUNTA_URL = '/questionnaires/vincularpregunta'
-const VINCULAR_RESPUESTA_URL = '/questionnaires/vincularrespuesta'
+const VINCULAR_URL = '/questionnaires/vincularqa'
 
 function CuestionariosRegistrosAdmin() {
     const [preguntasList, setPreguntasList] = useState([]);
@@ -296,37 +295,21 @@ function CuestionariosRegistrosAdmin() {
         return usado;
     }
 
-    const vincularPregunta = async () => {
+    const vincular = async () => {
         try{
-        const response = await axios.post(VINCULAR_PREGUNTA_URL, {})
-        } catch(error){
-            if(!error?.response){
-                setShowA(true)
-                setVariante('danger')
-                setMsg('No hay respuesta del servidor');
-            } else if(error.response?.status === 400){
-                setShowA(true)
-                setVariante('danger')
-                setMsg(error.response.data.message);
-            } else if(error.response?.status === 401){
-                setShowA(true)
-                setVariante('danger')
-                setMsg('Usuario sin autorización');
-            } else if(error.response?.status === 403){
-                setShowA(true)
-                setVariante('danger')
-                setMsg(error.response.data.message);
-            } else if(error.response?.status === 404){
-                setShowA(true)
-                setVariante('danger')
-                setMsg(error.response.data.message);
+            const response = await axios.post(VINCULAR_URL, {
+                idc: cuestionarioVincula,
+                idp: preguntaVincula,
+                idr: respuestaVincula
+            })
+            console.log(response)
+            if(response.status === 200){
+                setShowOffVinculaQues(false)
+                setShowOffVinculaRes(false)
+                showA(true)
+                setVariante('success')
+                setMsg(response.data.message)
             }
-        }
-    }
-
-    const vincularRespuesta = async () => {
-        try{
-        const response = await axios.post(VINCULAR_RESPUESTA_URL, {})
         } catch(error){
             if(!error?.response){
                 setShowA(true)
@@ -711,7 +694,7 @@ function CuestionariosRegistrosAdmin() {
                                             variant='success'
                                             onClick={() => {
                                                 setShowModalLinkA(false)
-                                                setRespuestaVincula(answer.idRespuesta)
+                                                setRespuestaVincula(respuestasList[idDeleteRespuesta-1]?.id)
                                                 setPreguntaVincula(answer.idPregunta)
                                                 setShowOffVinculaRes(true)
                                                 setShowModalVinculaCuest(true)}}>
@@ -773,7 +756,7 @@ function CuestionariosRegistrosAdmin() {
                                             variant='success'
                                             onClick={() => {
                                                 setShowModalLinkQ(false)
-                                                setPreguntaVincula(question.idPregunta)
+                                                setPreguntaVincula(preguntasList[idDeletePregunta-1]?.idPregunta)
                                                 setRespuestaVincula(question.idRespuesta)
                                                 setShowOffVinculaQues(true)
                                                 setShowModalVinculaCuest(true)}}>
@@ -887,7 +870,6 @@ function CuestionariosRegistrosAdmin() {
                                         variant='warning'
                                         onClick={() => {
                                             setCambioRespuesta(index)
-                                            setShowModalRes(false)
                                             setShowOffAddR(true)}}>
                                             <BiMessageAltAdd/>
                                         </Button>
@@ -896,6 +878,52 @@ function CuestionariosRegistrosAdmin() {
                             </ListGroup>
                         </div>
                         ))}
+                        {showOffAddR &&
+                        <div>
+                            <Form>
+                                <Form.Group
+                                className="mb-3"
+                                controlId="newRespuesta">
+                                    <Form.Label>Respuesta nueva</Form.Label>
+                                    <br/>
+                                    <Button 
+                                    className='btnAct'
+                                    size='sm'
+                                    variant="success"
+                                    onClick={() => {handleEditAdd(0)}}>
+                                        Guardar encima de la respuesta seleccionada
+                                        <AiOutlineVerticalAlignTop size={50}/>
+                                    </Button>
+                                    <Form.Control 
+                                    as="textarea" 
+                                    rows={1}
+                                    placeholder="Respuesta nueva"
+                                    value={respuestaEditAdd}
+                                    onChange={(e) => {setRespuestaEditAdd(e.target.value)}}>
+                                        {respuestaEditAdd}
+                                    </Form.Control>
+                                    <br/>
+                                    <Button 
+                                    className='btnAct'
+                                    size='sm' 
+                                    variant="success" 
+                                    onClick={() => {handleEditAdd(1)}}>
+                                        Guardar debajo de la respuesta seleccionada
+                                        <AiOutlineVerticalAlignBottom size={50}/>
+                                    </Button>
+                                </Form.Group>
+                            </Form>
+                            <Button 
+                            size='sm'
+                            variant="danger"
+                            onClick={() => {
+                                setShowOffAddR(false)
+                                setShowModalRes(true)
+                                setRespuestaEditAdd('')}}>
+                                Cerrar
+                            </Button>
+                        </div>
+                        }
                         {showButtonSave === true?
                         <div>
                             <Button
@@ -956,17 +984,10 @@ function CuestionariosRegistrosAdmin() {
                     <br/>
                     <Button
                     size='lg'
-                    variant="danger"
-                    onClick={() => {
-                        setShowOffVinculaQues(false)
-                        setCuestionarioVincula('')}}>
-                        Cerrar
-                    </Button>
-                    <Button
-                    size='lg'
                     variant="success"
-                    onClick={vincularPregunta}>
+                    onClick={vincular}>
                         Vincular
+                        <AiOutlineSend/>
                     </Button>
                 </Offcanvas.Body>
             </Offcanvas>
@@ -1017,17 +1038,10 @@ function CuestionariosRegistrosAdmin() {
                     <br/>
                     <Button
                     size='lg'
-                    variant="danger"
-                    onClick={() => {
-                        setShowOffVinculaRes(false)
-                        setCuestionarioVincula('')}}>
-                        Cerrar
-                    </Button>
-                    <Button
-                    size='lg'
                     variant="success"
-                    onClick={vincularPregunta}>
+                    onClick={vincular}>
                         Vincular
+                        <AiOutlineSend/>
                     </Button>
                 </Offcanvas.Body>
             </Offcanvas>
@@ -1216,59 +1230,6 @@ function CuestionariosRegistrosAdmin() {
                     variant="success" 
                     onClick={handleEditRespuesta}>
                         Guardar
-                    </Button>
-                </Offcanvas.Body>
-            </Offcanvas>
-            {/*OFFCANVAS AÑADIR RESPUESTA*/}
-            <Offcanvas 
-                show={showOffAddR} 
-                placement={'end'} 
-                onHide={() => setShowOffAddR(false)}>
-                <Offcanvas.Header closeButton>
-                     <Offcanvas.Title>Añadir Respuesta</Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                    <Form>
-                        <Form.Group
-                        className="mb-3"
-                        controlId="newRespuesta">
-                            <Form.Label>Respuesta nueva</Form.Label>
-                            <br/>
-                            <Button 
-                            className='btnAct'
-                            size='sm'
-                            variant="success"
-                            onClick={() => {handleEditAdd(0)}}>
-                                Guardar encima de la respuesta seleccionada
-                                <AiOutlineVerticalAlignTop size={50}/>
-                            </Button>
-                            <Form.Control 
-                            as="textarea" 
-                            rows={1}
-                            placeholder="Respuesta nueva" 
-                            value={respuestaEditAdd}
-                            onChange={(e) => setRespuestaEditAdd(e.target.value)}>
-                                {respuestaEditAdd}
-                            </Form.Control>
-                            <br/>
-                            <Button 
-                            className='btnAct'
-                            size='sm' 
-                            variant="success" 
-                            onClick={() => {handleEditAdd(1)}}>
-                                Guardar debajo de la respuesta seleccionada
-                                <AiOutlineVerticalAlignBottom size={50}/>
-                            </Button>
-                        </Form.Group>
-                    </Form>
-                    <Button 
-                    size='sm'
-                    variant="danger"
-                    onClick={() => {
-                        setShowOffAddR(false)
-                        setShowModalRes(true)
-                        setRespuestaEditAdd('')}}>
-                        Cerrar
                     </Button>
                 </Offcanvas.Body>
             </Offcanvas>
