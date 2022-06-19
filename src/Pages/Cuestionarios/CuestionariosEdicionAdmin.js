@@ -590,9 +590,11 @@ function CuestionariosEdicionAdmin() {
     const handleCloseWithoutSave = () => {
         if(!showButtonSave){
             setShowModalRes(false)
+            setShowOffAddR(false)
         }
         else{
             setShowModalCerrar(true)
+            setShowOffAddR(false)
         }
     }
 
@@ -1049,7 +1051,8 @@ function CuestionariosEdicionAdmin() {
                             onClick={(e) => {
                                 setNewRespuestaId(0)
                                 setNewRespuestaBank([])
-                                setTipoNewPregunta(e.target.value)}}>
+                                setTipoNewPregunta(e.target.value)
+                                setShowModalOpMul(true)}}>
                                 Opción múltiple
                             </Button>
                             <Button 

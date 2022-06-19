@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, Offcanvas, Table } from 'react-bootstrap';
+import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, Offcanvas, Table } from 'react-bootstrap';
 import { AiOutlineCheck, AiOutlineClose, AiOutlineDelete, AiOutlineEdit, AiOutlineLink, AiOutlinePlus, AiOutlineRollback, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
 import { BiMessageAltAdd } from 'react-icons/bi'
 import axios from '../../axios/axios';
@@ -47,6 +47,8 @@ function CuestionariosRegistrosAdmin() {
     const [showModalBorrarR, setShowModalBorrarR] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
     const [showModalResEdit, setShowModalResEdit] = useState(false);
+    const [showModalLinkOptsA, setShowModalLinkOptsA] = useState(false);
+    const [showModalLinkOptsQ, setShowModalLinkOptsQ] = useState(false);
     const [showModalLinkA, setShowModalLinkA] = useState(false);
     const [showModalLinkQ, setShowModalLinkQ] = useState(false);
     const [showOffEditP, setShowOffEditP] = useState(false);
@@ -97,7 +99,6 @@ function CuestionariosRegistrosAdmin() {
 
     const getQuestionsUsed = () => {
         axios.get(GET_QUESTIONS_USED_URL).then((response) => {
-            console.log(response.data)
             setPreguntasEnUso(response.data)
         })
     }
@@ -222,7 +223,6 @@ function CuestionariosRegistrosAdmin() {
         axios.get(CHECK_LINK_ANSWER+"/"+ida).then((response) => {
             whereLinkA(response.data, ida)
         })
-        setShowModalLinkA(true)
     }
 
     const whereLinkA = (respuestas, ida) => {
@@ -231,7 +231,6 @@ function CuestionariosRegistrosAdmin() {
                 respuestas[i].idCuestionario = response.data[0]?.idCuestionario
             })
         }
-        console.log(respuestas)
         setRespuestasLink(respuestas)
     }
 
@@ -239,7 +238,6 @@ function CuestionariosRegistrosAdmin() {
         axios.get(CHECK_LINK_QUESTION+"/"+idq).then((response) => {
             whereLinkQ(response.data, idq)
         })
-        setShowModalLinkQ(true)
     }
 
     const whereLinkQ = (preguntas, idq) => {
@@ -249,16 +247,6 @@ function CuestionariosRegistrosAdmin() {
             })
         }
         setPreguntasLink(preguntas)
-    }
-
-    const handleCheckLinks = (idq, ida) => {
-        console.log("idq-"+idq+" ida- "+ida)
-        if(idq === 0 && ida !== 0){
-            checkLinkA(ida)
-        }
-        else{
-            checkLinkQ(idq)
-        }
     }
 
     const handleCheckUsoQ = (id) => {
@@ -411,7 +399,8 @@ function CuestionariosRegistrosAdmin() {
                                             variant="outline-secondary"
                                             onClick={() => {
                                                 setIdDeletePregunta(question.idPregunta)
-                                                handleCheckLinks(question.idPregunta, 0)}}>
+                                                checkLinkQ(question.idPregunta)
+                                                setShowModalLinkOptsQ(true)}}>
                                             <AiOutlineLink />
                                             </Button>
                                         </td>
@@ -472,7 +461,8 @@ function CuestionariosRegistrosAdmin() {
                                             variant="outline-secondary"
                                             onClick={() => {
                                                 setIdDeleteRespuesta(answer.id)
-                                                handleCheckLinks(0, answer.id)}}>
+                                                checkLinkA(answer.id)
+                                                setShowModalLinkOptsA(true)}}>
                                             <AiOutlineLink />
                                             </Button>
                                         </td>
@@ -550,6 +540,56 @@ function CuestionariosRegistrosAdmin() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            {/*MODAL OPCIONES LINK PREGUNTA*/}
+            <Modal
+            show={showModalLinkOptsQ}
+            onHide={() => {setShowModalLinkOptsQ(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>¿Qué acción deseas realizar?</Modal.Title>
+                </Modal.Header>
+                <ModalBody>
+                    <div>
+                        <Button
+                        className='btnAct'
+                        onClick={() => {
+                            setShowModalLinkOptsQ(false)}}>
+                            Crear un nuevo vínculo con respuesta
+                        </Button>
+                        <Button
+                        className='btnAct'
+                        onClick={() => {
+                            setShowModalLinkOptsQ(false)
+                            setShowModalLinkQ(true)}}>
+                            Checar vínculos con respuestas
+                        </Button>
+                    </div>
+                </ModalBody>
+            </Modal>
+            {/*MODAL OPCIONES LINK RESPUESTA*/}
+            <Modal
+            show={showModalLinkOptsA}
+            onHide={() => {setShowModalLinkOptsA(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>¿Qué acción deseas realizar?</Modal.Title>
+                </Modal.Header>
+                <ModalBody>
+                    <div>
+                        <Button
+                        className='btnAct'
+                        onClick={() => {
+                            setShowModalLinkOptsA(false)}}>
+                            Crear un nuevo vínculo con pregunta
+                        </Button>
+                        <Button
+                        className='btnAct'
+                        onClick={() => {
+                            setShowModalLinkOptsA(false)
+                            setShowModalLinkA(true)}}>
+                            Checar vínculos con preguntas
+                        </Button>
+                    </div>
+                </ModalBody>
+            </Modal>
             {/* MODAL CHECK LINK ANSWER */}
             <Modal
             show={showModalLinkA}
@@ -557,10 +597,9 @@ function CuestionariosRegistrosAdmin() {
                 setIdDeleteRespuesta(0)
                 setShowModalLinkA(false)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Check Link</Modal.Title>
+                    <Modal.Title>Vínculos de la respuesta {respuestasList[idDeleteRespuesta-1]?.id}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                {console.log(respuestasLink)}
                     {!respuestasLink.length ? 
                         <div>
                             <Alert
@@ -582,10 +621,10 @@ function CuestionariosRegistrosAdmin() {
                         </div>:
                         respuestasLink.map((answer) => {
                             return(
-                                <div key={answer.id}>
+                                <div key={answer.idRespuesta}>
                                     <ListGroup>
-                                        <ListGroup.Item>Ligada a la pregunta #{answer.idPregunta}. "{answer.pregunta}"</ListGroup.Item>
-                                        <ListGroup.Item>La cual se encuentra en el cuestionario #{answer.idCuestionario}</ListGroup.Item>
+                                        <ListGroupItem>Ligada a la pregunta #{answer.idPregunta}. "{answer.pregunta}"</ListGroupItem>
+                                        <ListGroupItem>La cual se encuentra en el cuestionario #{answer.idCuestionario}</ListGroupItem>
                                         <br/>
                                     </ListGroup>
                                 </div>
@@ -601,10 +640,9 @@ function CuestionariosRegistrosAdmin() {
                 setIdDeletePregunta(0)
                 setShowModalLinkQ(false)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Check Link</Modal.Title>
+                    <Modal.Title>Vínculos de la pregunta {preguntasList[idDeletePregunta-1]?.idPregunta}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                {console.log("El id DelPre es"+idDeletePregunta)}
                     {!preguntasLink.length ?
                         <div>
                             <Alert
@@ -628,7 +666,21 @@ function CuestionariosRegistrosAdmin() {
                             return(
                                 <div key={question.id}>
                                     <ListGroup>
-                                        <ListGroupItem>Ligada a la respuesta del cuestionario:<br/> {question.idCuestionario}. "{question.nombre}"</ListGroupItem>
+                                        <ListGroupItem>Ligada a la respuesta #{question.idRespuesta}</ListGroupItem>
+                                        {question.idCuestionario ?
+                                        <ListGroupItem>La cual se encuentra en el cuestionario #{question.idCuestionario}</ListGroupItem>
+                                        :
+                                        <ListGroupItem>
+                                            Actualmente este par pregunta-respuesta no está en uso en un cuestionario, ¿deseas asignarla a un cuestionario?
+                                            <br/>
+                                            <Button
+                                            variant='success'
+                                            >
+                                                Poner en uso
+                                                <AiOutlineLink/>
+                                            </Button>                                            
+                                        </ListGroupItem>}
+                                        <br/>
                                     </ListGroup>
                                 </div>
                             )
