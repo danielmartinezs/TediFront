@@ -399,3 +399,13 @@
     background-color: #FE9000;
     color: #fff;
   }
+
+  .vincularPreguntaBotones{
+    position: inherit;
+    display: flex;
+    padding: 0.5px 1%;
+    color: #212529;
+    background-color: #fff;
+    justify-content: center;
+    font-size: x-large;
+  }

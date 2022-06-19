@@ -8,6 +8,7 @@ import "./cuestionarios.css"
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
+const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 const WHERE_LINK_ANSWER_URL = '/questionnaires/whereanswerlink'
 const WHERE_LINK_QUESTION_URL = '/questionnaires/wherequestionlink'
 const EDIT_PREGUNTA_URL = '/questionnaires/editquestion'
@@ -18,16 +19,22 @@ const CHECK_LINK_ANSWER = "/questionnaires/checklinkanswer"
 const CHECK_LINK_QUESTION = "/questionnaires/checklinkquestion"
 const GET_QUESTIONS_USED_URL = '/questionnaires/questionsused'
 const GET_ANSWERS_USED_URL = '/questionnaires/answersused'
+const VINCULAR_PREGUNTA_URL = '/questionnaires/vincularpregunta'
+const VINCULAR_RESPUESTA_URL = '/questionnaires/vincularrespuesta'
 
 function CuestionariosRegistrosAdmin() {
     const [preguntasList, setPreguntasList] = useState([]);
     const [respuestasList, setRespuestasList] = useState([]);
+    const [cuestionariosList, setCuestionariosList] = useState([]);
     const [preguntasLink, setPreguntasLink] = useState([]);
     const [respuestasLink, setRespuestasLink] = useState([]);
     const [preguntasEnUso, setPreguntasEnUso] = useState([]);
     const [respuestasEnUso, setRespuestasEnUso] = useState([]);
     const [respuestasEdit, setRespuestasEdit] = useState([]);
     const [respuestaEditAdd, setRespuestaEditAdd] = useState();
+    const [preguntaVincula, setPreguntaVincula] = useState();
+    const [respuestaVincula, setRespuestaVincula] = useState();
+    const [cuestionarioVincula, setCuestionarioVincula] = useState();
     const [recentlyRemovedRes, setRecentlyRemovedRes] = useState();
     const [idCheck, setIdCheck] = useState(0);
     const [idPreguntaEdit, setIdPreguntaEdit] = useState(0);
@@ -36,17 +43,19 @@ function CuestionariosRegistrosAdmin() {
     const [idDeletePregunta, setIdDeletePregunta] = useState(0);
     const [idDeleteRespuesta, setIdDeleteRespuesta] = useState(0);
     const [preguntaEdit, setPreguntaEdit] = useState("");
-    const [tipoPreguntaEdit, setTipoPreguntaEdit] = useState("");
     const [respuestaEdit, setRespuestaEdit] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [showButtonSave, setShowButtonSave] = useState(false);
     const [showButtonUndo, setShowButtonUndo] = useState(false);
+    const [showButtonSubmit, setShowButtonSubmit] = useState(false);
     const [showModalCerrar, setShowModalCerrar] = useState(false);
     const [showModalBorrarP, setShowModalBorrarP] = useState(false);
     const [showModalBorrarR, setShowModalBorrarR] = useState(false);
     const [showModalRes, setShowModalRes] = useState(false);
-    const [showModalResEdit, setShowModalResEdit] = useState(false);
+    const [showModalVinculaRes, setShowModalVinculaRes] = useState(false);
+    const [showModalVinculaQues, setShowModalVinculaQues] = useState(false);
+    const [showModalVinculaCuest, setShowModalVinculaCuest] = useState(false);
     const [showModalLinkOptsA, setShowModalLinkOptsA] = useState(false);
     const [showModalLinkOptsQ, setShowModalLinkOptsQ] = useState(false);
     const [showModalLinkA, setShowModalLinkA] = useState(false);
@@ -54,10 +63,13 @@ function CuestionariosRegistrosAdmin() {
     const [showOffEditP, setShowOffEditP] = useState(false);
     const [showOffEditR, setShowOffEditR] = useState(false);
     const [showOffAddR, setShowOffAddR] = useState(false);
+    const [showOffVinculaQues, setShowOffVinculaQues] = useState(false);
+    const [showOffVinculaRes, setShowOffVinculaRes] = useState(false);
     const [showA, setShowA] = useState(false);
     const [showADelResp, setShowADelResp] = useState(false);
 
     useLayoutEffect (() => {
+        getCuestionarios()
         getPreguntas()
         getRespuestas()
         getQuestionsUsed()
@@ -85,6 +97,12 @@ function CuestionariosRegistrosAdmin() {
         }
     }
 
+    const getCuestionarios = () => {
+        axios.get(GET_CUESTIONARIOS_URL).then((response) => {
+            setCuestionariosList(response.data)
+        })
+    }
+    
     const getPreguntas = () => {
         axios.get(GET_PREGUNTAS_URL).then((response) => {
             setPreguntasList(response.data)
@@ -118,7 +136,6 @@ function CuestionariosRegistrosAdmin() {
     const editarRespuesta = async () => {
         setShowOffEditR(false)
         setShowModalRes(false)
-        setShowModalResEdit(false)
         console.log(JSON.stringify(respuestasEdit))
         try{
         const response = await axios.post(EDIT_RESPUESTA_URL, {
@@ -279,6 +296,62 @@ function CuestionariosRegistrosAdmin() {
         return usado;
     }
 
+    const vincularPregunta = async () => {
+        try{
+        const response = await axios.post(VINCULAR_PREGUNTA_URL, {})
+        } catch(error){
+            if(!error?.response){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('No hay respuesta del servidor');
+            } else if(error.response?.status === 400){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 401){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('Usuario sin autorización');
+            } else if(error.response?.status === 403){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 404){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            }
+        }
+    }
+
+    const vincularRespuesta = async () => {
+        try{
+        const response = await axios.post(VINCULAR_RESPUESTA_URL, {})
+        } catch(error){
+            if(!error?.response){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('No hay respuesta del servidor');
+            } else if(error.response?.status === 400){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 401){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('Usuario sin autorización');
+            } else if(error.response?.status === 403){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 404){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            }
+        }
+    }
+
     const handleSetRespuestas = (idres) => {
         getRespuesta(idres)
         console.log("El id de la respuesta es"+idres)
@@ -354,7 +427,7 @@ function CuestionariosRegistrosAdmin() {
             {/*TABLA PREGUNTAS*/}
             <Card className="text-center" style={{ display:'flex'}}>
                 <Card.Header>
-                    <Card.Title>Preguntas</Card.Title>
+                    <Card.Title><h3>Preguntas</h3></Card.Title>
                 </Card.Header>
                 <Card.Body>
                     <div>
@@ -419,7 +492,7 @@ function CuestionariosRegistrosAdmin() {
             {/*TABLA RESPUESTAS*/}
             <Card className="text-center" style={{ display:'flex'}}>
                 <Card.Header>
-                    <Card.Title>Respuestas</Card.Title>
+                    <Card.Title><h3>Respuestas</h3></Card.Title>
                 </Card.Header>
                 <Card.Body>
                     <div>
@@ -552,7 +625,8 @@ function CuestionariosRegistrosAdmin() {
                         <Button
                         className='btnAct'
                         onClick={() => {
-                            setShowModalLinkOptsQ(false)}}>
+                            setShowModalLinkOptsQ(false)
+                            setShowOffVinculaQues(true)}}>
                             Crear un nuevo vínculo con respuesta
                         </Button>
                         <Button
@@ -577,7 +651,8 @@ function CuestionariosRegistrosAdmin() {
                         <Button
                         className='btnAct'
                         onClick={() => {
-                            setShowModalLinkOptsA(false)}}>
+                            setShowModalLinkOptsA(false)
+                            setShowOffVinculaRes(true)}}>
                             Crear un nuevo vínculo con pregunta
                         </Button>
                         <Button
@@ -604,7 +679,7 @@ function CuestionariosRegistrosAdmin() {
                         <div>
                             <Alert
                             variant='danger'>
-                                <Alert.Heading>La respuesta actualmente no se encuentra ligada a un cuestionario, ¿deseas borrarala  o vnicularla a un cuestionario?</Alert.Heading>
+                                <Alert.Heading>La respuesta actualmente no se encuentra ligada a una pregunta, y no está en uso en ningún cuestionario, ¿deseas borrarala  o vnicularla a una pregunta y a un cuestionario?</Alert.Heading>
                             </Alert>
                             <Button
                             variant='danger'
@@ -614,7 +689,9 @@ function CuestionariosRegistrosAdmin() {
                             </Button>
                             <Button
                             variant='success'
-                            onClick={() => {setShowModalLinkA(false)}}>
+                            onClick={() => {
+                                setShowModalLinkA(false)
+                                setShowOffVinculaRes(true)}}>
                                 Vincular respuesta con pregunta
                                 <AiOutlineLink/>
                             </Button>
@@ -624,7 +701,24 @@ function CuestionariosRegistrosAdmin() {
                                 <div key={answer.idRespuesta}>
                                     <ListGroup>
                                         <ListGroupItem>Ligada a la pregunta #{answer.idPregunta}. "{answer.pregunta}"</ListGroupItem>
+                                        {answer.idCuestionario ?
                                         <ListGroupItem>La cual se encuentra en el cuestionario #{answer.idCuestionario}</ListGroupItem>
+                                        :
+                                        <ListGroupItem>
+                                            Actualmente este par respuesta-pregunta no está en uso en un cuestionario, ¿deseas asignarla a un cuestionario?
+                                            <br/>
+                                            <Button
+                                            variant='success'
+                                            onClick={() => {
+                                                setShowModalLinkA(false)
+                                                setRespuestaVincula(answer.idRespuesta)
+                                                setPreguntaVincula(answer.idPregunta)
+                                                setShowOffVinculaRes(true)
+                                                setShowModalVinculaCuest(true)}}>
+                                                Poner en uso
+                                                <AiOutlineLink/>
+                                            </Button>
+                                        </ListGroupItem>}
                                         <br/>
                                     </ListGroup>
                                 </div>
@@ -647,7 +741,7 @@ function CuestionariosRegistrosAdmin() {
                         <div>
                             <Alert
                             variant='danger'>
-                                <Alert.Heading>La pregunta actualmente no se encuentra ligada a un cuestionario, ¿deseas borrarla?</Alert.Heading>
+                                <Alert.Heading>La pregunta actualmente no se encuentra ligada a una respuesta, y no está en uso en ningún cuestionario, ¿deseas borrarla o vincularla a una respuesta y a un cuestionario?</Alert.Heading>
                             </Alert>
                             <Button
                             variant='danger'
@@ -657,14 +751,16 @@ function CuestionariosRegistrosAdmin() {
                             </Button>
                             <Button
                             variant='success'
-                            onClick={() => {setShowModalLinkA(false)}}>
+                            onClick={() => {
+                                setShowModalLinkA(false)
+                                setShowOffVinculaQues(true)}}>
                                 Vincular pregunta con respuesta
                                 <AiOutlineLink/>
                             </Button>
                         </div>:
                         preguntasLink.map((question) => {
                             return(
-                                <div key={question.id}>
+                                <div key={question.idPregunta}>
                                     <ListGroup>
                                         <ListGroupItem>Ligada a la respuesta #{question.idRespuesta}</ListGroupItem>
                                         {question.idCuestionario ?
@@ -675,10 +771,15 @@ function CuestionariosRegistrosAdmin() {
                                             <br/>
                                             <Button
                                             variant='success'
-                                            >
+                                            onClick={() => {
+                                                setShowModalLinkQ(false)
+                                                setPreguntaVincula(question.idPregunta)
+                                                setRespuestaVincula(question.idRespuesta)
+                                                setShowOffVinculaQues(true)
+                                                setShowModalVinculaCuest(true)}}>
                                                 Poner en uso
                                                 <AiOutlineLink/>
-                                            </Button>                                            
+                                            </Button>
                                         </ListGroupItem>}
                                         <br/>
                                     </ListGroup>
@@ -692,7 +793,7 @@ function CuestionariosRegistrosAdmin() {
             <Offcanvas 
                 show={showOffEditP} 
                 placement={'bottom'} 
-                onHide={() => setShowOffEditP(false)}>
+                onHide={() => {setShowOffEditP(false)}}>
                 <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Editar pregunta</Offcanvas.Title>
                 </Offcanvas.Header>
@@ -806,6 +907,275 @@ function CuestionariosRegistrosAdmin() {
                         </div> 
                         :<br/>}
                     </div>
+                </Modal.Body>
+            </Modal>
+            {/* OFFCANVAS VINCULAR PREGUNTA */}
+            <Offcanvas
+            show={showOffVinculaQues}
+            onHide={() => {
+                setShowOffVinculaQues(false)
+                setRespuestaVincula()
+                setCuestionarioVincula()}}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Vincular pregunta con respuesta</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <Form>
+                        <Form.Group
+                        className="mb-3"
+                        controlId="newHito"
+                        >
+                        <Form.Label>Selecciona la respuesta a la cual deseas vincular la pregunta</Form.Label>
+                        <Button
+                        className='btnAct'
+                        onClick={() => {setShowModalVinculaQues(true)}}>
+                            Set de respuestas
+                        </Button>
+                        </Form.Group>
+                    </Form>
+                    <div className='text-center'>
+                        {respuestaVincula}
+                    </div>
+                    <br/>
+                    <Form>
+                        <Form.Group
+                        className="mb-3"
+                        controlId="newHito"
+                        >
+                        <Form.Label>Selecciona el cuestionario al que deseas vincular la pregunta</Form.Label>
+                        <Button
+                        className='btnAct'
+                        onClick={() => {setShowModalVinculaCuest(true)}}>
+                            Set de cuestionarios
+                        </Button>
+                        </Form.Group>
+                    </Form>
+                    <div className='text-center'>
+                        {cuestionarioVincula}
+                    </div>
+                    <br/>
+                    <Button
+                    size='lg'
+                    variant="danger"
+                    onClick={() => {
+                        setShowOffVinculaQues(false)
+                        setCuestionarioVincula('')}}>
+                        Cerrar
+                    </Button>
+                    <Button
+                    size='lg'
+                    variant="success"
+                    onClick={vincularPregunta}>
+                        Vincular
+                    </Button>
+                </Offcanvas.Body>
+            </Offcanvas>
+            {/* OFFCANVAS VINCULAR RESPUESTA */}
+            <Offcanvas
+            show={showOffVinculaRes}
+            onHide={() => {
+                setShowOffVinculaRes(false)
+                setPreguntaVincula()
+                setCuestionarioVincula()}}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Vincular respuesta con pregunta</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <Form>
+                        <Form.Group
+                        className="mb-3"
+                        controlId="newHito"
+                        >
+                        <Form.Label>Selecciona la pregunta a la cual deseas vincular la respuesta</Form.Label>
+                        <Button
+                        className='btnAct'
+                        onClick={() => {setShowModalVinculaRes(true)}}>
+                            Set de preguntas
+                        </Button>
+                        </Form.Group>
+                    </Form>
+                    <div className='text-center'>
+                        {preguntaVincula}
+                    </div>
+                    <br/>
+                    <Form>
+                        <Form.Group
+                        className="mb-3"
+                        controlId="newHito"
+                        >
+                        <Form.Label>Selecciona el cuestionario al que deseas vincular la respuesta</Form.Label>
+                        <Button
+                        className='btnAct'
+                        onClick={() => {setShowModalVinculaCuest(true)}}>
+                            Set de cuestionarios
+                        </Button>
+                        </Form.Group>
+                    </Form>
+                    <div className='text-center'>
+                        {cuestionarioVincula}
+                    </div>
+                    <br/>
+                    <Button
+                    size='lg'
+                    variant="danger"
+                    onClick={() => {
+                        setShowOffVinculaRes(false)
+                        setCuestionarioVincula('')}}>
+                        Cerrar
+                    </Button>
+                    <Button
+                    size='lg'
+                    variant="success"
+                    onClick={vincularPregunta}>
+                        Vincular
+                    </Button>
+                </Offcanvas.Body>
+            </Offcanvas>
+            {/*MODAL VINCULAR PREGUNTA */}
+            <Modal
+            show={showModalVinculaQues}
+            scrollable={true}
+            onHide={() => {setShowModalVinculaQues(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        Vincular pregunta con respuesta
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title className='text-center'>
+                                Set de respuestas
+                            </Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                        <div>
+                            {respuestasList.map((respuesta) => {
+                                return(
+                                    <div key={respuesta.id}>
+                                        <ListGroup>
+                                            <ListGroupItem>
+                                                <div className='vincularPregunta'>
+                                                    <div className='vincularPreguntaTexto'>
+                                                        {respuesta.id}. {respuesta.opciones}
+                                                    </div>
+                                                    <div className='vincularPreguntaBotones'>
+                                                        <Button
+                                                        variant='success'
+                                                        onClick={() => {
+                                                            setRespuestaVincula(respuesta.id)
+                                                            setShowModalVinculaQues(false)}}>
+                                                            Vincular
+                                                            <AiOutlineLink/>
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </ListGroupItem>
+                                        </ListGroup>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                        </Card.Body>
+                    </Card>
+                </Modal.Body>
+            </Modal>
+            {/*MODAL VINCULAR RESPUESTA */}
+            <Modal
+            show={showModalVinculaRes}
+            scrollable={true}
+            onHide={() => {setShowModalVinculaRes(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        Vincular respuesta con pregunta
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title className='text-center'>
+                                Set de preguntas
+                            </Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <div>
+                                {preguntasList.map((pregunta) => {
+                                    return(
+                                        <div key={pregunta.id}>
+                                            <ListGroup>
+                                                <ListGroupItem>
+                                                    <div className='vincularPregunta'>
+                                                        <div className='vincularPreguntaTexto'>
+                                                            {pregunta.idPregunta}. {pregunta.pregunta}
+                                                        </div>
+                                                        <div className='vincularPreguntaBotones'>
+                                                            <Button
+                                                            variant='success'
+                                                            onClick={() => {
+                                                                setPreguntaVincula(pregunta.idPregunta)
+                                                                setShowModalVinculaRes(false)}}>
+                                                                Vincular
+                                                                <AiOutlineLink/>
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </ListGroupItem>
+                                            </ListGroup>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Modal.Body>
+            </Modal>
+            {/*MODAL VINCULAR CUESTIONARIO */}
+            <Modal
+            show={showModalVinculaCuest}
+            scrollable={true}
+            onHide={() => {setShowModalVinculaCuest(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        Vincular con cuestionario
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title className='text-center'>
+                                Cuestionarios
+                            </Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <div>
+                                {cuestionariosList.map((cuestionario) => {
+                                    return(
+                                        <div key={cuestionario.id}>
+                                            <ListGroup>
+                                                <ListGroupItem>
+                                                    <div className='vincularPregunta'>
+                                                        <div className='vincularPreguntaTexto'>
+                                                            {cuestionario.idCuestionario}. {cuestionario.nombre}
+                                                        </div>
+                                                        <div className='vincularPreguntaBotones'>
+                                                            <Button
+                                                            variant='success'
+                                                            onClick={() => {
+                                                                setCuestionarioVincula(cuestionario.idCuestionario)
+                                                                setShowModalVinculaCuest(false)}}>
+                                                                Vincular
+                                                                <AiOutlineLink/>
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </ListGroupItem>
+                                            </ListGroup>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </Card.Body>
+                    </Card>
                 </Modal.Body>
             </Modal>
             {/* OFFCANVAS EDITAR RESPUESTA*/}

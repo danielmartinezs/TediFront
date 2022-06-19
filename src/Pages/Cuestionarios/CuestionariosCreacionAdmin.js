@@ -1037,8 +1037,6 @@ function CrearCuestionario() {
                     </Button>
             </Offcanvas.Body>
             </Offcanvas>
-            {/*OFFCANVAS AGREGAR RESPUESTA*/}
-            
             </div>
             </div>
         </main>
