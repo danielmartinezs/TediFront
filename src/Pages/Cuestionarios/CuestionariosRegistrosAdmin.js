@@ -78,6 +78,8 @@ function CuestionariosRegistrosAdmin() {
     useEffect (() => {
         getPreguntas()
         getRespuestas()
+        getQuestionsUsed()
+        getAnswersUsed()
     }, [showA])
 
     const scrollToTop = () => {
@@ -144,7 +146,6 @@ function CuestionariosRegistrosAdmin() {
         if(response.status === 200){
             console.log(response)
             scrollToTop()
-            getRespuestas()
             setShowA(true)
             setVariante('success')
             setMsg(response.data.message)
@@ -182,8 +183,6 @@ function CuestionariosRegistrosAdmin() {
         })
         if(response.status === 200){
             scrollToTop()
-            //getPreguntas()
-            console.log(response)
             setShowA(true)
             setVariante('success')
             setMsg(response.data.message)
@@ -309,6 +308,8 @@ function CuestionariosRegistrosAdmin() {
                 scrollToTop()
                 setShowOffVinculaQues(false)
                 setShowOffVinculaRes(false)
+                setCuestionarioVincula(0)
+                setPreguntaVincula(0)
             }
         } catch(error){
             if(!error?.response){
