@@ -245,6 +245,7 @@ function CuestionariosRegistrosAdmin() {
                 respuestas[i].idCuestionario = response.data[0]?.idCuestionario
             })
         }
+        console.log(respuestas)
         setRespuestasLink(respuestas)
     }
 
@@ -294,13 +295,14 @@ function CuestionariosRegistrosAdmin() {
     }
 
     const vincularPreguntaRespuesta = async () => {
-        setShowModalLinkQ(false)
-        setShowModalLinkA(false)
+        setShowOffVinculaQues(false)
+        setShowOffVinculaRes(false)
         try{
         const response = await axios.post(NEW_ANSWER_QUESTION_URL, {
             idp: preguntaVincula,
             idr: respuestaVincula
         })
+        console.log(response)
         if(response.status === 200){
             scrollToTop()
             setShowA(true)
@@ -330,6 +332,7 @@ function CuestionariosRegistrosAdmin() {
                 setMsg(error.response.data.message);
             }
         }
+        vincular()
     }
 
     const vincular = async () => {
@@ -344,8 +347,6 @@ function CuestionariosRegistrosAdmin() {
                 setVariante('success')
                 setMsg(response.data.message)
                 scrollToTop()
-                setShowOffVinculaQues(false)
-                setShowOffVinculaRes(false)
                 setCuestionarioVincula(0)
                 setPreguntaVincula(0)
                 setRespuestaVincula(0)
@@ -1026,7 +1027,7 @@ function CuestionariosRegistrosAdmin() {
                     <Button
                     size='lg'
                     variant="success"
-                    onClick={vincular}>
+                    onClick={vincularPreguntaRespuesta}>
                         Vincular
                         <AiOutlineSend/>
                     </Button>
@@ -1080,7 +1081,7 @@ function CuestionariosRegistrosAdmin() {
                     <Button
                     size='lg'
                     variant="success"
-                    onClick={vincular}>
+                    onClick={vincularPreguntaRespuesta}>
                         Vincular
                         <AiOutlineSend/>
                     </Button>
