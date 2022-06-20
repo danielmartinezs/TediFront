@@ -19,6 +19,7 @@ const CHECK_LINK_ANSWER = "/questionnaires/checklinkanswer"
 const CHECK_LINK_QUESTION = "/questionnaires/checklinkquestion"
 const GET_QUESTIONS_USED_URL = '/questionnaires/questionsused'
 const GET_ANSWERS_USED_URL = '/questionnaires/answersused'
+const NEW_ANSWER_QUESTION_URL = '/questionnaires/newanswerquestion'
 const VINCULAR_URL = '/questionnaires/vincularqa'
 
 function CuestionariosRegistrosAdmin() {
@@ -35,7 +36,6 @@ function CuestionariosRegistrosAdmin() {
     const [respuestaVincula, setRespuestaVincula] = useState();
     const [cuestionarioVincula, setCuestionarioVincula] = useState();
     const [recentlyRemovedRes, setRecentlyRemovedRes] = useState();
-    const [idCheck, setIdCheck] = useState(0);
     const [idPreguntaEdit, setIdPreguntaEdit] = useState(0);
     const [idRespuestaEdit, setIdRespuestaEdit] = useState(0);
     const [cambioRespuesta, setCambioRespuesta] = useState(0);
@@ -47,7 +47,6 @@ function CuestionariosRegistrosAdmin() {
     const [variante, setVariante] = useState('');
     const [showButtonSave, setShowButtonSave] = useState(false);
     const [showButtonUndo, setShowButtonUndo] = useState(false);
-    const [showButtonSubmit, setShowButtonSubmit] = useState(false);
     const [showModalCerrar, setShowModalCerrar] = useState(false);
     const [showModalBorrarP, setShowModalBorrarP] = useState(false);
     const [showModalBorrarR, setShowModalBorrarR] = useState(false);
@@ -292,6 +291,45 @@ function CuestionariosRegistrosAdmin() {
             }
         }
         return usado;
+    }
+
+    const vincularPreguntaRespuesta = async () => {
+        setShowModalLinkQ(false)
+        setShowModalLinkA(false)
+        try{
+        const response = await axios.post(NEW_ANSWER_QUESTION_URL, {
+            idp: preguntaVincula,
+            idr: respuestaVincula
+        })
+        if(response.status === 200){
+            scrollToTop()
+            setShowA(true)
+            setVariante('success')
+            setMsg(response.data.message)
+        }
+        }catch(error){
+            if(!error?.response){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('No hay respuesta del servidor');
+            } else if(error.response?.status === 400){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 401){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('Usuario sin autorización');
+            } else if(error.response?.status === 403){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 404){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            }
+        }
     }
 
     const vincular = async () => {
@@ -676,6 +714,7 @@ function CuestionariosRegistrosAdmin() {
                             variant='success'
                             onClick={() => {
                                 setShowModalLinkA(false)
+                                setRespuestaVincula(respuestasList[idDeleteRespuesta-1]?.id)
                                 setShowOffVinculaRes(true)}}>
                                 Vincular respuesta con pregunta
                                 <AiOutlineLink/>
