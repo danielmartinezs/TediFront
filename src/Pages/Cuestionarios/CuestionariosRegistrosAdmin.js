@@ -310,6 +310,7 @@ function CuestionariosRegistrosAdmin() {
                 setShowOffVinculaRes(false)
                 setCuestionarioVincula(0)
                 setPreguntaVincula(0)
+                setRespuestaVincula(0)
             }
         } catch(error){
             if(!error?.response){
