@@ -43,6 +43,7 @@ function CrearCuestionario() {
     const [variante, setVariante] = useState('');
     const [showA, setShowA] = useState(false);
     const [showADelResp, setShowADelResp] = useState(false);
+    const [showAOpMul, setShowAOpMul] = useState(false);
     const [showButtonSave, setShowButtonSave] = useState(false);
     const [showButtonUndo, setShowButtonUndo] = useState(false);
     const [showModalP, setShowModalP] = useState(false)
@@ -327,6 +328,29 @@ function CrearCuestionario() {
         }
     };
 
+    const formatRespuesta = () => {
+        const rep = "{\"opciones\":"+JSON.stringify(respuesta)+"}";
+        setRespuestaFormatted(rep);
+        setShowModalO(false);
+    }
+
+    const handleValidaInputs = () => {
+        const inputs = []
+        for(let i = 0; i < respuesta.length; i++){
+        inputs.push(respuesta[i].respuesta);
+        }
+        const findDuplicates = inputs => inputs.filter((item, index) => inputs.indexOf(item) !== index);
+        const duplicates = findDuplicates(inputs);
+        if(duplicates.length > 0){
+            setShowAOpMul(true)
+            setVariante('danger')
+            setMsg("No puede haber registros duplicados, elimina o modifica el registro duplicado")
+        }
+        else{
+            formatRespuesta()
+        }
+    }
+
     const handleEditRemove = (change) => {
         if(respuestasEdit.opciones.length > 2){
             setCambioRespuesta(change)
@@ -357,12 +381,6 @@ function CrearCuestionario() {
         setShowADelResp(true)
         setVariante('success')
         setMsg("Se restauró la opción")
-    }
-
-    const formatRespuesta = () => {
-        const rep = "{\"opciones\":"+JSON.stringify(respuesta)+"}";
-        setRespuestaFormatted(rep);
-        setShowModalO(false);
     }
 
     const renderTooltipEdit = (props) => (
@@ -508,7 +526,7 @@ function CrearCuestionario() {
                         </div>:
                         <div>
                             {respuesta.map(values => (
-                                <div key={values}>
+                                <div key={values.respuesta}>
                                     <ListGroup>
                                         <ListGroupItem>
                                             {(values.respuesta)}
@@ -741,6 +759,17 @@ function CrearCuestionario() {
                     </ModalTitle>
                 </ModalHeader>
                 <ModalBody>
+                    <div className='alertas'>
+                    <Alert 
+                    show={showAOpMul}
+                    variant={variante}
+                    onClose={() => setShowAOpMul(false)}
+                    dismissible>
+                    <Alert.Heading>
+                        {msg}
+                    </Alert.Heading>
+                    </Alert>
+                    </div>
                     {respuesta?.map((opcion, index) => (
                         <div key={index} className="services">
                             <div className="first-division">
@@ -760,11 +789,11 @@ function CrearCuestionario() {
                             </Button>)
                             }
                             <br/>
-                            {respuesta.length-1 === index && respuesta.length > 1 && 
+                            {respuesta.length-1 === index && respuesta.length > 1 &&
                             (<Button 
                             size="sm"
                             variant="success"
-                            onClick={formatRespuesta}>
+                            onClick={handleValidaInputs}>
                                 <span>Guardar registros</span>
                                 <AiOutlineSend/>
                             </Button>)

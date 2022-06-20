@@ -56,7 +56,6 @@ function CuestionariosEdicionAdmin() {
     const [showModalCerrar, setShowModalCerrar] = useState(false);
     const [showModalResEdit, setShowModalResEdit] = useState(false);
     const [showModalPregEdit, setShowModalPregEdit] = useState(false);
-    const [showModalAddPreg, setShowModalAddPreg] = useState(false);
     const [showModalBancoR, setShowModalBancoR] = useState(false);
     const [showModalBancoP, setShowModalBancoP] = useState(false);
     const [showModalOpMul, setShowModalOpMul] = useState(false);
@@ -66,6 +65,7 @@ function CuestionariosEdicionAdmin() {
     const [showOffAddR, setShowOffAddR] = useState(false);
     const [showA, setShowA] = useState(false);
     const [showADelResp, setShowADelResp] = useState(false);
+    const [showAOpMul, setShowAOpMul] = useState(false);
     const [detailsPane, setDetailsPane] = useState({isPaneOpen: false});
     const {idCuestionario} = useParams();
     const navigate = useNavigate();
@@ -179,7 +179,6 @@ function CuestionariosEdicionAdmin() {
 
     const editarCrearPregunta = async () => {
         setShowOffEditP(false)
-        setShowModalAddPreg(false)
         console.log("idredit"+idRespuestaEdit)
         console.log("idpedit"+idPreguntaEdit)
         try{
@@ -585,6 +584,23 @@ function CuestionariosEdicionAdmin() {
         const rep = "{\"opciones\":"+JSON.stringify(newRespuesta)+"}";
         setNewRespuestaFormatted(rep);
         setShowModalOpMul(false);
+    }
+
+    const handleValidaInputs = () => {
+        const inputs = []
+        for(let i = 0; i < newRespuesta.length; i++){
+        inputs.push(newRespuesta[i].respuesta);
+        }
+        const findDuplicates = inputs => inputs.filter((item, index) => inputs.indexOf(item) !== index);
+        const duplicates = findDuplicates(inputs);
+        if(duplicates.length > 0){
+            setShowAOpMul(true)
+            setVariante('danger')
+            setMsg("No puede haber registros duplicados, elimina o modifica el registro duplicado")
+        }
+        else{
+            formatRespuesta()
+        }
     }
 
     const handleCloseWithoutSave = () => {
@@ -1219,6 +1235,17 @@ function CuestionariosEdicionAdmin() {
                     </ModalTitle>
                 </ModalHeader>
                 <ModalBody>
+                    <div className='alertas'>
+                    <Alert 
+                    show={showAOpMul}
+                    variant={variante}
+                    onClose={() => setShowAOpMul(false)}
+                    dismissible>
+                    <Alert.Heading>
+                        {msg}
+                    </Alert.Heading>
+                    </Alert>
+                    </div>
                     {newRespuesta?.map((opcion, index) => (
                         <div key={index} className="services">
                             {console.log(opcion.opciones)}
@@ -1244,7 +1271,7 @@ function CuestionariosEdicionAdmin() {
                             (<Button 
                             size="sm"
                             variant="success"
-                            onClick={formatRespuesta}>
+                            onClick={handleValidaInputs}>
                                 <span>Guardar registros</span>
                                 <AiOutlineSend/>
                             </Button>)
