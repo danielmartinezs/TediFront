@@ -182,7 +182,7 @@ function CuestionariosRegistrosAdmin() {
         })
         if(response.status === 200){
             scrollToTop()
-            getPreguntas()
+            //getPreguntas()
             console.log(response)
             setShowA(true)
             setVariante('success')
@@ -302,13 +302,13 @@ function CuestionariosRegistrosAdmin() {
                 idp: preguntaVincula,
                 idr: respuestaVincula
             })
-            console.log(response)
             if(response.status === 200){
-                setShowOffVinculaQues(false)
-                setShowOffVinculaRes(false)
-                showA(true)
+                setShowA(true)
                 setVariante('success')
                 setMsg(response.data.message)
+                scrollToTop()
+                setShowOffVinculaQues(false)
+                setShowOffVinculaRes(false)
             }
         } catch(error){
             if(!error?.response){
