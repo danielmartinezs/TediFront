@@ -489,6 +489,7 @@ function CuestionariosRegistrosAdmin() {
                                             variant="outline-danger"
                                             onClick={() => {
                                                 setIdDeletePregunta(question.idPregunta)
+                                                checkLinkQ(question.idPregunta)
                                                 setShowModalBorrarP(true)}}>
                                             <AiOutlineDelete />
                                             </Button></td>
@@ -551,6 +552,7 @@ function CuestionariosRegistrosAdmin() {
                                             variant="outline-danger"
                                             onClick={() => {
                                                 setIdDeleteRespuesta(answer.id)
+                                                checkLinkA(answer.id)
                                                 setShowModalBorrarR(true)}}>
                                             <AiOutlineDelete />
                                             </Button></td>
@@ -610,7 +612,19 @@ function CuestionariosRegistrosAdmin() {
                 <Modal.Header closeButton>
                     <Modal.Title>¿Estás seguro que quieres borrar esta pregunta?</Modal.Title>
                 </Modal.Header>
-                    <Modal.Body>Una vez borrado el registro y sus relaciones serán borradas</Modal.Body>
+                    <Modal.Body>
+                        Una vez borrado el registro y sus relaciones serán borradas
+                        <br/>
+                        Ten en cuenta que el vínculo con las respuestas:
+                        {preguntasLink.map((question) => {
+                            return(
+                                <div key={question.idRespuesta}>
+                                    <li>{question.idRespuesta}</li>
+                                </div>
+                            )
+                        })}
+                        desapareceran
+                    </Modal.Body>
                 <Modal.Footer>
                     <Button variant="success" onClick={() => {setShowModalBorrarP(false)}}>
                         No
@@ -627,7 +641,19 @@ function CuestionariosRegistrosAdmin() {
                 <Modal.Header closeButton>
                     <Modal.Title>¿Estás seguro que quieres borrar esta respuesta?</Modal.Title>
                 </Modal.Header>
-                    <Modal.Body>Una vez borrada la respuesta, no se mostrará los cuestionario en las que forma parte</Modal.Body>
+                    <Modal.Body>
+                        Una vez borrada la respuesta, no se mostrará los cuestionario en las que forma parte
+                        <br/>
+                        Ten en cuenta que el vínculo con las preguntas:
+                        {respuestasLink.map((answer) => {
+                            return(
+                                <div key={answer.idPregunta}>
+                                    <li>{answer.idPregunta}</li>
+                                </div>
+                            )
+                        })}
+                        desaparecerán
+                    </Modal.Body>
                 <Modal.Footer>
                     <Button variant="success" onClick={() => {setShowModalBorrarR(false)}}>
                         No
