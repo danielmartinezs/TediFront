@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
-import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Offcanvas, OverlayTrigger, Table, Tooltip } from "react-bootstrap";
+import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Offcanvas, OverlayTrigger, Table, Tooltip, Overlay } from "react-bootstrap";
 import { AiOutlineEdit, AiOutlineEye, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineQuestionCircle, AiOutlineSelect, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai';
 import { BiMessageAltAdd } from 'react-icons/bi'
 import SlidingPane from 'react-sliding-pane';
@@ -174,7 +174,7 @@ function CrearCuestionario() {
         }
         if(idRespuesta === 0 && idPregunta === 0){//si la respuesta y la pregunta son nuevas
             console.log("in 00")
-            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta: (respuestasList.length)+maxIdRespuesta}])
+            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta: (respuestasList.length)+maxIdRespuesta, editable: 1}])
             setMaxIdRespuesta(maxIdRespuesta+1)
             setMaxIdPregunta(maxIdPregunta+1)
             setNewPreguntasList([...newPreguntasList, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta}])
@@ -182,26 +182,26 @@ function CrearCuestionario() {
         }
         else if(idRespuesta === 0){//si solo la respuesta es nueva
             console.log("in X0")
-            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: idPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta:(respuestasList.length)+maxIdRespuesta}])
+            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: idPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta:(respuestasList.length)+maxIdRespuesta, editable: 3}])
             setMaxIdRespuesta(maxIdRespuesta+1)
             setNewRespuestasList([...newRespuestasList, { id: (respuestasList.length)+maxIdRespuesta, opciones: respuestaFormatted}])
         }
         else if(idPregunta === 0 && idRespuesta !== 0){//si la pregunta es nueva y la respuesta existe
             console.log("in 0#")
             console.log(respuestaBank)
-            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuestaBank), idRespuesta: idRespuesta}])
+            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuestaBank), idRespuesta: idRespuesta, editable: 2}])
             setMaxIdPregunta(maxIdPregunta+1)
             setNewPreguntasList([...newPreguntasList, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta}])
         }
         else if(idPregunta === 0){//si solo la pregunta es nueva
             console.log("in 0X")
-            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta: idRespuesta}])
+            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: respuestaFormatted, idRespuesta: idRespuesta, editable: 2}])
             setMaxIdPregunta(maxIdPregunta+1)
             setNewPreguntasList([...newPreguntasList, { idPregunta: (preguntasList.length)+maxIdPregunta, tipop: tipoPregunta, pregunta: pregunta}])
         }
         else{
             console.log("xd")
-            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: idPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuesta), idRespuesta: idRespuesta}])
+            setPreguntaRespuesta([...preguntaRespuesta, { idPregunta: idPregunta, tipop: tipoPregunta, pregunta: pregunta, respuesta: JSON.stringify(respuestaBank), idRespuesta: idRespuesta, editable: 0}])
         }
         setDetailsPane({isPaneOpen: true})
         setPregunta("")
@@ -383,6 +383,18 @@ function CrearCuestionario() {
         setMsg("Se restauró la opción")
     }
 
+    const renderTooltipEditable2 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Al tener una respuesta ya existente no podrás editar el registro
+        </Tooltip>
+    );
+
+    const renderTooltipEdiatble3 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Al tener una pregunta ya existente no podrás editar el registro
+        </Tooltip>
+    );
+    
     const renderTooltipEdit = (props) => (
         <Tooltip id="button-tooltip" {...props}>
             Haz click para editar el registro de la respuesta
@@ -594,11 +606,18 @@ function CrearCuestionario() {
                                 {/* <td>{pr.idRespuesta}</td> */}
                                 <td>{JSON.parse(JSON.stringify(pr.respuesta))}</td>
                                 <td>
+                                    {(pr.editable !== 0) ?
                                     <Button
                                     variant="outline-success"
                                     onClick={() => {handleEditarPreguntaRespuesta(index)}}>
                                         <AiOutlineEdit />
                                     </Button>
+                                    :
+                                    <Button
+                                    variant="outline-success"
+                                    disabled>
+                                        <AiOutlineEdit />
+                                    </Button>}
                                 </td>
                                 <td>
                                     <Button
@@ -825,22 +844,63 @@ function CrearCuestionario() {
                 <ModalBody>
                     <div className="text-center">
                         <h5>Pregunta: {preguntaRespuesta[idEditar]?.pregunta}</h5>
-                        <Button
-                        className="btnAct"
-                        onClick={() => {
-                            setPreguntaEdit(preguntaRespuesta[idEditar]?.pregunta)
-                            setShowOffEditP(true)
-                            setShowModalE(false)
-                        }}>
-                            Editar pregunta<AiOutlineEdit/>
-                        </Button>
-                        <br/>
-                        <Button
-                        className="btnAct"
-                        onClick={() => {handleSetRespuestasEdit(idEditar)}}>
-                            Editar respuesta<AiOutlineEdit/>
-                        </Button>
-                        <br/>
+                        {preguntaRespuesta[idEditar]?.editable === 1 &&
+                        <div>
+                            <Button
+                            className="btnAct"
+                            onClick={() => {
+                                setPreguntaEdit(preguntaRespuesta[idEditar]?.pregunta)
+                                setShowOffEditP(true)
+                                setShowModalE(false)
+                            }}>
+                                Editar pregunta<AiOutlineEdit/>
+                            </Button>
+                            <br/>
+                            <Button
+                            className="btnAct"
+                            onClick={() => {handleSetRespuestasEdit(idEditar)}}>
+                                Editar respuesta<AiOutlineEdit/>
+                            </Button>
+                        </div>
+                        }
+                        {preguntaRespuesta[idEditar]?.editable === 2 &&
+                        <div>
+                            <Button
+                            className="btnAct"
+                            onClick={() => {
+                                setPreguntaEdit(preguntaRespuesta[idEditar]?.pregunta)
+                                setShowOffEditP(true)
+                                setShowModalE(false)
+                            }}>
+                                Editar pregunta<AiOutlineEdit/>
+                            </Button>
+                            <br/>
+                            <OverlayTrigger
+                            placement="bottom"
+                            overlay={renderTooltipEditable2}>
+                                <Button className="btnAct">
+                                Editar respuesta<AiOutlineEdit/>
+                                </Button>
+                            </OverlayTrigger>
+                        </div>
+                        }
+                        {preguntaRespuesta[idEditar]?.editable === 3 &&
+                        <div>
+                            <OverlayTrigger
+                            placement="top"
+                            overlay={renderTooltipEdiatble3}>
+                                <Button className="btnAct">
+                                    Editar pregunta<AiOutlineEdit/>
+                                </Button>
+                            </OverlayTrigger>
+                            <br/>
+                            <Button
+                            className="btnAct"
+                            onClick={() => {handleSetRespuestasEdit(idEditar)}}>
+                                Editar respuesta<AiOutlineEdit/>
+                            </Button>
+                        </div>
+                        }
                     </div>
                 </ModalBody>
             </Modal>

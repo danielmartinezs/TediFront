@@ -72,7 +72,7 @@ function ProgresoGrupoAdmin() {
 
     const handleDeleteHito = async (llave) => {
       const response = await axios.post(DELETE_HITO_URL+"/"+llave)
-      setVariante('success')
+      setVariante('danger')
       setMsg(response.data.message)
       setShowA(true)
       setShowMDelete(false)
@@ -284,7 +284,9 @@ function ProgresoGrupoAdmin() {
           show={showMHito}
           size="sm"
           scrollable
-          onHide={() => setShowMHito(false)}>
+          onHide={() => {
+            setShowMHito(false)
+            setShowMAlumnos(true)}}>
             <ModalHeader closeButton>
               <ModalTitle>
                 Hitos del alumno:
