@@ -496,7 +496,7 @@ function CuestionariosRegistrosAdmin() {
                                         <td><Button
                                             variant="outline-secondary"
                                             onClick={() => {
-                                                setIdDeletePregunta(question.idPregunta)
+                                                setPreguntaVincula(question.idPregunta)
                                                 checkLinkQ(question.idPregunta)
                                                 setShowModalLinkOptsQ(true)}}>
                                             <AiOutlineLink />
@@ -559,7 +559,7 @@ function CuestionariosRegistrosAdmin() {
                                         <td><Button
                                             variant="outline-secondary"
                                             onClick={() => {
-                                                setIdDeleteRespuesta(answer.id)
+                                                setRespuestaVincula(answer.id)
                                                 checkLinkA(answer.id)
                                                 setShowModalLinkOptsA(true)}}>
                                             <AiOutlineLink />
