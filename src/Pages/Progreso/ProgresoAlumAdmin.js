@@ -4,8 +4,8 @@ import { Accordion, Alert, Button, Form, ListGroup, ListGroupItem, Modal, ModalB
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import axios from '../../axios/axios';
-import { format, parseISO } from 'date-fns';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
+import { format, parseISO } from 'date-fns';
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale';
