@@ -6,11 +6,12 @@ import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineQuestionCircle,
 import { BiMessageAltAdd } from 'react-icons/bi'
 import SlidingPane from 'react-sliding-pane';
 import axios from '../../axios/axios';
-import RegistroSetRespuestas from "../../components/registroSetRespuestas";
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
 const EDIT_NOMBRE_CUESTIONARIO_URL = '/questionnaires/editquestionairename'
+const EDIT_MATERIA_CUESTIONARIO_URL = '/questionnaires/editmateria'
+const GET_MATERIAS_URL = '/questionnaires/getmaterias'
 const EDIT_RESPUESTA_URL = '/questionnaires/editanswer'
 const EDIT_CREATE_RESPUESTA_URL = '/questionnaires/editcreateanswer'
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
@@ -24,6 +25,7 @@ const ESTABLISH_KEY_URL = '/questionnaires/establishnewkey'
 function CuestionariosEdicionAdmin() {
 
     const [cuestionariosInfo, setCuestionariosInfo] = useState([]);
+    const [materiasList, setMateriasList] = useState([]);
     const [preguntasList, setPreguntasList] = useState([]);
     const [respuestasList, setRespuestasList] = useState([]);
     const [respuestas, setRespuestas] = useState([]);
@@ -42,6 +44,7 @@ function CuestionariosEdicionAdmin() {
     const [newPreguntaId, setNewPreguntaId] = useState(0);
     const [newRespuestaId, setNewRespuestaId] = useState(0);
     const [nombrec, setNombreC] = useState("");
+    const [materiac, setMateriaC] = useState("");
     const [newPregunta, setNewPregunta] = useState("");
     const [preguntaEdit, setPreguntaEdit] = useState("");
     const [tipoNewPregunta, setTipoNewPregunta] = useState("");
@@ -58,8 +61,10 @@ function CuestionariosEdicionAdmin() {
     const [showModalPregEdit, setShowModalPregEdit] = useState(false);
     const [showModalBancoR, setShowModalBancoR] = useState(false);
     const [showModalBancoP, setShowModalBancoP] = useState(false);
+    const [showModalBancoM, setShowModalBancoM] = useState(false);
     const [showModalOpMul, setShowModalOpMul] = useState(false);
-    const [showOffEditC, setShowOffEditC] = useState(false);
+    const [showOffEditNC, setShowOffEditNC] = useState(false);
+    const [showOffEditMC, setShowOffEditMC] = useState(false);
     const [showOffEditR, setShowOffEditR] = useState(false);
     const [showOffEditP, setShowOffEditP] = useState(false);
     const [showOffAddR, setShowOffAddR] = useState(false);
@@ -82,7 +87,15 @@ function CuestionariosEdicionAdmin() {
         axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+idCuestionario).then((response) => {
             setCuestionariosInfo(response.data)
             setNombreC(response.data[0].nombre)
+            setMateriaC(response.data[0].materia)
         })
+    }
+
+    const getMateriasList = () => {
+        axios.get(GET_MATERIAS_URL).then((response) => {
+            setMateriasList(response.data)
+        })
+        setShowOffEditMC(true)
     }
 
     const getRespuesta = (idres) => {
@@ -105,7 +118,7 @@ function CuestionariosEdicionAdmin() {
     }
 
     const editarNombreCuestionario = async () => {
-        setShowOffEditC(false);
+        setShowOffEditNC(false);
         try{
             const response = await axios.post(EDIT_NOMBRE_CUESTIONARIO_URL, {
                 id: idCuestionario,
@@ -141,6 +154,42 @@ function CuestionariosEdicionAdmin() {
         }
     }
 
+    const editarMateriaCuestionario = async () => {
+        setShowOffEditMC(false);
+        try{
+            const response = await axios.post(EDIT_MATERIA_CUESTIONARIO_URL, {
+                id: idCuestionario,
+                materia: materiac
+            })
+            if(response.status === 200){
+                setShowA(true)
+                setVariante('success')
+                setMsg(response.data.message)
+            }
+        }catch(error){
+            if(!error?.response){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('No hay respuesta del servidor');
+            } else if(error.response?.status === 400){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 401){
+                setShowA(true)
+                setVariante('danger')
+                setMsg('Usuario sin autorización');
+            } else if(error.response?.status === 403){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            } else if(error.response?.status === 404){
+                setShowA(true)
+                setVariante('danger')
+                setMsg(error.response.data.message);
+            }
+        }
+    }
 
     const editarPregunta = async () => {
         setShowOffEditP(false)
@@ -473,11 +522,6 @@ function CuestionariosEdicionAdmin() {
         }
     }
 
-    const handleEditarNombreC = () => {
-        setShowOffEditC(false)
-        editarNombreCuestionario()
-    }
-
     const handleEditRespuesta = () => {
         respuestasEdit.opciones[cambioRespuesta].respuesta = respuestaEdit
         console.log(JSON.stringify(respuestasEdit))
@@ -645,15 +689,22 @@ function CuestionariosEdicionAdmin() {
                 </Alert.Heading>
                 </Alert>
             </div>
-            <div className="text-center">
-                <h3>{nombrec}</h3>
-                {console.log("length"+cuestionariosInfo.length)}
+                <div className='text-center'>
+                    <h3>{nombrec}</h3>
+                </div>
                 <Button
                 variant="outline-success"
-                onClick={() => setShowOffEditC(true)}>
+                onClick={() => setShowOffEditNC(true)}>
                     <AiOutlineEdit/>
                 </Button>
-            </div>
+                <div className='text-center'>
+                    <h4>Materia: {materiac}</h4>
+                </div>
+                <Button
+                variant="outline-success"
+                onClick={getMateriasList}>
+                    <AiOutlineEdit/>
+                </Button>
             {/*TABLA PREGUNTAS*/}
             <Table className="tabla">
                 <thead>
@@ -904,9 +955,9 @@ function CuestionariosEdicionAdmin() {
             </Offcanvas>
             {/*OFFCANVAS EDITAR NOMBRE CUESTIONARIO*/}
             <Offcanvas 
-                show={showOffEditC} 
+                show={showOffEditNC} 
                 placement={'bottom'}
-                onHide={() => setShowOffEditC(false)}>
+                onHide={() => setShowOffEditNC(false)}>
                 <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Editar nombre del cuestionario</Offcanvas.Title>
                 </Offcanvas.Header>
@@ -914,7 +965,7 @@ function CuestionariosEdicionAdmin() {
                         <Form>
                             <Form.Group
                             className="mb-3"
-                            controlId="newHito">
+                            controlId="newNombreC">
                                 <Form.Label>Nombre del cuestionario</Form.Label>
                                 <Form.Control 
                                 as="textarea" 
@@ -929,14 +980,58 @@ function CuestionariosEdicionAdmin() {
                             size='sm'
                             variant="danger"
                             onClick={() => {
-                            setShowOffEditC(false)
+                            setShowOffEditNC(false)
                             setNombreC(cuestionariosInfo[0]?.nombre)}}>
                                 Cerrar
                             </Button>
                             <Button
                             size='sm'
                             variant="success"
-                            onClick={handleEditarNombreC}>
+                            onClick={editarNombreCuestionario}>
+                                Guardar
+                            </Button>
+                        </Form>
+                </Offcanvas.Body>
+            </Offcanvas>
+            {/*OFFCANVAS EDITAR MATERIA CUESTIONARIO*/}
+            <Offcanvas 
+                show={showOffEditMC} 
+                placement={'bottom'}
+                onHide={() => setShowOffEditMC(false)}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Editar materia del cuestionario</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                        <Form>
+                            <Form.Group
+                            className="mb-3"
+                            controlId="newMateriaC">
+                                <Form.Label>Materia del cuestionario</Form.Label>
+                                <Form.Control 
+                                as="textarea" 
+                                rows={1}
+                                maxLength="250"
+                                value={materiac}
+                                onChange={(e) => setMateriaC(e.target.value)}/>
+                            </Form.Group>
+                            <Button 
+                            size='sm'
+                            variant="danger"
+                            onClick={() => {
+                            setShowOffEditMC(false)
+                            setMateriaC(cuestionariosInfo[0]?.materia)}}>
+                                Cerrar
+                            </Button>
+                            <Button
+                            size='sm'
+                            variant='warning'
+                            onClick={() => {setShowModalBancoM(true)}}>
+                                Listado de materias existentes
+                            </Button>
+                            <Button
+                            size='sm'
+                            variant="success"
+                            onClick={editarMateriaCuestionario}>
                                 Guardar
                             </Button>
                         </Form>
@@ -1224,6 +1319,38 @@ function CuestionariosEdicionAdmin() {
                     }
                 </ModalBody>
             </Modal>
+            {/*MODAL BANCO MATERIAS*/}
+            <Modal
+            show={showModalBancoM}
+            size="sm"
+            scrollable
+            onHide={() => {setShowModalBancoM(false)}}>
+                <ModalHeader closeButton>
+                    <ModalTitle>
+                        Elige una materia de las siguientes opciones:
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    {materiasList.map(values => (
+                        <div key={values.idMateria}>
+                            <ListGroup>
+                                <ListGroupItem>
+                                    {values.idMateria}. {values.materia}
+                                    <br/>
+                                    <Button
+                                    variant="success"
+                                    onClick={() => {
+                                        setShowModalBancoM(false)
+                                        setMateriaC(values.materia)}}>
+                                        <AiOutlineSelect/>
+                                    </Button>
+                                </ListGroupItem>
+                            </ListGroup>
+                        </div>
+                        ))
+                    }
+                </ModalBody>
+            </Modal>
             {/*MODAL REGISTRO PREGUNTAS OPCIÓN MÚLTIPLE*/}
             <Modal
             show={showModalOpMul}
@@ -1248,7 +1375,6 @@ function CuestionariosEdicionAdmin() {
                     </div>
                     {newRespuesta?.map((opcion, index) => (
                         <div key={index} className="services">
-                            {console.log(opcion.opciones)}
                             <div className="first-division">
                             <input
                                 name="respuesta"
@@ -1283,8 +1409,7 @@ function CuestionariosEdicionAdmin() {
                                 size="sm"
                                 className="remove-btn"
                                 variant="danger"
-                                onClick={() => handleRemoveRespuesta(index)}
-                                >
+                                onClick={() => handleRemoveRespuesta(index)}>
                                     <AiOutlineDelete/>
                                 </Button>)}
                             </div>
