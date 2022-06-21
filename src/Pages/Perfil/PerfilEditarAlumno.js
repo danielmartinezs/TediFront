@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, Alert, Button, ButtonGroup, Card, Col, Container, Modal, Row, ToggleButton } from 'react-bootstrap';
+import { Alert, Button, Card, Col, Container, ListGroup, ListGroupItem, Modal, Row, } from 'react-bootstrap';
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai';
 import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from '../../axios/axios';
 import Form from 'react-bootstrap/Form';
-import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
-import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import { format } from 'date-fns';
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
@@ -14,7 +12,7 @@ import { DatePicker } from "@material-ui/pickers";
 import { es } from 'date-fns/locale'
 import "./perfil.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos'
-const EDIT_TUTOR_URL = '/profiles/editatutor'
+const GET_GRUPOS_URL = '/profiles/getgrupos';
 const EDIT_ALUMNO_URL = 'profiles/editaalumno'
 const DELETE_TUTOR_URL = 'profiles/borratutor'
 
@@ -23,6 +21,7 @@ function PerfilEditarAlumno() {
     const [variante, setVariante] = useState('');
     const [showA, setShowA] = useState(false);
     const [showModalBorrar, setShowModalBorrar] = useState(false);
+    const [showModalGrupos, setShowModalGrupos] = useState(false);
     const [alumnosList, setAlumnosList] = useState([]);
     const [alumnosSearch, setAlumnosSearch] = useState([]);
     const [busqueda, setBusqueda] = useState("")
@@ -32,11 +31,16 @@ function PerfilEditarAlumno() {
     const [semestre, setSemestre] = useState("");
     const [foto, setFoto] = useState();
     const [fotoPreview, setFotoPreview] = useState();
+    const [grupo, setGrupo] = useState("");
+    const [grupoSelect, setGrupoSelect] = useState(0);
+    const [gruposList, setGruposList] = useState([]);
     const [llave, setLlave] = useState(0);
-    const [contrasenia, setContrasenia] = useState("");
-    const [confpassword, setConfPassword] = useState("");
     const [detailsPane, setDetailsPane] = useState({isPaneOpen: false});
 
+    useEffect(() => {
+        getGruposList();
+    }, [])
+    
     useEffect (() => {
         getAlumnos()
     }, [detailsPane])
@@ -47,7 +51,14 @@ function PerfilEditarAlumno() {
             setAlumnosSearch(response.data)
         })
         setFechaNac(alumnosList[llave-1]?.fechaNacimiento)
+        setGrupo(alumnosList[llave-1]?.nombregrupo)
     }
+
+    const getGruposList = async () => {
+        axios.get(GET_GRUPOS_URL).then((response) => {
+          setGruposList(response.data);
+        })
+      }
 
     const openPane = (values) => {
         console.log(values)
@@ -59,8 +70,6 @@ function PerfilEditarAlumno() {
     const closePane = () => {
         setDetailsPane({isPaneOpen: false});
         setNombre("");
-        setContrasenia("");
-        setConfPassword("");
         setApellido("");
         setFechaNac("");
         setSemestre("");
@@ -68,8 +77,6 @@ function PerfilEditarAlumno() {
 
     const handleSubmitEditAlumno = async (e) => {
         e.preventDefault();
-        console.log(fechanac)
-        console.log("foto"+foto)
         try{
             const response = await axios.post(EDIT_ALUMNO_URL, {
                 idal: alumnosList[llave-1]?.idAlumno,
@@ -77,10 +84,10 @@ function PerfilEditarAlumno() {
                 apellidoalu: apellido,
                 nacimiento: fechanac,
                 schoolmester: semestre,
-                foto: foto
+                foto: foto,
+                grupo: grupoSelect
             })
           if(response.status === 200){
-              console.log(response)
               setShowA(true)
               setVariante('success')
               setMsg(response.data.message)
@@ -89,6 +96,7 @@ function PerfilEditarAlumno() {
               setFechaNac("")
               setSemestre("")
               setFoto("")
+              setFotoPreview("")
           }
         }catch(error){
           setShowA(true)
@@ -184,6 +192,7 @@ function PerfilEditarAlumno() {
                                 </Card.Header>
                                 <Card.Body>
                                     <Button
+                                    className='btnBancoPreguntas'
                                     onClick={() => {openPane(values)}}>
                                         Editar información
                                         <AiOutlineEdit/>
@@ -209,8 +218,8 @@ function PerfilEditarAlumno() {
                     <Form 
                         className="form"
                         onSubmit={handleSubmitEditAlumno}>
-                             <h3>Editar información</h3>
-                             <img 
+                        <h3>Editar información</h3>
+                        <img 
                         className='admin-details__img'
                         src={fotoPreview ?? (alumnosList[llave-1]?.fotografia)}/>
                         <Form.Group 
@@ -224,8 +233,7 @@ function PerfilEditarAlumno() {
                                     setFoto(e.target.files[0])
                                     setFotoPreview(URL.createObjectURL(e.target.files[0]))
                                 }}
-                            >
-                            </Form.Control>
+                            />
                         </Form.Group>
                         <Form.Group controlId="nombre">
                                 <Form.Label>Nombre del alumno</Form.Label>
@@ -233,8 +241,7 @@ function PerfilEditarAlumno() {
                                     type="text"
                                     placeholder={alumnosList[llave-1]?.nombre}
                                     value={nombre}
-                                    onChange={(e) => setNombre(e.target.value)}
-                                    ></Form.Control>
+                                    onChange={(e) => setNombre(e.target.value)}/>
                             </Form.Group>
                             <Form.Group controlId="apellido">
                                 <Form.Label>Apellido del alumno</Form.Label>
@@ -242,8 +249,7 @@ function PerfilEditarAlumno() {
                                     type="text"
                                     placeholder={alumnosList[llave-1]?.nombre}
                                     value={apellido}
-                                    onChange={(e) => setApellido(e.target.value)}
-                                    ></Form.Control>
+                                    onChange={(e) => setApellido(e.target.value)}/>
                             </Form.Group>
                             <Form.Group>
                             <Form.Label>Fecha de Nacimiento</Form.Label>
@@ -260,6 +266,17 @@ function PerfilEditarAlumno() {
                                         onChange={setFechaNac}/>
                                 </MuiPickersUtilsProvider>
                             </Form.Group>
+                            <br/>
+                            <Form.Group controlId="semestre">
+                                <Button
+                                className="btnBancoPreguntas"
+                                onClick={() => {setShowModalGrupos(true)}}>
+                                Cambiar de grupo
+                                </Button>
+                                <br/>
+                                <Form.Label>Grupo asignado:</Form.Label>
+                                <h3>{grupo}</h3>
+                            </Form.Group>
                             <Form.Group controlId="semestre">
                                 <Form.Label>Semestre Escolar</Form.Label>
                                 <Form.Control
@@ -267,7 +284,7 @@ function PerfilEditarAlumno() {
                                     placeholder={alumnosList[llave-1]?.anioEscolar}
                                     value={semestre}
                                     onChange={(e) => setSemestre(e.target.value)}
-                                    ></Form.Control>
+                                    />
                             </Form.Group>
                             <br/>
                             <Button
@@ -286,6 +303,42 @@ function PerfilEditarAlumno() {
                 </button>
             </div>
         </SlidingPane>
+        {/*MODAL GRUPOS */}
+        <Modal
+          show={showModalGrupos}
+          onHide={() => {setShowModalGrupos(false)}}>
+            <Modal.Header
+            closeButton>
+              <Modal.Title><h3>Grupos</h3></Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Card className="text-center">
+                <Card.Body>
+                  {gruposList.map((grupo, index) => {
+                    return (
+                      <ListGroup>
+                        <ListGroupItem>
+                          <div key={index}>
+                            <h4>{grupo.nombre}</h4>
+                            <Button
+                            variant="success"
+                            onClick={() => {
+                              setGrupo(grupo.nombre)
+                              setGrupoSelect(grupo.idGrupo)
+                              setShowModalGrupos(false)
+                            }}>
+                              Seleccionar
+                            </Button>
+                          </div>
+                        </ListGroupItem>
+                      </ListGroup>
+                    )
+                  }
+                  )}
+                </Card.Body>
+              </Card>
+            </Modal.Body>
+          </Modal>
         {/*MODAL CONFIRMACIÓN BORRAR */}
         <Modal show={showModalBorrar} onHide={() => {setShowModalBorrar(false)}}>
             <Modal.Header closeButton>
