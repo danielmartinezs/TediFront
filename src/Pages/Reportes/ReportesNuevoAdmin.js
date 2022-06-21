@@ -1,36 +1,38 @@
 import React from 'react'
 import {Accordion} from'react-bootstrap'
 import pdf from './ReporteSemestral.pdf'
+import pdfMake from 'pdfmake/build/pdfmake'
+import pdfFonts from 'pdfmake/build/vfs_fonts'
 
 function ReportesNuevoAdmin() {
-    return (
-        <div>
+
+    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+    const reportTitle = [
+        {
+            text: "HELLO CLIENT WORLD",
+            fontSize: 15,
+            bold: true,
+            margin: [15, 20, 0, 45]
+        }
+    ];
+    const details = [];
+    const firma = [];
+    const docDefinition = {
+        pageSize: 'A4',
+        pageMargins: [15, 50, 15, 40],
+
+        header: [reportTitle],
+        content: [details],
+        footer: [firma]
+    };
+
+    pdfMake.createPdf(docDefinition).download();
+    /* return (
+        <div className='text-center'>
             <h1>Edición de Reportes</h1>
-            <Accordion defaultActiveKey={['0']} alwaysOpen>
-               <Accordion.Item eventKey="3">
-                <Accordion.Item eventKey="0">
-                    <Accordion.Header>Enero</Accordion.Header>
-                        <Accordion.Body>
-                        <ul>
-                            <li>Reporte de nivel de lenguaje</li>
-                            <li>Reporte en la clase de Matematicas  </li>
-                     
-                        </ul>
-                        </Accordion.Body>
-                </Accordion.Item>
-                    <Accordion.Item eventKey="1">
-                        <Accordion.Header>Febrero</Accordion.Header>
-                        <Accordion.Body>
-                            <ul>
-                            <a href={pdf} download >Reporte de nivel Motor </a>
-                                <li>Reporte en la clase de Español  </li>
-                            </ul>
-                        </Accordion.Body>
-                    </Accordion.Item>
-                </Accordion.Item>
-                </Accordion>
         </div>
-    )
+    ) */
 }
 
 export default ReportesNuevoAdmin

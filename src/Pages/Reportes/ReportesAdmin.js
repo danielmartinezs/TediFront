@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Accordion, Alert, Button } from'react-bootstrap'
 import axios from '../../axios/axios';
+import ReportesNuevoAdmin from './ReportesNuevoAdmin';
 const GENERA_REPORTE_EVALUACION_ARTICULACION_URL = 'reportes/crearreporteea';
 const GENERA_REPORTE_HABLIDADES_PREVERBALES_URL = 'reportes/crearreportehpv';
 const GENERA_REPORTE_PRUEBA_URL = 'reportes/crearreporteprueba';
@@ -46,6 +47,9 @@ function ReportesAdmin() {
             </Button>
             <Button onClick={handleDescargaReportePrueba}>
                 descarga PDF Prueba
+            </Button>
+            <Button onClick={ReportesNuevoAdmin}>
+                descarga PDF Prueba FrontEnd
             </Button>
         </div>
     )

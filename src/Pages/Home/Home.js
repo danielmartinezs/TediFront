@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button, Carousel } from 'react-bootstrap';
-import foto1 from '../../assets/foto1.png';
-import foto2 from '../../assets/foto2.jpg';
-import foto9 from '../../assets/foto9.jpg';
+import foto1 from '../../assets/img1.png';
+import foto2 from '../../assets/img2.png';
+import foto9 from '../../assets/img12.jpg';
 import "./styles.css";
 
 
@@ -37,7 +37,7 @@ function Home() {
           <Carousel.Caption>
             <Link to="/Reportes">
             <button className="buttonlink">
-              Reporte
+              Reportes
             </button>
             </Link>
           </Carousel.Caption>

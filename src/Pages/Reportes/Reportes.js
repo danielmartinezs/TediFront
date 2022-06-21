@@ -50,7 +50,6 @@ function Reportes() {
             onClick={handleDescarga}>
                 descarga PDF
         </Button> 
-
         </div>
     )
 }
