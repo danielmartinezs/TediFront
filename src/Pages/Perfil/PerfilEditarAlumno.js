@@ -12,7 +12,7 @@ import { DatePicker } from "@material-ui/pickers";
 import { es } from 'date-fns/locale'
 import "./perfil.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos'
-const GET_GRUPOS_URL = '/profiles/getgrupos';
+const GET_GRUPOS_URL = '/profiles/getgrupos'
 const EDIT_ALUMNO_URL = 'profiles/editaalumno'
 const DELETE_TUTOR_URL = 'profiles/borratutor'
 
@@ -58,7 +58,7 @@ function PerfilEditarAlumno() {
         axios.get(GET_GRUPOS_URL).then((response) => {
           setGruposList(response.data);
         })
-      }
+    }
 
     const openPane = (values) => {
         console.log(values)
