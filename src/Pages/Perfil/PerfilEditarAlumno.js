@@ -19,11 +19,6 @@ const EDIT_ALUMNO_URL = 'profiles/editaalumno'
 const DELETE_TUTOR_URL = 'profiles/borratutor'
 
 function PerfilEditarAlumno() {
-    const [btnValue, setBtnValue] = useState(0);
-    const botones = [
-        { name: 'Modificar Tutor', value: '1' },
-        { name: 'Modificar Alumno', value: '2' },
-    ];
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [showA, setShowA] = useState(false);
@@ -202,14 +197,13 @@ function PerfilEditarAlumno() {
                 </Row>
             </Container>
             </div>
-            {/*SLIDING PANE EDICIÓN ALUMNO */}
-            <SlidingPane
+        {/*SLIDING PANE EDICIÓN ALUMNO */}
+        <SlidingPane
             className='sliding-pane'
             isOpen={detailsPane.isPaneOpen}
             title={alumnosList[llave-1]?.nombre}
             width={window.innerWidth < 600 ? "100%" : "500px"}
-            onRequestClose={closePane}
-            >
+            onRequestClose={closePane}>
             <div className='admin-details__info'>
                 <div className='admin-details__box'>
                     <Form 

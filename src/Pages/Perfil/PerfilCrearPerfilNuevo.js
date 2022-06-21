@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Alert, Button, Tab, Tabs } from 'react-bootstrap';
+import { useEffect, useState } from "react";
+import { Alert, Button, Card, ListGroup, ListGroupItem, Modal, Tab, Tabs } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import axios from '../../axios/axios';
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -8,6 +8,7 @@ import { DatePicker } from "@material-ui/pickers";
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { es } from 'date-fns/locale'
 import "./perfil.css";
+const GET_GRUPOS_URL = '/profiles/getgrupos';
 const CREAR_TUT_URL = '/profiles/newtutor';
 const CREAR_ADMIN_URL = '/profiles/newadmin';
 
@@ -25,11 +26,25 @@ function CreatePerfil() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [confirmPasswordTutor, setConfirmPasswordTutor] = useState("");
     const [fechanac, setFechaNac] = useState();
+    const [grupo, setGrupo] = useState("");
+    const [grupoSelect, setGrupoSelect] = useState(0);
+    const [gruposList, setGruposList] = useState([]);
     const [semestre, setSemestre] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
+    const [showModalGrupos, setShowModalGrupos] = useState(false);
     const [showA, setShowA] = useState(false);
     
+    useEffect(() => {
+      getGruposList();
+    }, []);
+
+    const getGruposList = async () => {
+      axios.get(GET_GRUPOS_URL).then((response) => {
+        setGruposList(response.data);
+      })
+    }
+
     const handleFechaNueva = (date) => {
       setFechaNac(date)
       console.log(date)
@@ -97,7 +112,8 @@ function CreatePerfil() {
             apellidoalu: apellidoAlumno,
             nacimiento: fechanac,
             schoolmester: semestre,
-            foto: pic
+            foto: pic,
+            grupo: grupoSelect
           })
           if(response.status === 200){
             setShowA(true)
@@ -112,6 +128,8 @@ function CreatePerfil() {
             setFechaNac()
             setSemestre("")
             setPic()
+            setGrupoSelect(0)
+            setGrupo("")
           }
         }catch(error){
           setShowA(true)
@@ -249,6 +267,18 @@ function CreatePerfil() {
                             onChange={handleFechaNueva}/>
                     </MuiPickersUtilsProvider>
                 </Form.Group>
+                <br/>
+                <Form.Group controlId="grupo">
+                    <Button
+                    className="btnBancoPreguntas"
+                    onClick={() => {setShowModalGrupos(true)}}>
+                      Grupos
+                    </Button>
+                    <br/>
+                    <Form.Label>Grupo asignado:</Form.Label>
+                    <br/>
+                    <h3>{grupo}</h3>
+                </Form.Group>
                 <Form.Group controlId="semestre">
                     <Form.Label>Semestre Escolar</Form.Label>
                     <Form.Control
@@ -268,6 +298,42 @@ function CreatePerfil() {
                     <AiOutlineUserAdd/>
                 </Button>
           </Form>
+          {/*MODAL GRUPOS */}
+          <Modal
+          show={showModalGrupos}
+          onHide={() => {setShowModalGrupos(false)}}>
+            <Modal.Header
+            closeButton>
+              <Modal.Title><h3>Grupos</h3></Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Card className="text-center">
+                <Card.Body>
+                  {gruposList.map((grupo, index) => {
+                    return (
+                      <ListGroup>
+                        <ListGroupItem>
+                          <div key={index}>
+                            <h4>{grupo.nombre}</h4>
+                            <Button
+                            variant="success"
+                            onClick={() => {
+                              setGrupo(grupo.nombre)
+                              setGrupoSelect(grupo.idGrupo)
+                              setShowModalGrupos(false)
+                            }}>
+                              Seleccionar
+                            </Button>
+                          </div>
+                        </ListGroupItem>
+                      </ListGroup>
+                    )
+                  }
+                  )}
+                </Card.Body>
+              </Card>
+            </Modal.Body>
+          </Modal>
       </Tab>
       <Tab 
             eventKey="admin" 

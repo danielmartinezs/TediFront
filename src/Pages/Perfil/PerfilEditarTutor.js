@@ -19,11 +19,6 @@ const EDIT_ALUMNO_URL = 'profiles/editaalumno'
 const DELETE_TUTOR_URL = 'profiles/borratutor'
 
 function PerfilEditarTutor() {
-    const [btnValue, setBtnValue] = useState(0);
-    const botones = [
-        { name: 'Modificar Tutor', value: '1' },
-        { name: 'Modificar Alumno', value: '2' },
-    ];
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [showA, setShowA] = useState(false);
@@ -32,11 +27,6 @@ function PerfilEditarTutor() {
     const [tutoresSearch, setTutoresSearch] = useState([]);
     const [busqueda, setBusqueda] = useState("")
     const [nombre, setNombre] = useState("");
-    const [apellido, setApellido] = useState("");
-    const [fechanac, setFechaNac] = useState();
-    const [semestre, setSemestre] = useState("");
-    const [foto, setFoto] = useState();
-    const [fotoPreview, setFotoPreview] = useState();
     const [llave, setLlave] = useState(0);
     const [contrasenia, setContrasenia] = useState("");
     const [confpassword, setConfPassword] = useState("");
@@ -51,7 +41,6 @@ function PerfilEditarTutor() {
             setTutoresList(response.data)
             setTutoresSearch(response.data)
         })
-        setFechaNac(tutoresList[llave-1]?.fechaNacimiento)
     }
 
     const openPane = (values) => {
@@ -66,9 +55,6 @@ function PerfilEditarTutor() {
         setNombre("");
         setContrasenia("");
         setConfPassword("");
-        setApellido("");
-        setFechaNac("");
-        setSemestre("");
     }
 
     const handleSubmitEditTutor = async (e) => {
@@ -240,7 +226,9 @@ function PerfilEditarTutor() {
                             </Button>
                         </Form>
                     </div>
-                    <button className='button-delete'>
+                    <button 
+                    className='button-delete'
+                    onClick={() => {setShowModalBorrar(true)}}>
                         Borrar  <AiOutlineDelete size='2em' />
                     </button>
                 </div>
