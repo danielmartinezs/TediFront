@@ -1,9 +1,11 @@
 import pdfMake from 'pdfmake/build/pdfmake'
 import pdfFonts from 'pdfmake/build/vfs_fonts'
+import axios from 'axios';
+const SUBIR_REPORTE = 'reportes/uploadreporte'
 
 function PdfCreator() {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
+    const filename = 'reporte.pdf';
     const reportTitle = [
         {
             text: "HELLO CLIENT WORLD",
@@ -23,7 +25,8 @@ function PdfCreator() {
         footer: [firma]
     };
 
-    pdfMake.createPdf(docDefinition).download();
+    const pdf = pdfMake.createPdf(docDefinition);    
+    pdf.download(filename);
 }
 
 export default PdfCreator

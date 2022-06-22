@@ -14,6 +14,7 @@ import ReportesAdmin from './Pages/Reportes/ReportesAdmin'
 import ReportesAlumAdmin from './Pages/Reportes/ReportesAlumAdmin.js'
 import ReportesEdicionAdmin from './Pages/Reportes/ReportesEdicionAdmin'
 import ReportesNuevoAdmin from './Pages/Reportes/ReportesNuevoAdmin'
+import ReportesNuevoRegistroAdmin from './Pages/Reportes/ReportesNuevoRegistroAdmin';
 import ProgresoAdmin from './Pages/Progreso/ProgresoAdmin'
 import ProgresoAlumAdmin from './Pages/Progreso/ProgresoAlumAdmin'
 import ProgresoGrupoAdmin from './Pages/Progreso/ProgresoGrupoAdmin'
@@ -53,6 +54,7 @@ function App() {
                   <Route exact path="/ReportesAlumAdmin" element={<PrivateRoute roles ={["admin"]}><ReportesAlumAdmin/></PrivateRoute>}/>
                   <Route exact path="/ReportesEdicionAdmin" element={<PrivateRoute roles ={["admin"]}><ReportesEdicionAdmin/></PrivateRoute>}/>
                   <Route exact path="/ReportesNuevoAdmin" element={<PrivateRoute roles = {["admin"]}><ReportesNuevoAdmin/></PrivateRoute>}/>
+                  <Route exact path="/ReportesNuevoRegistroAdmin/:timestamp/:idAlumno" element={<PrivateRoute roles = {["admin"]}><ReportesNuevoRegistroAdmin/></PrivateRoute>}/>
 
                   <Route exact path="/ProgresoAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoAdmin/></PrivateRoute>}/>
                   <Route exact path="/ProgresoAlumAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoAlumAdmin/></PrivateRoute>}/>

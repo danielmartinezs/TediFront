@@ -459,11 +459,13 @@ function Respuesta () {
           onClick={() => {setShowMEdit(true)}}>
             Editar Respuestas
           </Button>
-          <Button
-          className='buttonq'
-          onClick={handleGenerarReporte}>
-            Generar reporte
-          </Button>
+          <Link to={`/ReportesNuevoRegistroAdmin/${tiempoRegistro}/${idAlumno}`}>
+            <Button
+            size='lg'
+            className='buttonq'>
+                Generar reporte
+            </Button>
+          </Link>
           <Link to={'/Alumnos'}>
             <Button 
             size='lg' 
