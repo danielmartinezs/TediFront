@@ -171,7 +171,6 @@ function ReportesNuevoRegistroAdmin() {
                     <Modal.Title>Respuestas</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {console.log(respuestasList)}
                     {respuestasList.map((respuesta, index) => {
                         return (
                             <div key={index}>
@@ -181,7 +180,7 @@ function ReportesNuevoRegistroAdmin() {
                                         <h5>Opciones:</h5>
                                         {respuesta.opciones?.opciones.map((opcion, index) => {
                                             return (
-                                                <div key={index}>
+                                                <div key={index} className='text-center'>
                                                     <ListGroup>
                                                         <ListGroupItem>
                                                         <h5>{opcion.respuesta}</h5>
@@ -190,7 +189,9 @@ function ReportesNuevoRegistroAdmin() {
                                                 </div>
                                             )
                                         })}
-                                    {/*     <Button
+                                        <h5>Respuesta elegida: {respuesta.value}</h5>
+                                        <Button
+                                        className='btnCrearP'
                                         variant='success'
                                         onClick={() => {
                                             setIdEditar(index)
@@ -198,7 +199,6 @@ function ReportesNuevoRegistroAdmin() {
                                         }}>
                                             <AiOutlineEdit/>
                                         </Button>
-                                    </div> */}
                                     </ListGroupItem>
                                 </ListGroup>
                             </div>
