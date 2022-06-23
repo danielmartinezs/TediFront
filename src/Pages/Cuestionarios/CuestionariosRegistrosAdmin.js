@@ -7,6 +7,7 @@ import axios from '../../axios/axios';
 import "./cuestionarios.css"
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
+const GET_RESPUESTAS_JSON_URL = "/questionnaires/getanswersformatted"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 const WHERE_LINK_ANSWER_URL = '/questionnaires/whereanswerlink'
@@ -31,6 +32,7 @@ function CuestionariosRegistrosAdmin() {
     const [preguntasEnUso, setPreguntasEnUso] = useState([]);
     const [respuestasEnUso, setRespuestasEnUso] = useState([]);
     const [respuestasEdit, setRespuestasEdit] = useState([]);
+    const [respuestasJson, setRespuestasJson] = useState([]);
     const [respuestaEditAdd, setRespuestaEditAdd] = useState();
     const [preguntaVincula, setPreguntaVincula] = useState();
     const [respuestaVincula, setRespuestaVincula] = useState();
@@ -112,6 +114,12 @@ function CuestionariosRegistrosAdmin() {
     const getRespuestas = () => {
         axios.get(GET_RESPUESTAS_URL).then((response) => {
             setRespuestasList(response.data)
+        })
+    }
+
+    const getRespuestasJSON = (id) => {
+        axios.get(GET_RESPUESTAS_JSON_URL).then((response) => {
+            setRespuestasJson(response.data)
         })
     }
 
@@ -498,6 +506,7 @@ function CuestionariosRegistrosAdmin() {
                                             onClick={() => {
                                                 setPreguntaVincula(question.idPregunta)
                                                 checkLinkQ(question.idPregunta)
+                                                getRespuestasJSON(question.idPregunta)
                                                 setShowModalLinkOptsQ(true)}}>
                                             <AiOutlineLink />
                                             </Button>
@@ -1132,20 +1141,34 @@ function CuestionariosRegistrosAdmin() {
                         </Card.Header>
                         <Card.Body>
                         <div>
-                            {respuestasList.map((respuesta) => {
+                            {console.log(respuestasJson)}
+                            {respuestasJson.map((respuesta) => {
                                 return(
-                                    <div key={respuesta.id}>
+                                    <div key={respuesta.idRespuesta}>
                                         <ListGroup>
                                             <ListGroupItem>
                                                 <div className='vincularPregunta'>
                                                     <div className='vincularPreguntaTexto'>
-                                                        {respuesta.id}. {respuesta.opciones}
+                                                        Respuesta #{respuesta.idRespuesta}
+                                                        {respuesta.opciones?.opciones.map((opcion, index) => {
+                                                            return(
+                                                                <div key={opcion.index}>
+                                                                    <ListGroup>
+                                                                        <ListGroupItem>
+                                                                            <div className='text-center'>
+                                                                                {opcion.respuesta}
+                                                                            </div>
+                                                                        </ListGroupItem>
+                                                                    </ListGroup>
+                                                                </div>
+                                                            )}
+                                                        )}
                                                     </div>
                                                     <div className='vincularPreguntaBotones'>
                                                         <Button
                                                         variant='success'
                                                         onClick={() => {
-                                                            setRespuestaVincula(respuesta.id)
+                                                            setRespuestaVincula(respuesta.idRespuesta)
                                                             setShowModalVinculaQues(false)}}>
                                                             Vincular
                                                             <AiOutlineLink/>

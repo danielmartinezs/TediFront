@@ -27,15 +27,33 @@ function ReportesNuevoRegistroAdmin() {
 
     useEffect(() => {
         getDatos();
-        getQuestionnairesDetails();
+        //getQuestionnairesDetails();
     }, [])
 
     const getQuestionnairesDetails = () => {
         axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+selectedQuestionnaire).then((response) => {
             console.log(response.data);
-            setPreguntasList(response.data)
+            relacionarKeys(response.data)
         })
     }
+
+    const relacionarKeys = (data) => {
+        let datos = respuestasList;
+        for(let i = 0; i < respuestasList.length; i++){
+            let key = respuestasList[i].id;
+            console.log(i+"-"+key);
+            for(let j = 0; j < data.length; j++){
+                if(data[j].idPregunta === key){
+                    console.log("match")
+                    datos[i].pregunta = data[j].pregunta;
+                    datos[i].opciones = JSON.parse(data[j].opciones);
+                }
+            }
+        }
+        console.log(datos);
+        setRespuestasList(datos);
+        setShowMQA(true);
+    } 
 
     const getDatos = () => {
         axios.get(DATOS_REPORTE_URL+"/"+timestamp).then((response) => {
@@ -83,14 +101,14 @@ function ReportesNuevoRegistroAdmin() {
                                 <ListGroupItem>
                                     <Button
                                     className='btnEditarRespuesta'
-                                    onClick={() => {setShowMQA(true)}}>
+                                    onClick={getQuestionnairesDetails}>
                                         Visualizar respuestas del alumno
                                     </Button>
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <Button
                                     className='btnEditarRespuesta'
-                                    onClick={getQuestionnairesDetails}>
+                                    onClick={() => {setShowMC(true)}}>
                                         Visualizar comentarios hechos por el maestro
                                     </Button>
                                 </ListGroupItem>
@@ -153,23 +171,36 @@ function ReportesNuevoRegistroAdmin() {
                     <Modal.Title>Respuestas</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {console.log(preguntasList)}
+                    {console.log(respuestasList)}
                     {respuestasList.map((respuesta, index) => {
                         return (
-                            <div key={index} className='services'>
-                                <div className='first-division'>
-                                    <h5>{index+1}. {respuesta.value}</h5>
-                                </div>
-                                <div className='third-division'>
-                                    <Button
-                                    variant='success'
-                                    onClick={() => {
-                                        setIdEditar(index)
-                                        setShowMQA(false)
-                                    }}>
-                                        <AiOutlineEdit/>
-                                    </Button>
-                                </div>
+                            <div key={index}>
+                                <ListGroup>
+                                    <ListGroupItem>
+                                        <h5>{index+1}. {respuesta.pregunta}</h5>
+                                        <h5>Opciones:</h5>
+                                        {respuesta.opciones?.opciones.map((opcion, index) => {
+                                            return (
+                                                <div key={index}>
+                                                    <ListGroup>
+                                                        <ListGroupItem>
+                                                        <h5>{opcion.respuesta}</h5>
+                                                        </ListGroupItem>
+                                                    </ListGroup>
+                                                </div>
+                                            )
+                                        })}
+                                    {/*     <Button
+                                        variant='success'
+                                        onClick={() => {
+                                            setIdEditar(index)
+                                            setShowMQA(false)
+                                        }}>
+                                            <AiOutlineEdit/>
+                                        </Button>
+                                    </div> */}
+                                    </ListGroupItem>
+                                </ListGroup>
                             </div>
                         )
                     })}
