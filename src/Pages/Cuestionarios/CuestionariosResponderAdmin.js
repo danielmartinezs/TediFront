@@ -5,7 +5,7 @@ import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, 
 import {  AiOutlineEdit, AiOutlineSend, AiTwotoneStar } from 'react-icons/ai';
 import "./cuestionarios.css";
 import axios from '../../axios/axios'
-const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
+const GET_QUESTIONNAIRE_INFO_URL = '/questionnaires/getquestionnaireinfo'
 const UPLOAD_QUESTIONNAIRES_URL = '/questionnaires/uploadquestionnaire'
 const EDIT_QUESTIONNAIRES_URL = '/questionnaires/edituploadedquestionnaire'
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
@@ -53,11 +53,11 @@ function Respuesta () {
     }, [])
 
     useEffect (() => {
-       getQuestionnairesDetails()
+       getQuestionnaireInfo()
     }, [selectedQuestionnaire])
 
-    const getQuestionnairesDetails = () => {
-        axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+selectedQuestionnaire).then((response) => {
+    const getQuestionnaireInfo = () => {
+        axios.get(GET_QUESTIONNAIRE_INFO_URL+"/"+selectedQuestionnaire).then((response) => {
             setPreguntasList(response.data)
         })
     }
@@ -459,7 +459,7 @@ function Respuesta () {
           onClick={() => {setShowMEdit(true)}}>
             Editar Respuestas
           </Button>
-          <Link to={`/ReportesNuevoRegistroAdmin/${tiempoRegistro}/${idAlumno}`}>
+          <Link to={`/ReportesNuevoRegistroAdmin/${tiempoRegistro}`}>
             <Button
             size='lg'
             className='buttonq'>

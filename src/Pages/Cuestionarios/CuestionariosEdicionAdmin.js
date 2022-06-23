@@ -6,7 +6,7 @@ import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineQuestionCircle,
 import { BiMessageAltAdd } from 'react-icons/bi'
 import SlidingPane from 'react-sliding-pane';
 import axios from '../../axios/axios';
-const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairesdetails'
+const GET_QUESTIONNAIRE_INFO_URL = '/questionnaires/getquestionnaireinfo'
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'
 const EDIT_NOMBRE_CUESTIONARIO_URL = '/questionnaires/editquestionairename'
@@ -76,15 +76,15 @@ function CuestionariosEdicionAdmin() {
     const navigate = useNavigate();
 
     useEffect (() => {
-        getQuestionnaireDetails()
+        getQuestionnaireInfo()
     }, [])
 
     useEffect (() => {
-        getQuestionnaireDetails()
+        getQuestionnaireInfo()
     }, [showA])
 
-    const getQuestionnaireDetails = () => {
-        axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+idCuestionario).then((response) => {
+    const getQuestionnaireInfo = () => {
+        axios.get(GET_QUESTIONNAIRE_INFO_URL+"/"+idCuestionario).then((response) => {
             setCuestionariosInfo(response.data)
             setNombreC(response.data[0].nombre)
             setMateriaC(response.data[0].materia)

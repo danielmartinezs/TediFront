@@ -6,6 +6,7 @@ const SUBIR_REPORTE = 'reportes/uploadreporte'
 function PdfCreator() {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const filename = 'reporte.pdf';
+    const timestamp = new Date().getTime();
     const reportTitle = [
         {
             text: "HELLO CLIENT WORLD",
@@ -25,7 +26,21 @@ function PdfCreator() {
         footer: [firma]
     };
 
-    const pdf = pdfMake.createPdf(docDefinition);    
+    const subirReporte = async () => {
+        try{
+            const response = await axios.post(SUBIR_REPORTE, {
+                nombre: filename,
+                fc: timestamp,
+                fm: timestamp
+            })
+            console.log(response);
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
+    const pdf = pdfMake.createPdf(docDefinition);  
+    subirReporte();
     pdf.download(filename);
 }
 
