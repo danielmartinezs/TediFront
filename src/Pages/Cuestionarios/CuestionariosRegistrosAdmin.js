@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, Offcanvas, Table } from 'react-bootstrap';
+import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, Offcanvas, OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
 import { AiOutlineCheck, AiOutlineClose, AiOutlineDelete, AiOutlineEdit, AiOutlineLink, AiOutlineRollback, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
 import { BiMessageAltAdd } from 'react-icons/bi'
 import axios from '../../axios/axios';
@@ -72,6 +72,7 @@ function CuestionariosRegistrosAdmin() {
         getCuestionarios()
         getPreguntas()
         getRespuestas()
+        getRespuestasJSON()
         getQuestionsUsed()
         getAnswersUsed()
     }, [])
@@ -117,7 +118,7 @@ function CuestionariosRegistrosAdmin() {
         })
     }
 
-    const getRespuestasJSON = (id) => {
+    const getRespuestasJSON = () => {
         axios.get(GET_RESPUESTAS_JSON_URL).then((response) => {
             setRespuestasJson(response.data)
         })
@@ -506,7 +507,6 @@ function CuestionariosRegistrosAdmin() {
                                             onClick={() => {
                                                 setPreguntaVincula(question.idPregunta)
                                                 checkLinkQ(question.idPregunta)
-                                                getRespuestasJSON(question.idPregunta)
                                                 setShowModalLinkOptsQ(true)}}>
                                             <AiOutlineLink />
                                             </Button>
@@ -548,7 +548,9 @@ function CuestionariosRegistrosAdmin() {
                                 return(
                                     <tr key={answer.id}>
                                         <td>{answer.id}</td>
-                                        <td>{answer.opciones}</td>
+                                        <td>
+                                            {answer.opciones}
+                                        </td>
                                         <td><Button
                                             variant="outline-success"
                                             onClick={() => {
@@ -1141,7 +1143,6 @@ function CuestionariosRegistrosAdmin() {
                         </Card.Header>
                         <Card.Body>
                         <div>
-                            {console.log(respuestasJson)}
                             {respuestasJson.map((respuesta) => {
                                 return(
                                     <div key={respuesta.idRespuesta}>
