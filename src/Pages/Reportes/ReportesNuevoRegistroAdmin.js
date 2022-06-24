@@ -14,6 +14,7 @@ function ReportesNuevoRegistroAdmin() {
     const [datos, setDatos] = useState();
     const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(0);
     const [idEditar, setIdEditar] = useState(0);
+    const [nombreArchivo, setNombreArchivo] = useState("");
     const [preguntaEdit, setPreguntaEdit] = useState('');
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
@@ -77,7 +78,7 @@ function ReportesNuevoRegistroAdmin() {
         setShowOffEditC(false)
         setShowA(true)
         setVariante('success')
-        setMsg("Pregunta editada")
+        setMsg("Comentario editado correctamente")
         setShowMC(false)
     }
 
@@ -103,8 +104,14 @@ function ReportesNuevoRegistroAdmin() {
                             Datos a imprimir
                         </Card.Header>
                         <Card.Body>
-                            {/* <h5>#Cuestionario: {datos[0].idCuestionario}</h5> */}
+                            <input
+                            value={nombreArchivo}
+                            onChange={(e) => setNombreArchivo(e.target.value)}
+                            placeholder='Nombre del archivo'/>
                             <ListGroup>
+                                <ListGroupItem>
+                                    <h5>Nombre del archivo: {nombreArchivo}</h5>
+                                </ListGroupItem>
                                 <ListGroupItem>
                                     <h5>Cuestionario: {datos[0].titulo}</h5>
                                 </ListGroupItem>
@@ -138,8 +145,6 @@ function ReportesNuevoRegistroAdmin() {
                                     <h5>Puntaje: {datos[0].puntaje}</h5>
                                 </ListGroupItem>
                             </ListGroup>
-                            <h5>{datos[0].respuestas}</h5>
-                            <h5>{datos[0].comentarios}</h5>
                         </Card.Body>
                     </Card>
                 </div>}
