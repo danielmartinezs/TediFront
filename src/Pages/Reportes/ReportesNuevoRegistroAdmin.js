@@ -140,14 +140,13 @@ function ReportesNuevoRegistroAdmin() {
                             </ListGroup>
                             <h5>{datos[0].respuestas}</h5>
                             <h5>{datos[0].comentarios}</h5>
-                            <h5>{datos[0].administrador}</h5>
                         </Card.Body>
                     </Card>
                 </div>}
             </div>
             <Button
             className='btnEditarRespuesta'
-            onClick={(e) => PdfCreator(datos)}>
+            onClick={(e) => PdfCreator(datos, administrador, respuestasList)}>
                 Crear Reporte
                 <AiOutlineFilePdf/>
             </Button>

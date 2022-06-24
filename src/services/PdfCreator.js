@@ -3,13 +3,16 @@ import pdfFonts from 'pdfmake/build/vfs_fonts'
 import axios from 'axios';
 const SUBIR_REPORTE = 'reportes/uploadreporte'
 
-function PdfCreator(datos) {
+function PdfCreator(datos, admin, qa) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    console.log(datos)
+    console.log(admin)
+    console.log(qa)
     const filename = 'reporte.pdf';
     const timestamp = new Date().getTime();
     const reportTitle = [
         {
-            text: "Reporte de Alumnos",
+            text: admin,
             fontSize: 15,
             bold: true,
             margin: [15, 20, 0, 45]
