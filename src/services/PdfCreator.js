@@ -3,12 +3,12 @@ import pdfFonts from 'pdfmake/build/vfs_fonts'
 import axios from 'axios';
 const SUBIR_REPORTE = 'reportes/uploadreporte'
 
-function PdfCreator(datos, admin, qa) {
+function PdfCreator(datos, admin, qa, nombrearchivo) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     console.log(datos)
     console.log(admin)
     console.log(qa)
-    const filename = 'reporte.pdf';
+    const filename = nombrearchivo;
     const timestamp = new Date().getTime();
     const reportTitle = [
         {

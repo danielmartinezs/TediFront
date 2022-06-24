@@ -119,7 +119,7 @@ function ReportesNuevoRegistroAdmin() {
                                     <h5>Materia: {datos[0].materia}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    <h5>Administrador: {administrador}</h5>
+                                    <h5>Evaluador: {administrador}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <h5>Fecha: {format(parseISO(datos[0].fecha), 'PPPPp', { locale: es })}</h5>
@@ -151,7 +151,7 @@ function ReportesNuevoRegistroAdmin() {
             </div>
             <Button
             className='btnEditarRespuesta'
-            onClick={(e) => PdfCreator(datos, administrador, respuestasList)}>
+            onClick={(e) => PdfCreator(datos, administrador, respuestasList, nombreArchivo)}>
                 Crear Reporte
                 <AiOutlineFilePdf/>
             </Button>
@@ -217,15 +217,6 @@ function ReportesNuevoRegistroAdmin() {
                                             )
                                         })}
                                         <h5>Respuesta elegida: {respuesta.value}</h5>
-                                        <Button
-                                        className='btnCrearP'
-                                        variant='success'
-                                        onClick={() => {
-                                            setIdEditar(index)
-                                            setShowMQA(false)
-                                        }}>
-                                            <AiOutlineEdit/>
-                                        </Button>
                                     </ListGroupItem>
                                 </ListGroup>
                             </div>
