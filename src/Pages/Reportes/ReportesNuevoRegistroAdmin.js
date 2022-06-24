@@ -1,5 +1,5 @@
 import React, { useEffect, useState }from 'react'
-import { Accordion, Button, Card, Form, ListGroup, ListGroupItem, Modal, Offcanvas } from 'react-bootstrap'
+import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, Offcanvas } from 'react-bootstrap'
 import { useParams } from 'react-router-dom';
 import { AiOutlineEdit, AiOutlineFilePdf } from 'react-icons/ai'
 import axios from '../../axios/axios';
@@ -25,7 +25,7 @@ function ReportesNuevoRegistroAdmin() {
     const [showMQA, setShowMQA] = useState(false);
     const [showOffEditC, setShowOffEditC] = useState(false);
     const { timestamp } = useParams();
-    var idCuestionario = localStorage.getItem('id');
+    var idAdmin = localStorage.getItem('id');
 
     useEffect(() => {
         getDatos();
@@ -40,7 +40,7 @@ function ReportesNuevoRegistroAdmin() {
     }
 
     const getAdministrador = () => {
-        axios.get(GET_ADMINISTRADOR_URL+"/"+idCuestionario).then((response) => {
+        axios.get(GET_ADMINISTRADOR_URL+"/"+idAdmin).then((response) => {
             setAdministrador(response.data[0].usuario)
         })
     }
@@ -84,6 +84,17 @@ function ReportesNuevoRegistroAdmin() {
     return (
         <div>
             <div className='text-center'>
+                <div className='alertas'>
+                    <Alert 
+                    show={showA}
+                    variant={variante}
+                    onClose={() => setShowA(false)}
+                    dismissible>
+                    <Alert.Heading>
+                        {msg}
+                    </Alert.Heading>
+                    </Alert>
+                </div>
                 <h1>Creación de Reportes</h1>
                 {datos && 
                 <div>
