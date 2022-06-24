@@ -6,6 +6,7 @@ import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import { AiOutlineSearch } from 'react-icons/ai';
 import axios from '../../axios/axios';
 import Form from 'react-bootstrap/Form';
+import ReactPaginate from 'react-paginate';
 import "./alumnos.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const INGRESA_HITO_URL = '/profiles/newhito';
@@ -18,8 +19,13 @@ function Alumnos() {
     const [descripcion, setDescripcion] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
+    const [pageNumber, setPageNumber] = useState(0);
     const [showA, setShowA] = useState(false);
     const [showM, setShowM] = useState(false);
+    const alumnosPerPage = 4;
+    const pageVisisted = pageNumber * alumnosPerPage;
+    const pageCount = Math.ceil(alumnosList.length / alumnosPerPage);
+    const displayAlumnos = alumnosList.slice(pageVisisted, pageVisisted + alumnosPerPage);
 
     useEffect (() => {
         getAlumnos()
@@ -89,6 +95,10 @@ function Alumnos() {
         filtrar(e.target.value);
     }
 
+    const onPageChange = ({ selected }) => {
+        setPageNumber(selected);
+    }
+
     return (
         <div className='text-center'>
             <h1>Alumnos</h1>
@@ -116,6 +126,17 @@ function Alumnos() {
                     <AiOutlineSearch/>
                 </button>
             </div>
+            {console.log(displayAlumnos)}
+            <ReactPaginate
+            previousLabel={'Anterior'}
+            nextLabel={'Siguiente'}
+            pageCount={pageCount}
+            onPageChange={onPageChange}
+            containerClassName={"paginationBtns"}
+            previousLinkClassName={"previousBtns"}
+            nextLinkClassName={"nextBtn"}
+            disabledClassName={"paginationDisabled"}
+            activeClassName={"paginationActive"}/>
             <Modal 
             show={showM}
             onHide={() => setShowM(false)}
@@ -146,7 +167,7 @@ function Alumnos() {
                 </Modal.Footer>
             </Modal>
             </div>
-            {alumnSearch && alumnSearch.map(values => (
+            {displayAlumnos && displayAlumnos.map(values => (
                     <div className='admin' key={values.idAlumno}>
                         <div>
                             <Accordion flush>
