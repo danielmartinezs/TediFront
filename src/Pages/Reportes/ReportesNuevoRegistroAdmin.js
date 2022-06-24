@@ -7,6 +7,7 @@ import PdfCreator from '../../services/PdfCreator'
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairedetails'
+const GET_ADMINISTRADOR_URL = '/profiles/getadmin'
 const DATOS_REPORTE_URL = 'reportes/getdatosreporte';
 
 function ReportesNuevoRegistroAdmin() {
@@ -16,7 +17,7 @@ function ReportesNuevoRegistroAdmin() {
     const [preguntaEdit, setPreguntaEdit] = useState('');
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
-    const [preguntasList, setPreguntasList] = useState([]);
+    const [administrador, setAdministrador] = useState('');
     const [respuestasList, setRespuestasList] = useState([]);
     const [comentariosList, setComentariosList] = useState([]);
     const [showA, setShowA] = useState(false);
@@ -24,16 +25,23 @@ function ReportesNuevoRegistroAdmin() {
     const [showMQA, setShowMQA] = useState(false);
     const [showOffEditC, setShowOffEditC] = useState(false);
     const { timestamp } = useParams();
+    var idCuestionario = localStorage.getItem('id');
 
     useEffect(() => {
         getDatos();
-        //getQuestionnairesDetails();
+        getAdministrador();
     }, [])
 
     const getQuestionnairesDetails = () => {
         axios.get(GET_QUESTIONNAIRES_DETAILS_URL+"/"+selectedQuestionnaire).then((response) => {
             console.log(response.data);
             relacionarKeys(response.data)
+        })
+    }
+
+    const getAdministrador = () => {
+        axios.get(GET_ADMINISTRADOR_URL+"/"+idCuestionario).then((response) => {
+            setAdministrador(response.data[0].usuario)
         })
     }
 
@@ -93,6 +101,9 @@ function ReportesNuevoRegistroAdmin() {
                                     <h5>Materia: {datos[0].materia}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
+                                    <h5>Administrador: {administrador}</h5>
+                                </ListGroupItem>
+                                <ListGroupItem>
                                     <h5>Fecha: {format(parseISO(datos[0].fecha), 'PPPPp', { locale: es })}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
@@ -118,13 +129,14 @@ function ReportesNuevoRegistroAdmin() {
                             </ListGroup>
                             <h5>{datos[0].respuestas}</h5>
                             <h5>{datos[0].comentarios}</h5>
+                            <h5>{datos[0].administrador}</h5>
                         </Card.Body>
                     </Card>
                 </div>}
             </div>
             <Button
             className='btnEditarRespuesta'
-            onClick={PdfCreator}>
+            onClick={(e) => PdfCreator(datos)}>
                 Crear Reporte
                 <AiOutlineFilePdf/>
             </Button>
