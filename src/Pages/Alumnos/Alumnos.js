@@ -14,7 +14,6 @@ const INGRESA_HITO_URL = '/profiles/newhito';
 function Alumnos() {
     const [alumnosList, setAlumnosList] = useState([]);
     const [alumnSelect, setAlumnSelect] = useState(0);
-    const [alumnSearch, setAlumnSearch] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     const [descripcion, setDescripcion] = useState("");
     const [msg, setMsg] = useState('');
@@ -22,10 +21,10 @@ function Alumnos() {
     const [pageNumber, setPageNumber] = useState(0);
     const [showA, setShowA] = useState(false);
     const [showM, setShowM] = useState(false);
-    const alumnosPerPage = 4;
+    const alumnosPerPage = 5;
     const pageVisisted = pageNumber * alumnosPerPage;
     const pageCount = Math.ceil(alumnosList.length / alumnosPerPage);
-    const displayAlumnos = alumnosList.slice(pageVisisted, pageVisisted + alumnosPerPage);
+    const [alumnosPag, setAlumnosPag] = useState([]);
 
     useEffect (() => {
         getAlumnos()
@@ -33,8 +32,8 @@ function Alumnos() {
 
     const getAlumnos = () => {
         axios.get(GET_ALUMNOS_URL).then((response) => {
-            setAlumnSearch(response.data)
             setAlumnosList(response.data)
+            setAlumnosPag((response.data).slice(pageVisisted, pageVisisted + alumnosPerPage));
         })
     }
 
@@ -75,10 +74,9 @@ function Alumnos() {
     }
 
     const filtrar = (terminoBusqueda) => {
-        console.log("El termino es "+terminoBusqueda)
         var resultadosBusqueda = alumnosList.filter( (elemento) => {
             if(terminoBusqueda === ""){
-                setAlumnSearch(alumnosList)
+                setAlumnosPag((alumnosList).slice(pageVisisted, pageVisisted + alumnosPerPage))
                 return elemento;
             }
             else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
@@ -86,7 +84,7 @@ function Alumnos() {
                 return elemento;
             }
         });
-        setAlumnSearch(resultadosBusqueda);
+        setAlumnosPag(resultadosBusqueda);
     }
 
     const handleBuscar = (e) => {
@@ -97,6 +95,7 @@ function Alumnos() {
 
     const onPageChange = ({ selected }) => {
         setPageNumber(selected);
+        setAlumnosPag((alumnosList).slice(selected * alumnosPerPage, selected * alumnosPerPage + alumnosPerPage));
     }
 
     return (
@@ -126,17 +125,6 @@ function Alumnos() {
                     <AiOutlineSearch/>
                 </button>
             </div>
-            {console.log(displayAlumnos)}
-            <ReactPaginate
-            previousLabel={'Anterior'}
-            nextLabel={'Siguiente'}
-            pageCount={pageCount}
-            onPageChange={onPageChange}
-            containerClassName={"paginationBtns"}
-            previousLinkClassName={"previousBtns"}
-            nextLinkClassName={"nextBtn"}
-            disabledClassName={"paginationDisabled"}
-            activeClassName={"paginationActive"}/>
             <Modal 
             show={showM}
             onHide={() => setShowM(false)}
@@ -167,7 +155,7 @@ function Alumnos() {
                 </Modal.Footer>
             </Modal>
             </div>
-            {displayAlumnos && displayAlumnos.map(values => (
+            {alumnosPag && alumnosPag.map(values => (
                     <div className='admin' key={values.idAlumno}>
                         <div>
                             <Accordion flush>
@@ -188,6 +176,19 @@ function Alumnos() {
                     </div>
                 )
             )}
+            <br/>
+            {busqueda === "" &&
+            <ReactPaginate
+            previousLabel={'Anterior'}
+            nextLabel={'Siguiente'}
+            pageCount={pageCount}
+            onPageChange={onPageChange}
+            containerClassName={"paginationBtns"}
+            previousLinkClassName={"previousBtns"}
+            nextLinkClassName={"nextBtn"}
+            disabledClassName={"paginationDisabled"}
+            activeClassName={"paginationActive"}/>
+            }
         </div>
     )
 }
