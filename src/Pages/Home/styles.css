@@ -29,9 +29,10 @@
     padding: 10px;
     width: auto;
     margin: 8px;
-    border: 1px solid #2b2eff;
+    border: 2px solid #2b2eff;
     border-radius: 5px;
     color: blue;
+    background-color: aliceblue;
     text-decoration: none;
     cursor: pointer;
   }

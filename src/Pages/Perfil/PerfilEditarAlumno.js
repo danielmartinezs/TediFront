@@ -4,6 +4,7 @@ import { AiOutlineEdit, AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai'
 import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from '../../axios/axios';
+import ReactPaginate from 'react-paginate';
 import Form from 'react-bootstrap/Form';
 import { format } from 'date-fns';
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -24,6 +25,7 @@ function PerfilEditarAlumno() {
     const [showModalGrupos, setShowModalGrupos] = useState(false);
     const [alumnosList, setAlumnosList] = useState([]);
     const [alumnosSearch, setAlumnosSearch] = useState([]);
+    const [gruposList, setGruposList] = useState([]);
     const [busqueda, setBusqueda] = useState("")
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
@@ -33,9 +35,13 @@ function PerfilEditarAlumno() {
     const [fotoPreview, setFotoPreview] = useState();
     const [grupo, setGrupo] = useState("");
     const [grupoSelect, setGrupoSelect] = useState(0);
-    const [gruposList, setGruposList] = useState([]);
+    const [pageNumber, setPageNumber] = useState(0);
     const [llave, setLlave] = useState(0);
     const [detailsPane, setDetailsPane] = useState({isPaneOpen: false});
+    const alumnosPerPage = 9;
+    const pageVisisted = pageNumber * alumnosPerPage;
+    const pageCount = Math.ceil(alumnosList.length / alumnosPerPage);
+    const [alumnosPag, setAlumnosPag] = useState([]);
 
     useEffect(() => {
         getGruposList();
@@ -48,7 +54,7 @@ function PerfilEditarAlumno() {
     const getAlumnos = () => {
         axios.get(GET_ALUMNOS_URL).then((response) => {
             setAlumnosList(response.data)
-            setAlumnosSearch(response.data)
+            setAlumnosPag((response.data).slice(pageVisisted, pageVisisted + alumnosPerPage))
         })
         setFechaNac(alumnosList[llave-1]?.fechaNacimiento)
         setGrupo(alumnosList[llave-1]?.nombregrupo)
@@ -131,7 +137,7 @@ function PerfilEditarAlumno() {
         console.log("El termino es "+terminoBusqueda)
         var resultadosBusqueda = alumnosList.filter( (elemento) => {
             if(terminoBusqueda === ""){
-                setAlumnosSearch(alumnosList)
+                setAlumnosPag((alumnosList).slice(pageVisisted, pageVisisted + alumnosPerPage))
                 return elemento;
             }
             else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
@@ -139,13 +145,18 @@ function PerfilEditarAlumno() {
                 return elemento;
             }
         });
-        setAlumnosSearch(resultadosBusqueda);
+        setAlumnosPag(resultadosBusqueda);
     }
 
     const handleBuscar = (e) => {
         e.preventDefault()
         setBusqueda(e.target.value);
         filtrar(e.target.value);
+    }
+
+    const onPageChange = ({ selected }) => {
+        setPageNumber(selected);
+        setAlumnosPag((alumnosList).slice(selected * alumnosPerPage, selected * alumnosPerPage + alumnosPerPage));
     }
 
     return (
@@ -178,7 +189,7 @@ function PerfilEditarAlumno() {
             <div>
             <Container className='d-flow-root justify-content-center align-items-center'>
                 <Row>
-                    {alumnosSearch && alumnosSearch.map(values => (
+                    {alumnosPag && alumnosPag.map(values => (
                         <div 
                         className="col-md-4 col-sm-12"
                         key={values.idAlumno}>
@@ -206,6 +217,19 @@ function PerfilEditarAlumno() {
                 </Row>
             </Container>
             </div>
+            <br/>
+            {busqueda === "" &&
+            <ReactPaginate
+            previousLabel={'Anterior'}
+            nextLabel={'Siguiente'}
+            pageCount={pageCount}
+            onPageChange={onPageChange}
+            containerClassName={"paginationBtns"}
+            previousLinkClassName={"previousBtns"}
+            nextLinkClassName={"nextBtn"}
+            disabledClassName={"paginationDisabled"}
+            activeClassName={"paginationActive"}/>
+            }
         {/*SLIDING PANE EDICIÓN ALUMNO */}
         <SlidingPane
             className='sliding-pane'

@@ -14,11 +14,11 @@ const INGRESA_HITO_URL = '/profiles/newhito';
 function Alumnos() {
     const [alumnosList, setAlumnosList] = useState([]);
     const [alumnSelect, setAlumnSelect] = useState(0);
+    const [pageNumber, setPageNumber] = useState(0);
     const [busqueda, setBusqueda] = useState("");
     const [descripcion, setDescripcion] = useState("");
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
-    const [pageNumber, setPageNumber] = useState(0);
     const [showA, setShowA] = useState(false);
     const [showM, setShowM] = useState(false);
     const alumnosPerPage = 5;
@@ -161,15 +161,15 @@ function Alumnos() {
                             <Accordion flush>
                                 <AccordionHeader>{values.nombre}</AccordionHeader>
                                     <AccordionBody>
-                                    <ButtonGroup>
-                                        <Button className="btnBancoPreguntas" onClick={() => handleNewHito(values.idAlumno)}>Reportar Hito</Button>
-                                        <Link to={`/CuestionariosResponderAdmin/${values.idAlumno}`}>
-                                            <Button className="btnBancoPreguntas" >Contestar cuestionario</Button>
-                                        </Link>
-                                        <Link to={`/PerfilEditarAlumno`}>
-                                            <Button className="btnBancoPreguntas" >Editar información</Button>
-                                        </Link>
-                                    </ButtonGroup>
+                                        <ButtonGroup>
+                                            <Button className="btnBancoPreguntas" onClick={() => handleNewHito(values.idAlumno)}>Reportar Hito</Button>
+                                            <Link to={`/CuestionariosResponderAdmin/${values.idAlumno}`}>
+                                                <Button className="btnBancoPreguntas" >Contestar cuestionario</Button>
+                                            </Link>
+                                            <Link to={`/PerfilEditarAlumno`}>
+                                                <Button className="btnBancoPreguntas" >Editar información</Button>
+                                            </Link>
+                                        </ButtonGroup>
                                     </AccordionBody>
                             </Accordion>
                         </div>
