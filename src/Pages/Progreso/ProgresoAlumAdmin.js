@@ -4,6 +4,7 @@ import { Accordion, Alert, Button, Form, ListGroup, ListGroupItem, Modal, ModalB
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import axios from '../../axios/axios';
+import ReactPaginate from 'react-paginate';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
 import { format, parseISO } from 'date-fns';
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -21,7 +22,7 @@ function ProgresoAlumAdmin() {
 
     const [alumnSelect, setAlumnSelect] = useState(0);
     const [alumnosList, setAlumnosList] = useState([]);
-    const [alumnSearch, setAlumnSearch] = useState([]);
+    const [alumnosPag, setAlumnosPag] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     const [hitosList, setHitosList] = useState([]);
     const [descripcion, setDescripcion] = useState("");
@@ -30,11 +31,15 @@ function ProgresoAlumAdmin() {
     const [variante, setVariante] = useState('');
     const [llave, setLlave] = useState(0);
     const [index, setIndex] = useState(0);
+    const [pageNumber, setPageNumber] = useState(0);
     const [showMHito, setShowMHito] = useState(false)
     const [showMDelete, setShowMDelete] = useState(false);
     const [showOffNew, setShowOffNew] = useState(false);
     const [showOffEdit, setShowOffEdit] = useState(false);
     const [showA, setShowA] = useState(false);
+    const alumnosPerPage = 5;
+    const pageVisisted = pageNumber * alumnosPerPage;
+    const pageCount = Math.ceil(alumnosList.length / alumnosPerPage);
 
     useEffect (() => {
         getAlumnos()
@@ -43,7 +48,7 @@ function ProgresoAlumAdmin() {
     const getAlumnos = () => {
         axios.get(GET_ALUMNOS_URL).then((response) => {
             setAlumnosList(response.data)
-            setAlumnSearch(response.data)
+            setAlumnosPag((response.data).slice(pageVisisted, pageVisisted + alumnosPerPage));
         })
     }
 
@@ -141,21 +146,31 @@ function ProgresoAlumAdmin() {
     const filtrar = (terminoBusqueda) => {
         var resultadosBusqueda = alumnosList.filter( (elemento) => {
             if(terminoBusqueda === ""){
-                setAlumnSearch(alumnosList)
-                return elemento;
+                return;
             }
             else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
             {
                 return elemento;
             }
         });
-        setAlumnSearch(resultadosBusqueda);
+        if(terminoBusqueda === ""){
+            console.log(pageVisisted)
+            setAlumnosPag((alumnosList).slice(0, 0 + alumnosPerPage))
+        }
+        else{
+            setAlumnosPag(resultadosBusqueda);
+        }
     }
 
     const handleBuscar = (e) => {
         e.preventDefault()
         setBusqueda(e.target.value);
         filtrar(e.target.value);
+    }
+
+    const onPageChange = ({ selected }) => {
+        setPageNumber(selected);
+        setAlumnosPag((alumnosList).slice(selected * alumnosPerPage, selected * alumnosPerPage + alumnosPerPage));
     }
 
     return (
@@ -184,7 +199,7 @@ function ProgresoAlumAdmin() {
                     <AiOutlineSearch/>
                 </button>
                 </div>
-            {alumnSearch && alumnSearch.map(values => (
+            {alumnosPag && alumnosPag.map(values => (
                     <div className='admin' key={values.idAlumno}>
                         <div>
                             <Accordion flush>
@@ -206,6 +221,18 @@ function ProgresoAlumAdmin() {
                     </div>
                 )
             )}
+            <br/>
+            {busqueda === "" &&
+            <ReactPaginate
+            previousLabel={'Anterior'}
+            nextLabel={'Siguiente'}
+            pageCount={pageCount}
+            onPageChange={onPageChange}
+            containerClassName={"paginationBtns"}
+            previousLinkClassName={"previousBtns"}
+            nextLinkClassName={"nextBtn"}
+            disabledClassName={"paginationDisabled"}
+            activeClassName={"paginationActive"}/>}
             {/*MODAL LISTA HITOS*/}
             <Modal 
             show={showMHito}

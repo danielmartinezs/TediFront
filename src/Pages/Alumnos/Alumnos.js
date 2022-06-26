@@ -100,7 +100,7 @@ function Alumnos() {
 
     return (
         <div className='text-center'>
-            <h1>Alumnos</h1>
+            <h1>Listado de Alumnos</h1>
             <div className='alertas'>
                 <Alert 
                 show={showA}
@@ -187,8 +187,7 @@ function Alumnos() {
             previousLinkClassName={"previousBtns"}
             nextLinkClassName={"nextBtn"}
             disabledClassName={"paginationDisabled"}
-            activeClassName={"paginationActive"}/>
-            }
+            activeClassName={"paginationActive"}/>}
         </div>
     )
 }

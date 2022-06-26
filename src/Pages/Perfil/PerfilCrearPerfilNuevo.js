@@ -128,6 +128,7 @@ function CreatePerfil() {
             setFechaNac()
             setSemestre("")
             setPic()
+            setPicPreview()
             setGrupoSelect(0)
             setGrupo("")
           }
