@@ -154,7 +154,6 @@ function ProgresoAlumAdmin() {
             }
         });
         if(terminoBusqueda === ""){
-            console.log(pageVisisted)
             setAlumnosPag((alumnosList).slice(0, 0 + alumnosPerPage))
         }
         else{

@@ -134,18 +134,21 @@ function PerfilEditarAlumno() {
     }
 
     const filtrar = (terminoBusqueda) => {
-        console.log("El termino es "+terminoBusqueda)
         var resultadosBusqueda = alumnosList.filter( (elemento) => {
             if(terminoBusqueda === ""){
-                setAlumnosPag((alumnosList).slice(pageVisisted, pageVisisted + alumnosPerPage))
-                return elemento;
+                return;
             }
             else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
             {
                 return elemento;
             }
         });
-        setAlumnosPag(resultadosBusqueda);
+        if(terminoBusqueda === ""){
+            setAlumnosPag((alumnosList).slice(0, 0 + alumnosPerPage))
+        }
+        else{
+            setAlumnosPag(resultadosBusqueda);
+        }
     }
 
     const handleBuscar = (e) => {
