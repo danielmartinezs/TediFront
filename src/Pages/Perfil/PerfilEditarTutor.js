@@ -1,21 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, Alert, Button, ButtonGroup, Card, Modal, ToggleButton } from 'react-bootstrap';
+import { Alert, Button, Card, Col, Container, Modal, Row } from 'react-bootstrap';
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai';
 import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from '../../axios/axios';
+import ReactPaginate from 'react-paginate';
 import Form from 'react-bootstrap/Form';
-import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
-import AccordionBody from 'react-bootstrap/esm/AccordionBody';
-import { format } from 'date-fns';
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from '@date-io/date-fns';
-import { DatePicker } from "@material-ui/pickers";
-import { es } from 'date-fns/locale'
 import "./perfil.css"
 const GET_TUTORES_URL = '/profiles/gettutores'
 const EDIT_TUTOR_URL = '/profiles/editatutor'
-const EDIT_ALUMNO_URL = 'profiles/editaalumno'
 const DELETE_TUTOR_URL = 'profiles/borratutor'
 
 function PerfilEditarTutor() {
@@ -28,10 +21,15 @@ function PerfilEditarTutor() {
     const [busqueda, setBusqueda] = useState("")
     const [nombre, setNombre] = useState("");
     const [llave, setLlave] = useState(0);
+    const [pageNumber, setPageNumber] = useState(0);
     const [contrasenia, setContrasenia] = useState("");
     const [confpassword, setConfPassword] = useState("");
     const [detailsPane, setDetailsPane] = useState({isPaneOpen: false});
-
+    const tutoresPerPage = 9;
+    const pageVisisted = pageNumber * tutoresPerPage;
+    const pageCount = Math.ceil(tutoresList.length / tutoresPerPage);
+    const [tutoresPag, setTutoresPag] = useState([]);
+    
     useEffect (() => {
         getTutores()
     }, [detailsPane])
@@ -39,7 +37,7 @@ function PerfilEditarTutor() {
     const getTutores = () => {
         axios.get(GET_TUTORES_URL).then((response) => {
             setTutoresList(response.data)
-            setTutoresSearch(response.data)
+            setTutoresPag((response.data).slice(pageVisisted, pageVisisted + tutoresPerPage))
         })
     }
 
@@ -74,6 +72,7 @@ function PerfilEditarTutor() {
               setNombre("")
               setContrasenia("")
               setConfPassword("")
+              setDetailsPane({isPaneOpen: false});
           }
         }catch(error){
           setShowA(true)
@@ -126,6 +125,11 @@ function PerfilEditarTutor() {
         filtrar(e.target.value);
     }
 
+    const onPageChange = ({ selected }) => {
+        setPageNumber(selected);
+        setTutoresPag((tutoresList).slice(selected * tutoresPerPage, selected * tutoresPerPage + tutoresPerPage));
+    }
+
     return (
         <div className='text-center'>
             <h1>Edición de tutores</h1>
@@ -153,11 +157,13 @@ function PerfilEditarTutor() {
                     <AiOutlineSearch/>
                 </button>
             </div>
-            {tutoresSearch && tutoresSearch.map(values => (
+            <Container>
+                <Row>
+                    {tutoresPag && tutoresPag.map(values => (
                     <div
-                    className='admin'
+                    className='col-md-4 col-sm-12'
                     key={values.idTutor}>
-                        <div>
+                        <Col>
                             <Card
                             className='text-center'
                             border='warning'
@@ -166,17 +172,37 @@ function PerfilEditarTutor() {
                                     <Card.Title>{values.usuario}</Card.Title>
                                 </Card.Header>
                                 <Card.Body>
+                                    <Card.Text>
+                                        Tutor de: {values.nombre}
+                                    </Card.Text>
                                     <Button
+                                    className='btnBancoPreguntas'
                                     onClick={() => {openPane(values)}}>
                                         Editar información
                                         <AiOutlineEdit/>
                                     </Button>
                                 </Card.Body>
                             </Card>
-                        </div>
+                        </Col>
                     </div>
-                )
-            )} 
+                    )
+                )}
+                </Row>
+            </Container>
+            <br/>
+            {busqueda === "" &&
+            <ReactPaginate
+            previousLabel={'Anterior'}
+            nextLabel={'Siguiente'}
+            pageCount={pageCount}
+            onPageChange={onPageChange}
+            containerClassName={"paginationBtns"}
+            previousLinkClassName={"previousBtns"}
+            nextLinkClassName={"nextBtn"}
+            disabledClassName={"paginationDisabled"}
+            activeClassName={"paginationActive"}/>
+            }
+            {/*SLIDING PANE EDITAR INFO TUTOR */}
             <SlidingPane
             className='sliding-pane'
             isOpen={detailsPane.isPaneOpen}
@@ -185,54 +211,51 @@ function PerfilEditarTutor() {
             onRequestClose={closePane}>
                 <div className='admin-details__info'>
                     <div className='admin-details__box'>
-                        <Form 
+                    <Form 
                         className="form"
                         onSubmit={handleSubmitEditTutor}>
                              <h3>Editar información</h3>
                         <Form.Group controlId="nombreadmin">
-                                <Form.Label>Nombre del tutor</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder={tutoresList[llave-1]?.usuario}
-                                    value={nombre}
-                                    onChange={(e) => setNombre(e.target.value)}
-                                    ></Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="password">
-                                <Form.Label>Contraseña</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Escriba la contraseña"
-                                    value={contrasenia}
-                                    onChange={(e) => setContrasenia(e.target.value)}
-                                    ></Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="confirmpassword">
-                                <Form.Label>Repetir Contraseña</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Escriba la contraseña"
-                                    value={confpassword}
-                                    onChange={(e) => setConfPassword(e.target.value)}
-                                    ></Form.Control>
-                            </Form.Group>
-                            <br/>
-                            <Button
-                            className='button-edit'
-                            type='submit'
-                            onSubmit={handleSubmitEditTutor}>
-                                Editar
-                                <AiOutlineEdit size='2em'/>
-                            </Button>
-                        </Form>
-                    </div>
-                    <button 
-                    className='button-delete'
-                    onClick={() => {setShowModalBorrar(true)}}>
-                        Borrar  <AiOutlineDelete size='2em' />
-                    </button>
+                            <Form.Label>Nombre del tutor</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder={tutoresList[llave-1]?.usuario}
+                                value={nombre}
+                                onChange={(e) => setNombre(e.target.value)}/>
+                        </Form.Group>
+                        <Form.Group controlId="password">
+                            <Form.Label>Contraseña</Form.Label>
+                            <Form.Control
+                                type="password"
+                                placeholder="Escriba la contraseña"
+                                value={contrasenia}
+                                onChange={(e) => setContrasenia(e.target.value)}/>
+                        </Form.Group>
+                        <Form.Group controlId="confirmpassword">
+                            <Form.Label>Repetir Contraseña</Form.Label>
+                            <Form.Control
+                            type="password"
+                            placeholder="Escriba la contraseña"
+                            value={confpassword}
+                            onChange={(e) => setConfPassword(e.target.value)}/>
+                        </Form.Group>
+                        <br/>
+                        <Button
+                        className='button-edit'
+                        type='submit'
+                        onSubmit={handleSubmitEditTutor}>
+                            Editar
+                            <AiOutlineEdit size='2em'/>
+                        </Button>
+                    </Form>
                 </div>
-            </SlidingPane>
+                <button 
+                className='button-delete'
+                onClick={() => {setShowModalBorrar(true)}}>
+                    Borrar  <AiOutlineDelete size='2em' />
+                </button>
+            </div>
+        </SlidingPane>
         {/*MODAL CONFIRMACIÓN BORRAR */}
         <Modal show={showModalBorrar} onHide={() => {setShowModalBorrar(false)}}>
             <Modal.Header closeButton>
