@@ -108,15 +108,19 @@ function PerfilEditarTutor() {
         console.log("El termino es "+terminoBusqueda)
         var resultadosBusqueda = tutoresList.filter( (elemento) => {
             if(terminoBusqueda === ""){
-                setTutoresSearch(tutoresList)
-                return elemento;
+                return;
             }
             else if(elemento.usuario.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
             {
                 return elemento;
             }
         });
-        setTutoresSearch(resultadosBusqueda);
+        if(terminoBusqueda === ""){
+            setTutoresPag((tutoresList).slice(0, 0 + tutoresPerPage))
+        }
+        else{
+            setTutoresPag(resultadosBusqueda);
+        }
     }
 
     const handleBuscar = (e) => {
