@@ -209,7 +209,7 @@ function ProgresoGrupoAdmin() {
                           onClick={() => {getAlumnosGrupo(values.idGrupo)}}>
                             Visualizar alumnos
                         </Button>
-                        <Link to={`/ProgresoGraphAdmin/${values.idAlumno}`}>
+                        <Link to={`/ProgresoGraphGrupo/${values.idGrupo}`}>
                           <Button className='btnBancoPreguntas'>
                             Gráficas de grupo
                           </Button>

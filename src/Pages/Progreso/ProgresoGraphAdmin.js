@@ -1,12 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import { Button, Card, Modal } from 'react-bootstrap';
 import { VscGraph } from 'react-icons/vsc'
 import GraphChart from '../../components/graphChart'
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from '@date-io/date-fns';
-import { DateTimePicker } from "@material-ui/pickers";
-import { es } from 'date-fns/locale'
 import axios from '../../axios/axios';
 const GRAFICA_ADMIN_URL = '/graphs/generagraphadmin';
 const GRAFICA_ADMIN_NON_URL = '/graphs/generagraphadminnon';

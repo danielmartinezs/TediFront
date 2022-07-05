@@ -4,6 +4,7 @@ import NavbarAdmin from "./components/Navbar/NavbarAdmin";
 import NavbarPadre from "./components/Navbar/NavbarPadre";
 import Login from './components/Login/Login';
 import Logout from './components/Login/Logout';
+import ConfigOptions from './components/configOptions';
 import { Routes, Route } from 'react-router-dom'
 import Home from './Pages/Home/Home'
 import Reportes from './Pages/Reportes/Reportes'
@@ -14,11 +15,12 @@ import ReportesAdmin from './Pages/Reportes/ReportesAdmin'
 import ReportesAlumAdmin from './Pages/Reportes/ReportesAlumAdmin.js'
 import ReportesEdicionAdmin from './Pages/Reportes/ReportesEdicionAdmin'
 import ReportesNuevoAdmin from './Pages/Reportes/ReportesNuevoAdmin'
-import ReportesNuevoRegistroAdmin from './Pages/Reportes/ReportesNuevoRegistroAdmin';
+import ReportesNuevoRegistroAdmin from './Pages/Reportes/ReportesNuevoRegistroAdmin'
 import ProgresoAdmin from './Pages/Progreso/ProgresoAdmin'
 import ProgresoAlumAdmin from './Pages/Progreso/ProgresoAlumAdmin'
 import ProgresoGrupoAdmin from './Pages/Progreso/ProgresoGrupoAdmin'
 import ProgresoGraphAdmin from './Pages/Progreso/ProgresoGraphAdmin'
+import ProgresoGraphGrupo from './Pages/Progreso/ProgresoGraphGrupo'
 import CuestionariosAdmin from './Pages/Cuestionarios/CuestionariosAdmin'
 import CuestionariosRegistrosAdmin from './Pages/Cuestionarios/CuestionariosRegistrosAdmin'
 import CuestionariosCreacionAdmin from './Pages/Cuestionarios/CuestionariosCreacionAdmin'
@@ -45,6 +47,7 @@ function App() {
             <div>
               <Routes>
                 <Route exact path="/logout" element={<PrivateRoute roles = {["admin"]}><Logout/></PrivateRoute>} />
+                <Route exact path="/configOptions" element={<PrivateRoute roles = {["admin"]}><ConfigOptions/></PrivateRoute>} />
                 <Route exact path="/HomeAdmin" element={<PrivateRoute roles = {["admin"]}><HomeAdmin/></PrivateRoute>}/>
                   {/*Aqui abajo es la pagina principal del usuario administrador*/}
 
@@ -60,6 +63,7 @@ function App() {
                   <Route exact path="/ProgresoAlumAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoAlumAdmin/></PrivateRoute>}/>
                   <Route exact path="/ProgresoGrupoAdmin" element={<PrivateRoute roles = {["admin"]}><ProgresoGrupoAdmin/></PrivateRoute>}/>
                   <Route exact path="/ProgresoGraphAdmin/:idAlumno" element={<PrivateRoute roles = {["admin"]}><ProgresoGraphAdmin/></PrivateRoute>}/>
+                  <Route exact path="/ProgresoGraphGrupo/:idGrupo" element={<PrivateRoute roles = {["admin"]}><ProgresoGraphGrupo/></PrivateRoute>}/>
 
                   <Route exact path='/CuestionariosAdmin' element={<PrivateRoute roles = {["admin"]}><CuestionariosAdmin/></PrivateRoute>}/>
                   <Route exact path="/CuestionariosRegistrosAdmin" element={<PrivateRoute roles = {["admin"]}><CuestionariosRegistrosAdmin/></PrivateRoute>}/>

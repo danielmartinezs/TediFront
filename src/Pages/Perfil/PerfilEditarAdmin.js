@@ -59,10 +59,6 @@ function PerfilEditarAdmin() {
 
     const handleSubmitEdit = async (e) => {
         e.preventDefault();
-        console.log(llave)
-        console.log(nombre)
-        console.log(contrasenia)
-        console.log(confpassword)
         try{
             const response = await axios.post(EDIT_ADMINS_URL, {
                 idadmin: llave,

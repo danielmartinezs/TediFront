@@ -23,6 +23,7 @@
     list-style: none;
     display: flex;
     justify-content: center;
+    color: #fe9000;
   }
 
   .paginationBtns a {
