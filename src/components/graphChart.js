@@ -13,9 +13,7 @@ import { es } from 'date-fns/locale';
       
     const [filterFechaStart, setFilterFechaStart] = useState(chartData[0].fecha);
     const [filterFechaEnd, setFilterFechaEnd] = useState(chartData[chartData.length-1].fecha);
-    const [dataGraphP, setDataGraphP] = useState(chartData.map(item => item.puntaje));
-    const [dataGraphA, setDataGraphA] = useState(chartData.map(item => item.nombre));
-    const [dataGraph, setDataGraph] = useState([[dataGraphP], [dataGraphA]]);
+    const [dataGraph, setDataGraph] = useState(chartData.map(item => item.puntaje));
     const [labelDateFormat, setLabelDateFormat] = useState(chartData.map(item => new Date(item.fecha).getTime()));
     const [labelGraph, setLabelGraph] = useState(chartData.map(item => format(parseISO(item.fecha), 'PPPp', { locale: es })));
     const [datos, setDatos] = useState({
@@ -23,7 +21,7 @@ import { es } from 'date-fns/locale';
       datasets: [
         {
           label: 'Puntaje',
-          data: dataGraphP,
+          data: dataGraph,
           backgroundColor: ["#FE9000"],
           minBarLength: '5',
         },
@@ -47,7 +45,7 @@ import { es } from 'date-fns/locale';
       const filtroDateHourString = filtroDateHour.map(date => format(date, 'PPPp', { locale: es }));
       const startArrayData = labelDateFormat.indexOf(filtroDate[0]);
       const endArrayData = labelDateFormat.indexOf(filtroDate[filtroDate.length-1]);
-      const filtroData = [...dataGraphP];
+      const filtroData = [...dataGraph];
       filtroData.splice(endArrayData +1, filtroDate.length);
       filtroData.splice(0, startArrayData);
       setDatos({
@@ -72,7 +70,7 @@ import { es } from 'date-fns/locale';
         datasets: [
           {
             label: 'Puntaje',
-            data: dataGraphP,
+            data: dataGraph,
             backgroundColor: ["#FE9000"],
             minBarLength: '5',
           },
