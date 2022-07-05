@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useCallback, useState, useRef } from 'react';
-import { Card, Button } from 'react-bootstrap';
+import { Card, Button, ButtonGroup } from 'react-bootstrap';
 import { Chart as ChartJS } from 'chart.js/auto';
 import { Bar, Line } from 'react-chartjs-2';
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
@@ -34,7 +34,7 @@ import { es } from 'date-fns/locale';
       responsive: true,
       interaction: {
         mode: 'index',
-      }
+      },
     };
     const ref = useRef(null);
     const graph = <Bar data={datos} options={options} ref={ref}/>;
@@ -80,15 +80,60 @@ import { es } from 'date-fns/locale';
       });
     }
 
+    function visualizarAlumnos () {
+        setLabelGraph(dataGraphA)
+        setDatos({
+            labels: labelGraph,
+            datasets: [
+              {
+                label: 'Puntaje',
+                data: dataGraphP,
+                backgroundColor: ["#FE9000"],
+                minBarLength: '5',
+              },
+            ],
+        });
+    }
+
+    function visualizarFechas () {
+        setLabelGraph(labelDateFormat.map(date => format(new Date(date), 'PPPp', { locale: es })))
+        setDatos({
+            labels: labelGraph,
+            datasets: [
+              {
+                label: 'Puntaje',
+                data: dataGraphP,
+                backgroundColor: ["#FE9000"],
+                minBarLength: '5',
+              },
+            ],
+        });
+    }
+
     return (
     <div>
       {graph}
         <Card>
-          <Card.Header className='text-center'>
+        <Card.Header className='text-center'>
+            <h5>Cambiar vista</h5>
+            <ButtonGroup>
+                <Button
+                className='btnAct'
+                onClick={visualizarFechas}>
+                    Alumnos
+                </Button>
+                <Button
+                className='btnAct'
+                onClick={visualizarAlumnos}>
+                    Fechas
+                </Button>
+            </ButtonGroup>
+        </Card.Header>
+        <Card.Header className='text-center'>
             <h5>Filtro de Fecha</h5>
             {console.log(dataGraph)}
-          </Card.Header>
-          <Card.Footer className='text-center'>
+        </Card.Header>
+        <Card.Footer className='text-center'>
             <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
               <DateTimePicker
               disableFuture
