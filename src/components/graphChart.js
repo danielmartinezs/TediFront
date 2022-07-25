@@ -27,6 +27,7 @@ import { es } from 'date-fns/locale';
         },
       ],
     });
+    const [filtrado, setFiltrado] = useState(false);
 
     const options = {
       responsive: true,
@@ -38,6 +39,7 @@ import { es } from 'date-fns/locale';
     const graph = <Bar data={datos} options={options} ref={ref}/>;
 
     function filtroFecha () {
+      setFiltrado(true);
       const fechaStartHour = new Date(filterFechaStart).getTime();
       const fechaEndHour = new Date(filterFechaEnd).getTime();
       const filtroDate = labelDateFormat.filter(date => date >= fechaStartHour && date <= fechaEndHour);
@@ -63,6 +65,7 @@ import { es } from 'date-fns/locale';
     }
 
     function resetFiltroFecha () {
+      setFiltrado(false);
       setFilterFechaStart(chartData[0].fecha);
       setFilterFechaEnd(chartData[chartData.length-1].fecha);
       setDatos({
@@ -109,11 +112,13 @@ import { es } from 'date-fns/locale';
             onClick={filtroFecha}>
               Filtrar por fechas
             </Button>
+            {filtrado &&
             <Button
             className="btnAct"
             onClick={resetFiltroFecha}>
               Reset
             </Button>
+            }
           </Card.Footer>
         </Card>
       </div>

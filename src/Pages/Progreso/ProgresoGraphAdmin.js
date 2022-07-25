@@ -17,6 +17,7 @@ function ProgresoGraphAdmin() {
 
   useEffect (() => {
     getGraphDataNoN()
+    console.log("trigger")
   }, [showNoN])
 
   const getGraphDataNoN = () => {
@@ -26,6 +27,7 @@ function ProgresoGraphAdmin() {
   }
 
   const revealGraphNoN = () => {
+    console.log(graphDataNoN)
     if(graphDataNoN.length > 0){
     setShowNoN(true);
     }
