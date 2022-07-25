@@ -162,6 +162,17 @@
     flex-wrap: wrap;
   }
 
+  .btnEditarCuestionario {
+    border-radius: 100px;
+    background-color: #0B7A75;
+    color: #fcfcfc;
+    padding: 5px;
+    cursor: pointer;
+    display: table-column-group;
+    align-self: center;
+    flex-wrap: wrap;
+  }
+
   .btnVisualizaRespuesta {
     width: 75%;
     background-color: #FE9000;

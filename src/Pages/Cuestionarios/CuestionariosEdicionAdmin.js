@@ -690,21 +690,29 @@ function CuestionariosEdicionAdmin() {
                 </Alert>
             </div>
                 <div className='text-center'>
-                    <h3>{nombrec}</h3>
+                <h3>
+                    {nombrec}
+                    <Button
+                    className="btnEditarCuestionario"
+                    variant="outline-success"
+                    onClick={() => setShowOffEditNC(true)}>
+                        <AiOutlineEdit/>
+                    </Button>
+                </h3>
                 </div>
-                <Button
-                variant="outline-success"
-                onClick={() => setShowOffEditNC(true)}>
-                    <AiOutlineEdit/>
-                </Button>
                 <div className='text-center'>
-                    <h4>Materia: {materiac}</h4>
+                <h4>
+                    Materia:
+                    <br/>
+                    {materiac}
+                    <Button
+                    className="btnEditarCuestionario"
+                    variant="outline-success"
+                    onClick={getMateriasList}>
+                        <AiOutlineEdit/>
+                    </Button>
+                </h4>
                 </div>
-                <Button
-                variant="outline-success"
-                onClick={getMateriasList}>
-                    <AiOutlineEdit/>
-                </Button>
             {/*TABLA PREGUNTAS*/}
             <Table className="tabla">
                 <thead>
