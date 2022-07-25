@@ -25,7 +25,12 @@ function ProgresoGraphGrupo() {
     }
   
     const revealGraphNoN = () => {
+      if(graphDataNoN.length > 0){
       setShowNoN(true);
+      }
+      else{
+        alert("No hay datos para mostrar");
+      }
     }
   
     if(showNoN){
