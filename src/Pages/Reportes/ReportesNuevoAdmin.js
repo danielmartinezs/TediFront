@@ -1,14 +1,16 @@
 import React, { useEffect, useState }from 'react'
-import { Accordion, Button, Card, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle } from 'react-bootstrap'
-import { AiOutlineCheck, AiOutlineEdit, AiOutlineInfoCircle, AiOutlinePlus, AiOutlineSearch, AiOutlineSelect } from 'react-icons/ai';
+import { Accordion, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas } from 'react-bootstrap'
+import { AiOutlineCheck, AiOutlineEdit, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineFilePdf, AiOutlineSearch, AiOutlineSelect } from 'react-icons/ai';
 import axios from '../../axios/axios';
-import PdfCreator from '../../services/PdfCreator'
+import PdfProgramaSemestral from '../../services/PdfCreatorProgramaSemestral'
 import "./reportes.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const GET_ADMINISTRADOR_URL = '/profiles/getadmin';
 
 function ReportesNuevoAdmin() {
 
+    const [idEditar, setIdEditar] = useState(0);
+    const [idDelete, setIdDelete] = useState(0);
     const [datos, setDatos] = useState();
     const [tipo, setTipo] = useState();
     const [nombreArchivo, setNombreArchivo] = useState("");
@@ -19,10 +21,15 @@ function ReportesNuevoAdmin() {
     const [administrador, setAdministrador] = useState('');
     const [busqueda, setBusqueda] = useState("");
     const [objetivo, setObjetivo] = useState("");
+    const [objetivoEdit, setObjetivoEdit] = useState("");
     const [descripcion, setDescripcion] = useState("");
+    const [descripcionEdit, setDescripcionEdit] = useState("");
     const [temasSemestre, setTemasSemestre] = useState([]);
     const [showModalTipo, setShowModalTipo] = useState(true);
     const [showModalAlumnos, setShowModalAlumnos] = useState(false);
+    const [showModalObjetivos, setShowModalObjetivos] = useState(false);
+    const [showMDelete, setShowMDelete] = useState(false);
+    const [showOffEditO, setShowOffEditO] = useState(false);
     var idAdmin = localStorage.getItem('id');
 
     useEffect(() => {
@@ -74,13 +81,33 @@ function ReportesNuevoAdmin() {
         setDescripcion("");
     }
 
+    const handleEditO = (e) => {
+        temasSemestre[idEditar].objetivo = objetivoEdit;
+        temasSemestre[idEditar].descripcion = descripcionEdit;
+        setObjetivoEdit("");
+        setDescripcionEdit("");
+        setShowOffEditO(false);
+        setShowModalObjetivos(true);
+    }
+
+    const handleDeleteO = (e) => {
+        temasSemestre.splice(idDelete, 1);
+        setIdDelete(0);
+        setShowMDelete(false);
+        setShowModalObjetivos(true);
+    }
+
     return (
         <div>
             <div className='text-center'>
                 <h1>Creación de Reportes</h1>
                 <Button
                 onClick={() => {setShowModalTipo(true)}}>
-                    Cambiar
+                    Cambiar tipo de reporte
+                </Button>
+                <Button
+                onClick={() => {setShowModalAlumnos(true)}}>
+                    Cambiar alumno
                 </Button>
                 {tipo === 'Evaluación de Articulación' &&
                 <Card>
@@ -170,32 +197,16 @@ function ReportesNuevoAdmin() {
                         </ListGroupItem>
                     </ListGroup>
                     <br/>
-                    <h1>Lista de objetivos</h1>
-                    <input
-                    value={objetivo}
-                    onChange={(e) => setObjetivo(e.target.value)}
-                    placeholder='Objetivo'
-                    />
-                    <input
-                    value={descripcion}
-                    onChange={(e) => setDescripcion(e.target.value)}
-                    placeholder='Descirpción del objetivo'
-                    />
-                    <Button 
-                    className='btnSeleccion'
-                    onClick={() => {handleNuevoObjetivo()}}
-                    >
-                        Agregar Objetivo
+                    <Button
+                    onClick={() => {setShowModalObjetivos(true)}}>
+                        Listado de objetivos
                     </Button>
-                    {JSON.stringify(temasSemestre)}
                     </Card.Body>
                     <Card.Footer>
                         <Button className='btnSeleccion'
-                        onClick={() => {
-                            setAlumno(alumnosList[alumnSelect-1]?.nombre)
-                            setShowModalAlumnos(false)
-                            }}>
+                        onClick={(e) => PdfProgramaSemestral(temasSemestre, administrador, alumno, nombreArchivo)}>
                             Crear Reporte
+                            <AiOutlineFilePdf/>  
                         </Button>
                     </Card.Footer>
                 </Card>
@@ -287,7 +298,7 @@ function ReportesNuevoAdmin() {
                     </Button>
                 </ModalBody>
             </Modal>
-            {/* MODAL CONTESTAR ALUMNO */}
+            {/* MODAL SELECCIÓN ALUMNO */}
             <Modal 
             show={showModalAlumnos}
             onHide={() => setShowModalAlumnos(false)}
@@ -330,7 +341,8 @@ function ReportesNuevoAdmin() {
                     ))
                 }
                 </Modal.Body>
-                <Modal.Footer>        
+                <Modal.Footer>
+                    {alumnSelect &&        
                     <Button className='btnAct'
                     onClick={() => {
                         setAlumno(alumnosList[alumnSelect-1]?.nombre)
@@ -338,8 +350,152 @@ function ReportesNuevoAdmin() {
                         }}>
                         {alumnosList[alumnSelect-1]?.nombre}
                     </Button>
+                    }
                 </Modal.Footer>
             </Modal>
+            {/* MODAL LISTA DE OBJETIVOS */}
+            <Modal
+            show={showModalObjetivos}
+            scrollable
+            >
+                <Modal.Header>
+                    <Modal.Title>Lista de objetivos</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <input
+                value={objetivo}
+                onChange={(e) => setObjetivo(e.target.value)}
+                placeholder='Objetivo'
+                />
+                <input
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+                placeholder='Descirpción del objetivo'
+                />
+                <Button 
+                className='btnSeleccion'
+                onClick={() => {handleNuevoObjetivo()}}
+                >
+                    Agregar Objetivo
+                </Button>
+                {temasSemestre.map((elemento, index) => {
+                        return(
+                            <div key={index} className="text-center">
+                                <ListGroup>
+                                    <ListGroupItem>
+                                        <h6>Objetivo {index+1}</h6>
+                                    </ListGroupItem>
+                                    <ListGroupItem>
+                                        <h6>{elemento.objetivo}</h6>
+                                        <h6>{elemento.descripcion}</h6>
+                                <Button
+                                className='btnEditarP'
+                                onClick={() => {
+                                    setShowOffEditO(true)
+                                    setShowModalObjetivos(false)
+                                    setIdEditar(index);
+                                    setObjetivoEdit(elemento.objetivo)
+                                    setDescripcionEdit(elemento.descripcion)
+                                }}
+                                variant='success'>
+                                    <AiOutlineEdit/>
+                                </Button>
+                                <Button
+                                className='btnBorrarP'
+                                onClick={() => {
+                                    setShowMDelete(true)
+                                    setShowModalObjetivos(false)
+                                    setIdDelete(index);
+                                }}
+                                variant='danger'>
+                                    <AiOutlineDelete/>
+                                </Button>
+                                    </ListGroupItem>
+                                </ListGroup>
+                            </div>
+                        )
+                    }
+                    )}
+                    <Button
+                    className='btnSeleccion'
+                    onClick={() => {
+                        setShowModalObjetivos(false)
+                    }}>
+                        Terminar listado de objetivos<AiOutlineCheck/>
+                    </Button>
+                </Modal.Body>
+            </Modal>
+            {/*MODAL BORRAR HITO*/}
+            <Modal 
+             show={showMDelete} 
+             onHide={() => {setShowMDelete(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>¿Estás seguro que quieres borrar este objetivo?</Modal.Title>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button 
+                    variant="success" 
+                    onClick={() => {
+                        setShowMDelete(false)
+                        setShowModalObjetivos(true)}}>
+                        No
+                    </Button>
+                    <Button 
+                    variant="danger" 
+                    onClick={() => {handleDeleteO()}}>
+                        Sí
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/*OFFCANVAS EDITAR OBJETIVO*/}
+            <Offcanvas 
+            show={showOffEditO} 
+            placement={'end'} 
+            onHide={() => setShowOffEditO(false)}>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Editar Objetivos</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <Form className="form">
+                        <Form.Group
+                        className="mb-3"
+                        controlId="newHito">
+                            <Form.Label>Objetivo</Form.Label>
+                            <Form.Control 
+                            as="textarea"
+                            rows={1}
+                            value={objetivoEdit}
+                            onChange={(e) => setObjetivoEdit(e.target.value)}>
+                                {objetivoEdit}
+                            </Form.Control>
+                            <br/>
+                            <Form.Label>Descripción</Form.Label>
+                            <Form.Control 
+                            as="textarea"
+                            rows={1} 
+                            value={descripcionEdit}
+                            onChange={(e) => setDescripcionEdit(e.target.value)}>
+                                {descripcionEdit}
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
+                    <br/>
+                    <Button 
+                    variant="danger" 
+                    className='btnBorrarP'
+                    onClick={() => {
+                        setShowOffEditO(false)
+                    }}>
+                        Cerrar
+                    </Button>
+                    <Button 
+                    variant="success"
+                    className='btnEditarP'
+                    onClick={handleEditO}>
+                        Guardar
+                    </Button>
+                </Offcanvas.Body>
+            </Offcanvas>
         </div>
     )
 }

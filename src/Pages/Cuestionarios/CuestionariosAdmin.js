@@ -147,11 +147,13 @@ function CuestionariosAdmin() {
                 }
                 </Modal.Body>
                 <Modal.Footer>
+                    {alumnSelect &&
                     <Link to={`/CuestionariosResponderAdmin/${alumnSelect}`}>
                         <Button className='btnAct'>
                             Aplicar cuestionario a {alumnosList[alumnSelect-1]?.nombre}
                         </Button>
                     </Link>
+                    }
                 </Modal.Footer>
             </Modal>
         </div>
