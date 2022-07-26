@@ -12,13 +12,45 @@ function PdfCreator(datos, admin, qa, nombrearchivo) {
     const timestamp = new Date().getTime();
     const reportTitle = [
         {
-            text: admin,
+            text: 'Alumno(a): '+datos[0].nombre,
             fontSize: 15,
             bold: true,
             margin: [15, 20, 0, 45]
         }
     ];
-    const details = [];
+
+    const respuestas = qa.map((answer) => {
+        return [
+            {
+                text: answer.id,
+                fontSize: 11,
+                margin: [15, 20, 0, 45]
+            },
+            {
+                text: answer.value,
+                fontSize: 11,
+                margin: [15, 20, 0, 45]
+            }
+        ]
+    });
+
+    const details = [
+        {
+            table: {
+                headerRows: 1,
+                widths: ['*', '*'],
+                body: [
+                    [
+                        { text: 'Pregunta', style: 'tableHeader' },
+                        { text: 'Respuesta', style: 'tableHeader' }
+                    ],
+                    ...respuestas
+                ]
+            },
+            layout: 'lightHorizontalLines'
+        }
+    ];
+
     const firma = [];
     const docDefinition = {
         pageSize: 'A4',
