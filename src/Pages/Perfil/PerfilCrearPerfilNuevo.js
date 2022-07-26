@@ -302,6 +302,7 @@ function CreatePerfil() {
           {/*MODAL GRUPOS */}
           <Modal
           show={showModalGrupos}
+          scrollable
           onHide={() => {setShowModalGrupos(false)}}>
             <Modal.Header
             closeButton>

@@ -66,7 +66,7 @@ function ReportesAdmin() {
                     </Link>
                 </Card.Body>
             </Card>
-            <Button onClick={handleDescargaReporteEA}>
+            {/* <Button onClick={handleDescargaReporteEA}>
                 descarga PDF Evaluación Articulación
             </Button>
             <Button onClick={handleDescargaReporteHPV}>
@@ -77,7 +77,7 @@ function ReportesAdmin() {
             </Button>
             <Button onClick={ReportesNuevoAdmin}>
                 descarga PDF Prueba FrontEnd
-            </Button>
+            </Button> */}
         </div>
     )
 }
