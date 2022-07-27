@@ -36,7 +36,7 @@ function ReportesAdmin() {
 
     return (
         <div>
-            <Card border='warning' className='text-center' style={{display: 'flex'}}>
+            {/* <Card border='warning' className='text-center' style={{display: 'flex'}}>
                 <Card.Header>
                     <h3>Edición de reportes</h3>
                 </Card.Header>
@@ -50,7 +50,7 @@ function ReportesAdmin() {
                         </Button>
                     </Link>
                 </Card.Body>
-            </Card>
+            </Card> */}
             <Card border='warning' className='text-center' style={{display: 'flex'}}>
                 <Card.Header>
                     <h3>Creación de reportes</h3>
