@@ -306,6 +306,8 @@ function CuestionariosRegistrosAdmin() {
     const vincularPreguntaRespuesta = async () => {
         setShowOffVinculaQues(false)
         setShowOffVinculaRes(false)
+        console.log("ID PREGUNTA: "+preguntaVincula)
+        console.log("ID RESPUESTA: "+respuestaVincula)
         try{
         const response = await axios.post(NEW_ANSWER_QUESTION_URL, {
             idp: preguntaVincula,
@@ -773,7 +775,7 @@ function CuestionariosRegistrosAdmin() {
                                             variant='success'
                                             onClick={() => {
                                                 setShowModalLinkA(false)
-                                                setRespuestaVincula(respuestasList[idDeleteRespuesta-1]?.id)
+                                                //setRespuestaVincula(respuestasList[idDeleteRespuesta-1]?.id)
                                                 setPreguntaVincula(answer.idPregunta)
                                                 setShowOffVinculaRes(true)
                                                 setShowModalVinculaCuest(true)}}>
@@ -814,7 +816,7 @@ function CuestionariosRegistrosAdmin() {
                             <Button
                             variant='success'
                             onClick={() => {
-                                setShowModalLinkA(false)
+                                setShowModalLinkQ(false)
                                 setShowOffVinculaQues(true)}}>
                                 Vincular pregunta con respuesta
                                 <AiOutlineLink/>
@@ -835,7 +837,7 @@ function CuestionariosRegistrosAdmin() {
                                             variant='success'
                                             onClick={() => {
                                                 setShowModalLinkQ(false)
-                                                setPreguntaVincula(preguntasList[idDeletePregunta-1]?.idPregunta)
+                                                //setPreguntaVincula(preguntasList[idDeletePregunta-1]?.idPregunta)
                                                 setRespuestaVincula(question.idRespuesta)
                                                 setShowOffVinculaQues(true)
                                                 setShowModalVinculaCuest(true)}}>
