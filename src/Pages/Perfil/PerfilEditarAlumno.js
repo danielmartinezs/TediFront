@@ -14,6 +14,7 @@ import { es } from 'date-fns/locale'
 import "./perfil.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos'
 const GET_GRUPOS_URL = '/profiles/getgrupos'
+const GET_SEMESTRE_URL = 'reportes/getsemestre';
 const EDIT_ALUMNO_URL = 'profiles/editaalumno'
 const DELETE_TUTOR_URL = 'profiles/borratutor'
 
@@ -45,6 +46,7 @@ function PerfilEditarAlumno() {
 
     useEffect(() => {
         getGruposList();
+        getSemestre();
     }, [])
     
     useEffect (() => {
@@ -63,6 +65,12 @@ function PerfilEditarAlumno() {
     const getGruposList = async () => {
         axios.get(GET_GRUPOS_URL).then((response) => {
           setGruposList(response.data);
+        })
+    }
+
+    const getSemestre = () => {
+        axios.get(GET_SEMESTRE_URL).then((response) => {
+            setSemestre(response.data)
         })
     }
 
@@ -294,7 +302,7 @@ function PerfilEditarAlumno() {
                                 </MuiPickersUtilsProvider>
                             </Form.Group>
                             <br/>
-                            <Form.Group controlId="semestre">
+                            <Form.Group controlId="grupo">
                                 <Button
                                 className="btnBancoPreguntas"
                                 onClick={() => {setShowModalGrupos(true)}}>
@@ -306,12 +314,7 @@ function PerfilEditarAlumno() {
                             </Form.Group>
                             <Form.Group controlId="semestre">
                                 <Form.Label>Semestre Escolar</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder={alumnosList[llave-1]?.anioEscolar}
-                                    value={semestre}
-                                    onChange={(e) => setSemestre(e.target.value)}
-                                    />
+                                <h3>{semestre[0]?.periodo}</h3>
                             </Form.Group>
                             <br/>
                             <Button

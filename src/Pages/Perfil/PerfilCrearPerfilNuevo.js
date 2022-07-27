@@ -9,6 +9,7 @@ import { AiOutlineUserAdd } from 'react-icons/ai';
 import { es } from 'date-fns/locale'
 import "./perfil.css";
 const GET_GRUPOS_URL = '/profiles/getgrupos';
+const GET_SEMESTRE_URL = 'reportes/getsemestre';
 const CREAR_TUT_URL = '/profiles/newtutor';
 const CREAR_ADMIN_URL = '/profiles/newadmin';
 
@@ -37,11 +38,18 @@ function CreatePerfil() {
     
     useEffect(() => {
       getGruposList();
+      getSemestre();
     }, []);
 
     const getGruposList = async () => {
       axios.get(GET_GRUPOS_URL).then((response) => {
         setGruposList(response.data);
+      })
+    }
+
+    const getSemestre = () => {
+      axios.get(GET_SEMESTRE_URL).then((response) => {
+          setSemestre(response.data)
       })
     }
 
@@ -111,7 +119,7 @@ function CreatePerfil() {
             nombrealu: nombreAlumno,
             apellidoalu: apellidoAlumno,
             nacimiento: fechanac,
-            schoolmester: semestre,
+            schoolmester: semestre[0].idSemestre,
             foto: pic,
             grupo: grupoSelect
           })
@@ -257,15 +265,15 @@ function CreatePerfil() {
                   <Form.Label>Fecha de Nacimiento</Form.Label>
                   <br/>
                     <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
-                            <DatePicker
-                            disableFuture
-                            openTo="year"
-                            variant="dialog"
-                            format="yyyy/MM/dd"
-                            label="Fecha de Nacimiento"
-                            views={["year", "month", "date"]}
-                            value={fechanac}
-                            onChange={handleFechaNueva}/>
+                          <DatePicker
+                          disableFuture
+                          openTo="year"
+                          variant="dialog"
+                          format="yyyy/MM/dd"
+                          label="Fecha de Nacimiento"
+                          views={["year", "month", "date"]}
+                          value={fechanac}
+                          onChange={handleFechaNueva}/>
                     </MuiPickersUtilsProvider>
                 </Form.Group>
                 <br/>
@@ -282,13 +290,8 @@ function CreatePerfil() {
                 </Form.Group>
                 <Form.Group controlId="semestre">
                     <Form.Label>Semestre Escolar</Form.Label>
-                    <Form.Control
-                    type="text"
-                    placeholder="Seleccione Semestre Escolar"
-                    value={semestre}
-                    maxLength= "20"
-                    onChange={(e) => setSemestre(e.target.value)}
-                    ></Form.Control>
+                    <br/>
+                    <h3>{semestre[0]?.periodo}</h3>
                 </Form.Group>
                 <br/>
                 <Button 
