@@ -1340,17 +1340,15 @@ function CuestionariosEdicionAdmin() {
                 </ModalHeader>
                 <ModalBody>
                     {materiasList.map(values => (
-                        <div key={values.idMateria}>
+                        <div key={values.idMateria} className='text-center'>
                             <ListGroup>
                                 <ListGroupItem>
-                                    {values.idMateria}. {values.materia}
-                                    <br/>
                                     <Button
                                     variant="success"
                                     onClick={() => {
                                         setShowModalBancoM(false)
                                         setMateriaC(values.materia)}}>
-                                        <AiOutlineSelect/>
+                                        {values.materia} <AiOutlineSelect/>
                                     </Button>
                                 </ListGroupItem>
                             </ListGroup>

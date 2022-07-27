@@ -7,6 +7,7 @@ import SlidingPane from 'react-sliding-pane';
 import axios from '../../axios/axios'
 import "./cuestionarios.css"
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
+const GET_MATERIAS_URL = '/questionnaires/getmaterias'
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const UPLOAD_NEW_QUESTIONNAIRE_URL = '/questionnaires/uploadnewquestionnaire'
@@ -16,6 +17,7 @@ function CrearCuestionario() {
 
     const [nombrec, setNombreC] = useState("");
     const [materiac, setMateriaC] = useState("");
+    const [materiasList, setMateriasList] = useState([]);
     const [cuestionariosList, setCuestionariosList] = useState([]);
     const [preguntasList, setPreguntasList] = useState([]);
     const [newPreguntasList, setNewPreguntasList] = useState([]);
@@ -50,6 +52,7 @@ function CrearCuestionario() {
     const [showModalR, setShowModalR] = useState(false)
     const [showModalO, setShowModalO] = useState(false)
     const [showModalE, setShowModalE] = useState(false)
+    const [showModalBancoM, setShowModalBancoM] = useState(false)
     const [showAddR, setShowAddR] = useState(false);
     const [showOffEditP, setShowOffEditP] = useState(false);
     const [showOffEditR, setShowOffEditR] = useState(false);
@@ -72,6 +75,13 @@ function CrearCuestionario() {
         axios.get(GET_CUESTIONARIOS_URL).then((response) => {
             setCuestionariosList(response.data)
         })
+    }
+
+    const getMateriasList = () => {
+        axios.get(GET_MATERIAS_URL).then((response) => {
+            setMateriasList(response.data)
+        })
+        setShowModalBancoM(true)
     }
 
     const getPreguntas = () => {
@@ -441,6 +451,13 @@ function CrearCuestionario() {
                     onChange={(e) => setNombreC(e.target.value)}/>
                     <br/>
                     <Form.Label>Materia</Form.Label>
+                    <br/>
+                    <Button
+                    className="btnBancoPreguntas"
+                    size='sm'
+                    onClick={() => {getMateriasList()}}>
+                        Banco de Materias
+                    </Button>
                     <Form.Control
                     type="text"
                     placeholder="Ingresa el nombre de la materia"
@@ -644,6 +661,36 @@ function CrearCuestionario() {
                 }
             </div>
             </SlidingPane>
+            {/*MODAL BANCO MATERIAS*/}
+            <Modal
+            show={showModalBancoM}
+            size="sm"
+            scrollable
+            onHide={() => {setShowModalBancoM(false)}}>
+                <ModalHeader closeButton>
+                    <ModalTitle>
+                        Elige una materia de las siguientes opciones:
+                    </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    {materiasList.map(values => (
+                        <div key={values.idMateria} className="text-center">
+                            <ListGroup>
+                                <ListGroupItem>
+                                    <Button
+                                    variant="success"
+                                    onClick={() => {
+                                        setShowModalBancoM(false)
+                                        setMateriaC(values.materia)}}>
+                                        {values.materia}<AiOutlineSelect/>
+                                    </Button>
+                                </ListGroupItem>
+                            </ListGroup>
+                        </div>
+                        ))
+                    }
+                </ModalBody>
+            </Modal>
             {/*MODAL BANCO PREGUNTAS*/}
             <Modal 
             show={showModalP}
