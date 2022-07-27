@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom'
 import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Offcanvas, OverlayTrigger, Table, Tooltip, Overlay } from "react-bootstrap";
-import { AiOutlineEdit, AiOutlineEye, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineQuestionCircle, AiOutlineSelect, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai';
+import { AiOutlineEdit, AiOutlineEye, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineQuestionCircle, AiOutlineRollback, AiOutlineSelect, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai';
 import { BiMessageAltAdd } from 'react-icons/bi'
 import SlidingPane from 'react-sliding-pane';
 import axios from '../../axios/axios'
@@ -590,6 +590,12 @@ function CrearCuestionario() {
                         Ver cuestionario
                         <AiOutlineEye/>
                     </Button>
+                    <Link to={"/CuestionariosAdmin"}>
+                        <Button
+                        className="btnAct">
+                            Regresar<AiOutlineRollback/>
+                        </Button>
+                    </Link>
                 </Form.Group>
             </Form>
             {/*SLIDING PANE DE TABLA PREGUNTAS */}
