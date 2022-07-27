@@ -1,11 +1,12 @@
 import pdfMake from 'pdfmake/build/pdfmake'
 import pdfFonts from 'pdfmake/build/vfs_fonts'
 import axios from 'axios';
-const SUBIR_REPORTE = 'reportes/uploadreporte'
+const SUBIR_PROGRAMA_SEMESTRAL = 'reportes/uploadplansemestral'
 
-function PdfProgramaSemestral(datos, admin, alumno, nombrearchivo) {
+function PdfProgramaSemestral(datos, periodo, admin, alumno, nombrearchivo) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     console.log(datos)
+    console.log(periodo)
     console.log(admin)
     console.log(alumno)
     const filename = nombrearchivo;
@@ -21,7 +22,13 @@ function PdfProgramaSemestral(datos, admin, alumno, nombrearchivo) {
             text: admin,
             fontSize: 11,
             bold: true,
-            margin: [25, 40, 0, 45]
+            margin: [15, 20, 0, 45]
+        },
+        {
+            text: 'Programa Semestral'+periodo[0].periodo,
+            fontSize: 11,
+            bold: true,
+            margin: [15, 20, 0, 45]
         }
     ];
 
@@ -67,12 +74,14 @@ function PdfProgramaSemestral(datos, admin, alumno, nombrearchivo) {
         footer: [firma]
     };
 
-    const subirReporte = async () => {
+    const subirProgramaSemestral = async () => {
+        console.log("subiendo programa semestral")
         try{
-            const response = await axios.post(SUBIR_REPORTE, {
+            const response = await axios.post(SUBIR_PROGRAMA_SEMESTRAL, {
                 nombre: filename,
-                fc: timestamp,
-                fm: timestamp
+                semestre: periodo,
+                descripcion: JSON.stringify(datos),
+                alumno: alumno
             })
             console.log(response);
         } catch(error) {
@@ -81,7 +90,7 @@ function PdfProgramaSemestral(datos, admin, alumno, nombrearchivo) {
     }
 
     const pdf = pdfMake.createPdf(docDefinition);  
-    //subirReporte();
+    subirProgramaSemestral();
     pdf.download(filename);
 }
 

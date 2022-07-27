@@ -6,6 +6,7 @@ import PdfProgramaSemestral from '../../services/PdfCreatorProgramaSemestral'
 import "./reportes.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const GET_ADMINISTRADOR_URL = '/profiles/getadmin';
+const GET_SEMESTRE_URL = 'reportes/getsemestre';
 
 function ReportesNuevoAdmin() {
 
@@ -13,6 +14,7 @@ function ReportesNuevoAdmin() {
     const [idDelete, setIdDelete] = useState(0);
     const [datos, setDatos] = useState();
     const [tipo, setTipo] = useState();
+    const [semestre, setSemestre] = useState();
     const [nombreArchivo, setNombreArchivo] = useState("");
     const [alumnosList, setAlumnosList] = useState([]);
     const [alumnSearch, setAlumnSearch] = useState([]);
@@ -34,6 +36,7 @@ function ReportesNuevoAdmin() {
 
     useEffect(() => {
         getAdministrador();
+        getSemestre();
     }, [])
 
     const getAdministrador = () => {
@@ -42,6 +45,12 @@ function ReportesNuevoAdmin() {
         })
     }
     
+    const getSemestre = () => {
+        axios.get(GET_SEMESTRE_URL).then((response) => {
+            setSemestre(response.data)
+        })
+    }
+
     const getAlumnos = () => {
         axios.get(GET_ALUMNOS_URL).then(response => {
             setAlumnSearch(response.data);
@@ -195,6 +204,9 @@ function ReportesNuevoAdmin() {
                         <ListGroupItem>
                             <h5>Titular de lenguaje: {administrador}</h5>
                         </ListGroupItem>
+                        <ListGroupItem>
+                            <h5>Semestre: {semestre[0]?.periodo}</h5>
+                        </ListGroupItem>
                     </ListGroup>
                     <br/>
                     <Button
@@ -204,7 +216,7 @@ function ReportesNuevoAdmin() {
                     </Card.Body>
                     <Card.Footer>
                         <Button className='btnSeleccion'
-                        onClick={(e) => PdfProgramaSemestral(temasSemestre, administrador, alumno, nombreArchivo)}>
+                        onClick={(e) => PdfProgramaSemestral(temasSemestre, semestre, administrador, alumno, nombreArchivo)}>
                             Crear Reporte
                             <AiOutlineFilePdf/>  
                         </Button>
@@ -377,6 +389,7 @@ function ReportesNuevoAdmin() {
                 onClick={() => {handleNuevoObjetivo()}}
                 >
                     Agregar Objetivo
+                    <AiOutlinePlus/>
                 </Button>
                 {temasSemestre.map((elemento, index) => {
                         return(
@@ -425,7 +438,7 @@ function ReportesNuevoAdmin() {
                     </Button>
                 </Modal.Body>
             </Modal>
-            {/*MODAL BORRAR HITO*/}
+            {/*MODAL BORRAR OBJETIVO*/}
             <Modal 
              show={showMDelete} 
              onHide={() => {setShowMDelete(false)}}>
