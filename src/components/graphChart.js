@@ -8,6 +8,7 @@ import { alpha } from '@material-ui/core/styles';
 import DateFnsUtils from '@date-io/date-fns';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { AiOutlineCalendar, AiOutlineDownload } from 'react-icons/ai';
     
   export default function GraphChart({chartData}) {
       
@@ -35,6 +36,7 @@ import { es } from 'date-fns/locale';
         mode: 'index',
       }
     };
+    const [nombreArchivo, setNombreArchivo] = useState('');
     const ref = useRef(null);
     const graph = <Bar data={datos} options={options} ref={ref}/>;
 
@@ -81,6 +83,15 @@ import { es } from 'date-fns/locale';
       });
     }
 
+    function downloadGraph () {
+      const canvas = ref.current.toBase64Image();
+      const a = document.createElement('a');
+      a.href = canvas;
+      a.download = nombreArchivo+'.png';
+      a.click();
+      setNombreArchivo('');
+    }
+
     return (
     <div>
       {graph}
@@ -111,6 +122,7 @@ import { es } from 'date-fns/locale';
             className="btnAct"
             onClick={filtroFecha}>
               Filtrar por fechas
+              <AiOutlineCalendar/>
             </Button>
             {filtrado &&
             <Button
@@ -119,6 +131,18 @@ import { es } from 'date-fns/locale';
               Reset
             </Button>
             }
+            <input
+            placeholder='Nombre del archivo'
+            value={nombreArchivo}
+            onChange={e => setNombreArchivo(e.target.value)}
+            />
+            <br/>
+            <Button
+            className='btnAct'
+            onClick={downloadGraph}>
+              Descargar gráfico
+              <AiOutlineDownload/>
+            </Button>
           </Card.Footer>
         </Card>
       </div>

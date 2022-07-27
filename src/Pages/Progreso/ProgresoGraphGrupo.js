@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
 import { Button, Card, Modal } from 'react-bootstrap';
-import { VscGraph } from 'react-icons/vsc'
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import GraphChartGroup from '../../components/graphChartGroup'
 import axios from '../../axios/axios';
 const GRAFICA_ADMIN_URL = '/graphs/generagraphadmin';
@@ -45,6 +46,7 @@ function ProgresoGraphGrupo() {
               className="btnAct"
               onClick={() => setShowNoN(false)}>
                 Ocultar Gráfica
+                <AiOutlineEyeInvisible/>
               </Button>
               <GraphChartGroup chartData={graphDataNoN} />
             </Card.Body>
@@ -58,16 +60,24 @@ function ProgresoGraphGrupo() {
         className='text-center'
         style={{ width: "100%" }}>
           <Card.Header>
-            <h2>Visualizar Gráfica de puntajes</h2>
+            <h2>Visualizar gráfica de puntajes grupal</h2>
           </Card.Header>
           <Card.Body>
             <Button
             className='btnBancoPreguntas'
             onClick={revealGraphNoN}>
               Ver
-              <VscGraph />
+              <AiOutlineEye />
             </Button>
           </Card.Body>
+          <Card.Footer>
+            <Link to={`/ProgresoGrupoAdmin`}>
+            <Button
+            className='btnAct'>
+              Regresar
+            </Button>
+            </Link>
+          </Card.Footer>
         </Card>
       </div>
     )
