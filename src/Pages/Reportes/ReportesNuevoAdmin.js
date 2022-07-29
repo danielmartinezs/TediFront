@@ -212,34 +212,49 @@ function ReportesNuevoAdmin() {
                 {tipo === 'Evaluación de Articulación' &&
                 <Card>
                     <Card.Header>
-                    <h3>{tipo}</h3>
+                        <h3>{tipo}</h3>
                     </Card.Header>
                     <Card.Body>
-                    <input
-                    value={nombreArchivo}
-                    onChange={(e) => setNombreArchivo(e.target.value)}
-                    placeholder='Nombre del archivo'/>
-                    <ListGroup>
-                        <ListGroupItem>
-                            <h5>Nombre del archivo: {nombreArchivo}</h5>
-                        </ListGroupItem>
-                        <ListGroupItem>
-                            <h5>Alumno: {alumno}</h5>
-                        </ListGroupItem>
-                        <ListGroupItem>
-                            <h5>Titular de lenguaje: {administrador}</h5>
-                        </ListGroupItem>
-                    </ListGroup>
+                        <input
+                        value={nombreArchivo}
+                        onChange={(e) => setNombreArchivo(e.target.value)}
+                        placeholder='Nombre del archivo'/>
+                        <ListGroup>
+                            <ListGroupItem>
+                                <h5>Nombre del archivo: {nombreArchivo}</h5>
+                            </ListGroupItem>
+                            <ListGroupItem>
+                                <h5>Alumno: {alumno}</h5>
+                            </ListGroupItem>
+                            <ListGroupItem>
+                                <h5>Titular de lenguaje: {administrador}</h5>
+                            </ListGroupItem>
+                            {fechaSelect &&
+                            <ListGroupItem>
+                                <h5>Fecha del reporte: {format(parseISO(fechaSelect), 'PPPPp', { locale: es })}</h5>
+                            </ListGroupItem>}
+                            <OverlayTrigger
+                            trigger='focus'
+                            placement="bottom"
+                            overlay={renderTooltipFecha}>
+                                <Button
+                                className='btnCrear'
+                                onClick={() => {handleDisplayFechas()}}>
+                                    Elegir fecha
+                                    <AiOutlineCalendar/>
+                                </Button>
+                            </OverlayTrigger>
+                        </ListGroup>
                     </Card.Body>
                     <Card.Footer>
-                        <Button className='btnSeleccion'
-                        onClick={() => {
-                            setAlumno(alumnosList[alumnSelect-1]?.nombre)
-                            setShowModalAlumnos(false)
-                            }}>
-                            Crear Reporte
-                            <AiOutlineFilePdf/> 
-                        </Button>
+                        {fechaSelect !== "" &&
+                        <Link to={`/ReportesNuevoRegistroAdmin/${fechaSelect}`}>
+                            <Button
+                            className='btnCrear'>
+                                Generar reporte
+                                <AiOutlineFilePdf/> 
+                            </Button>
+                        </Link>}
                     </Card.Footer>
                 </Card>
                 }
