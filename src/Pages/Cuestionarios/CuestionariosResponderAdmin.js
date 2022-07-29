@@ -102,6 +102,7 @@ function Respuesta () {
                 setVariante('success')
                 setMsg(response.data.message)
                 console.log(response.data)
+                setTiempoRegistro(response.data.message)
             }
         }catch(error){
             if(!error?.response){
