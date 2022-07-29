@@ -100,7 +100,7 @@ function Respuesta () {
             if(response.status === 200){
                 setShowA(true)
                 setVariante('success')
-                setMsg(response.data.message)
+                setMsg("Las respuestas han sido registradas correctamente")
                 console.log(response.data)
                 setTiempoRegistro(response.data.message)
             }

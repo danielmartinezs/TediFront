@@ -1,5 +1,5 @@
 import React, { useEffect, useState }from 'react'
-import { Accordion, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas } from 'react-bootstrap'
+import { Accordion, Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas } from 'react-bootstrap'
 import { AiOutlineCheck, AiOutlineEdit, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineFilePdf, AiOutlineSearch, AiOutlineSelect } from 'react-icons/ai';
 import axios from '../../axios/axios';
 import PdfProgramaSemestral from '../../services/PdfCreatorProgramaSemestral'
@@ -7,12 +7,16 @@ import "./reportes.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const GET_ADMINISTRADOR_URL = '/profiles/getadmin';
 const GET_SEMESTRE_URL = 'reportes/getsemestre';
+const GET_FECHAS_EVALUACIONES_URL = 'reportes/getfechasalumno';
 
 function ReportesNuevoAdmin() {
 
     const [idEditar, setIdEditar] = useState(0);
     const [idDelete, setIdDelete] = useState(0);
     const [datos, setDatos] = useState();
+    const [fechasEval, setFechasEval] = useState();
+    const [fechaSelect, setFechaSelect] = useState('');
+    const [idCuestionario, setIdCuestionario] = useState(0);
     const [tipo, setTipo] = useState();
     const [semestre, setSemestre] = useState();
     const [nombreArchivo, setNombreArchivo] = useState("");
@@ -29,6 +33,7 @@ function ReportesNuevoAdmin() {
     const [temasSemestre, setTemasSemestre] = useState([]);
     const [showModalTipo, setShowModalTipo] = useState(true);
     const [showModalAlumnos, setShowModalAlumnos] = useState(false);
+    const [showModalFechasEval, setShowModalFechasEval] = useState(false);
     const [showModalObjetivos, setShowModalObjetivos] = useState(false);
     const [showMDelete, setShowMDelete] = useState(false);
     const [showOffEditO, setShowOffEditO] = useState(false);
@@ -55,6 +60,12 @@ function ReportesNuevoAdmin() {
         axios.get(GET_ALUMNOS_URL).then(response => {
             setAlumnSearch(response.data);
             setAlumnosList(response.data);
+        })
+    }
+
+    const getFechasEvaluaciones = () => {
+        axios.get(GET_FECHAS_EVALUACIONES_URL+"/"+alumnSelect).then((response) => {
+            setFechasEval(response.data);
         })
     }
 
@@ -295,6 +306,7 @@ function ReportesNuevoAdmin() {
                         setTipo(e.target.value)
                         setShowModalTipo(false)
                         handleDisplayAlumnos()
+                        getFechasEvaluaciones()
                         }}>
                         Evaluación de Articulación
                     </Button>
@@ -302,9 +314,11 @@ function ReportesNuevoAdmin() {
                     className= 'btnSeleccion'
                     value= 'Evaluación de Habilidades Preverbales'
                     onClick={(e) => {
+                        setIdCuestionario(1);
                         setTipo(e.target.value)
                         setShowModalTipo(false)
                         handleDisplayAlumnos()
+                        getFechasEvaluaciones()
                         }}>
                         Evaluación de Habilidades Preverbales
                     </Button>
@@ -365,12 +379,46 @@ function ReportesNuevoAdmin() {
                     }
                 </Modal.Footer>
             </Modal>
+            {/* MODAL ELECCION FECHA */}
+            <Modal
+            showModalFechasEval
+            scrollable={true}>
+                <Modal.Header>
+                    <Modal.Title>¿Con base a cuál registro deseas realizar el reporte?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {fechasEval.map(values => (
+                        <div key={values.idFecha}>
+                            <Card
+                            className="text-center"
+                            border = "warning"
+                            style={{ width: '100%' }}>
+                                <Card.Body>
+                                <div>
+                                    {values.fecha}
+                                    <br/>
+                                    <Button
+                                    variant="success"
+                                    onClick={() => {
+                                        setFechaSelect(values.idFecha)
+                                        setShowModalFechasEval(false)
+                                        }}>
+                                        <AiOutlineSelect/>
+                                    </Button>
+                                </div>
+                                </Card.Body>
+                            </Card>
+                        </div>
+                        ))
+                    }
+                </Modal.Body>
+            </Modal>
             {/* MODAL LISTA DE OBJETIVOS */}
             <Modal
             show={showModalObjetivos}
             scrollable
-            >
-                <Modal.Header>
+            onHide={() => {setShowModalObjetivos(false)}}>
+                <Modal.Header closeButton>
                     <Modal.Title>Lista de objetivos</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
