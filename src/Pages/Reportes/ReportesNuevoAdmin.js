@@ -1,8 +1,11 @@
-import React, { useEffect, useState }from 'react'
-import { Accordion, Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas } from 'react-bootstrap'
-import { AiOutlineCheck, AiOutlineEdit, AiOutlineInfoCircle, AiOutlineDelete, AiOutlinePlus, AiOutlineFilePdf, AiOutlineSearch, AiOutlineSelect } from 'react-icons/ai';
+import React, { useEffect, useState }from 'react';
+import { Link } from 'react-router-dom';
+import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { AiOutlineCalendar, AiOutlineCheck, AiOutlineDelete, AiOutlineEdit, AiOutlineFilePdf, AiOutlineInfoCircle, AiOutlinePlus, AiOutlineSearch, AiOutlineSelect } from 'react-icons/ai';
 import axios from '../../axios/axios';
 import PdfProgramaSemestral from '../../services/PdfCreatorProgramaSemestral'
+import { format, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale';
 import "./reportes.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const GET_ADMINISTRADOR_URL = '/profiles/getadmin';
@@ -122,12 +125,20 @@ function ReportesNuevoAdmin() {
         setShowModalObjetivos(true);
     }
 
+    const renderTooltipFecha = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Para poder generar este reporte primero debes de elegir una fecha ya existente, en caso de no contar con una no podras generar el reporte.
+        </Tooltip>
+    );
+
     return (
         <div>
             <div className='text-center'>
                 <h1>Creación de Reportes</h1>
                 <Button
-                onClick={() => {setShowModalTipo(true)}}>
+                onClick={() => {
+                    setShowModalTipo(true)
+                    setAlumnSelect()}}>
                     Cambiar tipo de reporte
                 </Button>
                 <Button
@@ -163,6 +174,7 @@ function ReportesNuevoAdmin() {
                             setShowModalAlumnos(false)
                             }}>
                             Crear Reporte
+                            <AiOutlineFilePdf/> 
                         </Button>
                     </Card.Footer>
                 </Card>
@@ -185,18 +197,34 @@ function ReportesNuevoAdmin() {
                                 <h5>Alumno: {alumno}</h5>
                             </ListGroupItem>
                             <ListGroupItem>
-                            <h5>Titular de lenguaje: {administrador}</h5>
+                                <h5>Titular de lenguaje: {administrador}</h5>
                             </ListGroupItem>
+                            {fechaSelect &&
+                            <ListGroupItem>
+                                <h5>Fecha del reporte: {format(parseISO(fechaSelect), 'PPPPp', { locale: es })}</h5>
+                            </ListGroupItem>}
+                            <OverlayTrigger
+                            trigger='focus'
+                            placement="bottom"
+                            overlay={renderTooltipFecha}>
+                                <Button
+                                className='btnCrear'
+                                onClick={() => {handleDisplayFechas()}}>
+                                    Elegir fecha
+                                    <AiOutlineCalendar/>
+                                </Button>
+                            </OverlayTrigger>
                         </ListGroup>
                     </Card.Body>
                     <Card.Footer>
-                        <Button className='btnSeleccion'
-                        onClick={() => {
-                            setAlumno(alumnosList[alumnSelect-1]?.nombre)
-                            setShowModalAlumnos(false)
-                            }}>
-                            Crear Reporte
-                        </Button>
+                        {fechaSelect !== "" &&
+                        <Link to={`/ReportesNuevoRegistroAdmin/${fechaSelect}`}>
+                            <Button
+                            className='btnCrear'>
+                                Generar reporte
+                                <AiOutlineFilePdf/> 
+                            </Button>
+                        </Link>}
                     </Card.Footer>
                 </Card>
                 }
@@ -268,6 +296,7 @@ function ReportesNuevoAdmin() {
                             setShowModalAlumnos(false)
                             }}>
                             Crear Reporte
+                            <AiOutlineFilePdf/> 
                         </Button>
                     </Card.Footer>
                 </Card>
@@ -284,6 +313,7 @@ function ReportesNuevoAdmin() {
                     </ModalTitle>
                 </ModalHeader>
                 <ModalBody>
+                    <div className='text-center'>
                     <Button
                     className='btnSeleccion'
                     value= 'Programa Semestral'
@@ -311,7 +341,7 @@ function ReportesNuevoAdmin() {
                         setTipo(e.target.value)
                         setShowModalTipo(false)
                         handleDisplayAlumnos()
-                        handleDisplayFechas()
+                        //handleDisplayFechas()
                         }}>
                         Evaluación de Articulación
                     </Button>
@@ -323,10 +353,11 @@ function ReportesNuevoAdmin() {
                         setTipo(e.target.value)
                         setShowModalTipo(false)
                         handleDisplayAlumnos()
-                        handleDisplayFechas()
+                        //handleDisplayFechas()
                         }}>
                         Evaluación de Habilidades Preverbales
                     </Button>
+                    </div>
                 </ModalBody>
             </Modal>
             {/* MODAL SELECCIÓN ALUMNO */}
@@ -387,12 +418,15 @@ function ReportesNuevoAdmin() {
             {/* MODAL ELECCION FECHA */}
             <Modal
             show={showModalFechasEval}
-            scrollable={true}>
-                <Modal.Header>
+            scrollable={true}
+            onHide={() => {setShowModalFechasEval(false)}}>
+                <Modal.Header closeButton>
                     <Modal.Title>¿Con base a cuál registro deseas realizar el reporte?</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {fechasEval?.map(values => (
+                    {fechasEval?.length > 0 ? 
+                    <div>
+                        {fechasEval.map(values => (
                         <div key={values.idFecha}>
                             <Card
                             className="text-center"
@@ -405,7 +439,7 @@ function ReportesNuevoAdmin() {
                                     <Button
                                     variant="success"
                                     onClick={() => {
-                                        setFechaSelect(values.idFecha)
+                                        setFechaSelect(values.fecha)
                                         setShowModalFechasEval(false)
                                         }}>
                                         <AiOutlineSelect/>
@@ -414,7 +448,12 @@ function ReportesNuevoAdmin() {
                                 </Card.Body>
                             </Card>
                         </div>
-                        ))
+                        ))}
+                    </div>
+                    :
+                    <div>
+                        Al alumno no se le ha asignado ningún registro de evaluación
+                    </div>
                     }
                 </Modal.Body>
             </Modal>

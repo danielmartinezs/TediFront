@@ -3,7 +3,7 @@ import AuthContext from "../../context/AuthProvider";
 import axios from '../../axios/axios';
 import './login.css';
 import  Logo from '../../assets/Logo.jpg';
-import { Alert, Button, Overlay, OverlayTrigger, ToggleButton, Tooltip } from 'react-bootstrap';
+import { Alert, Button, OverlayTrigger, ToggleButton, Tooltip } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 const LOGIN_URL = '/login'
 
