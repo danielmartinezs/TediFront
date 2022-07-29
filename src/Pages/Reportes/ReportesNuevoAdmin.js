@@ -96,7 +96,7 @@ function ReportesNuevoAdmin() {
     }
 
     const handleDisplayFechas = () => {
-        getFechasEvaluaciones()
+        getFechasEvaluaciones();
         setShowModalFechasEval(true);
     }
 
@@ -386,7 +386,7 @@ function ReportesNuevoAdmin() {
             </Modal>
             {/* MODAL ELECCION FECHA */}
             <Modal
-            showModalFechasEval
+            show={showModalFechasEval}
             scrollable={true}>
                 <Modal.Header>
                     <Modal.Title>¿Con base a cuál registro deseas realizar el reporte?</Modal.Title>
