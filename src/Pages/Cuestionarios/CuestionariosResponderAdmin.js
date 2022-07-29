@@ -6,12 +6,11 @@ import {  AiOutlineEdit, AiOutlineSend, AiTwotoneStar } from 'react-icons/ai';
 import "./cuestionarios.css";
 import axios from '../../axios/axios'
 const GET_QUESTIONNAIRE_INFO_URL = '/questionnaires/getquestionnaireinfo'
-const UPLOAD_QUESTIONNAIRES_URL = '/questionnaires/uploadquestionnaire'
-const EDIT_QUESTIONNAIRES_URL = '/questionnaires/edituploadedquestionnaire'
+const SUBMIT_QUESTIONNAIRE_URL = '/questionnaires/submitquestionnaire'
+const EDIT_QUESTIONNAIRE_URL = '/questionnaires/editsubmittedquestionnaire'
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 const GET_RECENT_ENTRY_URL = 'questionnaires/getrecententry'
 const INGRESA_HITO_URL = '/profiles/newhito';
-const GENERA_REPORTE_URL = 'reportes/crearreporteprueba';
 
 function Respuesta () {
 
@@ -91,7 +90,7 @@ function Respuesta () {
     const handleUploadCuestionario = async (resultadoPuntaje, respuestas) => {
         console.log("resultadoPuntaje"+resultadoPuntaje)
         try{
-            const response = await axios.post(UPLOAD_QUESTIONNAIRES_URL, {
+            const response = await axios.post(SUBMIT_QUESTIONNAIRE_URL, {
                 ida: idAlumno,
                 idc: selectedQuestionnaire,
                 respuestas: JSON.stringify(respuestas),
@@ -121,7 +120,7 @@ function Respuesta () {
     const handleSubmitEdicion = async () => {
         calcularPuntajeEdit()
         try{
-            const response = await axios.post(EDIT_QUESTIONNAIRES_URL, {
+            const response = await axios.post(EDIT_QUESTIONNAIRE_URL, {
                 ida: idAlumno,
                 idc: selectedQuestionnaire,
                 timestamp: tiempoRegistro,
@@ -154,31 +153,6 @@ function Respuesta () {
               } else if(error.response?.status === 500){
                 setShowA(true)
                 setVariante('error')
-                setMsg("Algo salió mal al cargar los datos");
-              }
-        }
-    }
-
-    const handleGenerarReporte = async () => {
-        try{
-            const response = await axios.post(GENERA_REPORTE_URL, {
-                timestamp: tiempoRegistro,
-            })
-            if(response.status === 200){
-                window.open(response.data, '_blank');
-                console.log(response);
-                //setDatos(response.data);
-            }
-        }catch(error){
-            if(!error?.response){
-                setMsg('No hay respuesta del servidor');
-              } else if(error.response?.status === 400){
-                setMsg(error.response.data.message);
-              } else if(error.response?.status === 401){
-                setMsg('Usuario sin autorización');
-              } else if(error.response?.status === 403){
-                setMsg(error.response.data.message);
-              } else if(error.response?.status === 500){
                 setMsg("Algo salió mal al cargar los datos");
               }
         }
@@ -363,7 +337,14 @@ function Respuesta () {
         setComment("")
         console.log("resultadoPuntaje"+resultadoPuntaje)
         handleUploadCuestionario(resultadoPuntaje, respuestas)
+    }
+
+    const generarReporte = () => {
         getMostRecent()
+        setShowA(true);
+        setVariante('success');
+        setMsg(tiempoRegistro+'');
+        
     }
 
     const renderTooltipSelect = (props) => (
@@ -462,6 +443,11 @@ function Respuesta () {
           onClick={() => {setShowMEdit(true)}}>
             Editar Respuestas
           </Button>
+            <Button
+            className='buttonq'
+            onClick={() => {generarReporte()}}>
+                Checar timestamp
+            </Button>
           <Link to={`/ReportesNuevoRegistroAdmin/${tiempoRegistro}`}>
             <Button
             size='lg'
