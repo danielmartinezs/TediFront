@@ -11,7 +11,6 @@ function HomeAdmin() {
 
   return (
     <div style={{ display: 'center', padding: 10 }}>
-      <h3>Página principal</h3>
       <Carousel variant="dark">
         <Carousel.Item interval={15000}>
           <div>            
