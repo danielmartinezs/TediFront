@@ -1,9 +1,10 @@
 import React, { useEffect, useState }from 'react';
 import { Link } from 'react-router-dom';
 import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { AiOutlineCalendar, AiOutlineCheck, AiOutlineDelete, AiOutlineEdit, AiOutlineFilePdf, AiOutlineInfoCircle, AiOutlinePlus, AiOutlineSearch, AiOutlineSelect } from 'react-icons/ai';
+import { AiOutlineCalendar, AiOutlineCheck, AiOutlineClose, AiOutlineDelete, AiOutlineEdit, AiOutlineFilePdf, AiOutlineInfoCircle, AiOutlinePlus, AiOutlineSearch, AiOutlineSelect } from 'react-icons/ai';
 import axios from '../../axios/axios';
 import PdfProgramaSemestral from '../../services/PdfCreatorProgramaSemestral'
+import PdfReporteSemestral from '../../services/PdfCreatorReporteSemestral';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import "./reportes.css"
@@ -29,6 +30,11 @@ function ReportesNuevoAdmin() {
     const [alumno, setAlumno] = useState("");
     const [administrador, setAdministrador] = useState('');
     const [busqueda, setBusqueda] = useState("");
+    const [planSelect, setPlanSelect] = useState();
+    const [detalles, setDetalles] = useState();
+    const [toggle, setToggle] = useState(false);
+    const [veredicto, setVeredicto] = useState('');
+    const [cumplido, setCumplido] = useState('');
     const [objetivo, setObjetivo] = useState("");
     const [objetivoEdit, setObjetivoEdit] = useState("");
     const [descripcion, setDescripcion] = useState("");
@@ -44,7 +50,9 @@ function ReportesNuevoAdmin() {
     const [showModalPlan, setShowModalPlan] = useState(false);
     const [showMDelete, setShowMDelete] = useState(false);
     const [showOffEditO, setShowOffEditO] = useState(false);
+    const [btnState, setBtnState] = useState(false);
     var idAdmin = localStorage.getItem('id');
+    let stateCheck = btnState ? 'success' : 'danger';
 
     useEffect(() => {
         getAdministrador();
@@ -79,6 +87,7 @@ function ReportesNuevoAdmin() {
     const getPlanSemestral = () => {
         axios.get(GET_PLAN_SEMESTRAL_URL+"/"+alumnSelect).then((response) => {
             setTemarioSemestral(response.data);
+            console.log(JSON.parse(response.data[0].detalles));
         })
     }
 
@@ -118,6 +127,17 @@ function ReportesNuevoAdmin() {
         setShowModalPlan(true);
     }
 
+    const handleDisplayCheckeo = (slot) => {
+        setPlanSelect(slot);
+        const details = JSON.parse(temarioSemestral[slot].detalles);
+        for(var i = 0; i < details.length; i++){
+            details[i].cumplido = false;
+        }
+        setDetalles(details);
+        setShowModalPlan(false)
+        setShowModalCheck(true)
+    }
+
     const handleNuevoObjetivo = () => {
         setTemasSemestre([...temasSemestre, {objetivo: objetivo, descripcion: descripcion}]);
         setObjetivo("");
@@ -140,6 +160,29 @@ function ReportesNuevoAdmin() {
         setShowModalObjetivos(true);
     }
 
+    const toggleCheck = (slug) => {
+        console.log(slug+'Antes: '+detalles[slug].cumplido)
+        detalles[slug].cumplido = !detalles[slug].cumplido;
+        setBtnState(btnState => !btnState);
+        console.log(slug+'Ahora: '+detalles[slug].cumplido)
+        setDetalles(detalles);
+        veredict();
+    }
+
+    const veredict = () => {
+        var veredicto = "";
+        for(var i = 0; i < detalles.length; i++){
+            if(detalles[i].cumplido){
+                veredicto += "✅ ";
+            }
+            else{
+                veredicto += "❌ ";
+            }
+        }
+        setVeredicto(veredicto);
+        {!veredicto.includes("❌ ")? setCumplido('Se cumplieron todos los objetivos'): setCumplido('No se cumplieron todos los objetivos') }
+    }
+
     const renderTooltipFecha = (props) => (
         <Tooltip id="button-tooltip" {...props}>
             Para poder generar este reporte primero debes de elegir una fecha ya existente, en caso de no contar con una no podras generar el reporte.
@@ -153,11 +196,17 @@ function ReportesNuevoAdmin() {
                 <Button
                 onClick={() => {
                     setShowModalTipo(true)
-                    setAlumnSelect()}}>
+                    setAlumnSelect()
+                    setDetalles()
+                    setNombreArchivo()}}>
                     Cambiar tipo de reporte
                 </Button>
                 <Button
-                onClick={() => {setShowModalAlumnos(true)}}>
+                onClick={() => {
+                    setShowModalAlumnos(true)
+                    setDetalles()
+                    setNombreArchivo()
+                    }}>
                     Cambiar alumno
                 </Button>
                 {tipo === 'Evaluación de Articulación' &&
@@ -302,6 +351,15 @@ function ReportesNuevoAdmin() {
                         <ListGroupItem>
                             <h5>Titular de lenguaje: {administrador}</h5>
                         </ListGroupItem>
+                        <ListGroupItem>
+                            <h5>Detalles: {detalles &&JSON.stringify(detalles)} </h5>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <h5>Veredicto: {veredicto}</h5>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <h5>Cumplido: {cumplido}</h5>
+                        </ListGroupItem>
                     </ListGroup>
                     <br/>
                     <Button
@@ -311,10 +369,7 @@ function ReportesNuevoAdmin() {
                     </Card.Body>
                     <Card.Footer>
                         <Button className='btnSeleccion'
-                        onClick={() => {
-                            setAlumno(alumnosList[alumnSelect-1]?.nombre)
-                            setShowModalAlumnos(false)
-                            }}>
+                        onClick={(e) => PdfReporteSemestral(temarioSemestral, administrador, alumno, nombreArchivo, cumplido)}>
                             Crear Reporte
                             <AiOutlineFilePdf/> 
                         </Button>
@@ -628,18 +683,21 @@ function ReportesNuevoAdmin() {
                 </Modal.Header>
                 <Modal.Body>
                     {temarioSemestral.length > 0 ?
-                    <div>
-                        <h6>Objetivos</h6>
+                    <div className='text-center'>
+                        <h5>Listado de Planes Semestrales</h5>
                         {temarioSemestral.map((elemento, index) => {
                                 return(
                                     <div key={index} className="text-center">
                                         <ListGroup>
                                             <ListGroupItem>
+                                                <h6>Nombre: {elemento.planSemestral} </h6>
                                                 <h6>Semestre: {elemento.periodo}</h6>
                                             </ListGroupItem>
-                                            <ListGroupItem>
-                                                <h6>Nombre: {elemento.planSemestral} </h6>
-                                            </ListGroupItem>
+                                            <Button
+                                            variant="success"
+                                            onClick={() => {handleDisplayCheckeo(index)}}>
+                                                <AiOutlineSelect/>
+                                            </Button>
                                         </ListGroup>
                                     </div>
                                 )
@@ -659,51 +717,41 @@ function ReportesNuevoAdmin() {
             show={showModalCheck}
             onHide={() => {setShowModalCheck(false)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Revisión de plan semestral</Modal.Title>
+                    <Modal.Title>Revisión de Plan Semestral:<br/> {temarioSemestral[planSelect]?.planSemestral}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {temarioSemestral.length > 0 ?
-                    <div>
-                        <h6>Objetivos</h6>
-                        {temarioSemestral.map((elemento, index) => {
-                                return(
-                                    <div key={index} className="text-center">
-                                        <ListGroup>
-                                            <ListGroupItem>
-                                                <h6>Objetivo {index+1}</h6>
-                                            </ListGroupItem>
-                                            <ListGroupItem>
-                                                <h6>{elemento.objetivo}</h6>
-                                                <h6>{elemento.descripcion}</h6>
-                                        </ListGroupItem>
-                                        </ListGroup>
-                                    </div>
-                                )
-                            }
-                            )}
-                        <h6>Actividades</h6>
-                        {temarioSemestral.map((elemento, index) => {
-                                return(
-                                    <div key={index} className="text-center">
-                                        <ListGroup>
-                                            <ListGroupItem>
-                                                <h6>Actividad {index+1}</h6>
-                                            </ListGroupItem>
-                                            <ListGroupItem>
-                                                <h6>{elemento.actividad}</h6>
-                                                <h6>{elemento.descripcion}</h6>
-                                        </ListGroupItem>
-                                        </ListGroup>
-                                    </div>
-                                )
-                            }
-                            )}
-                    </div>
-                    :
-                    <div className="text-center">
-                        <h6>El alumno actualmente no cuenta con un plan semestral</h6>
-                    </div>
+                    <div className='text-center'>
+                    {detalles?.map((elemento, index) => {
+                        return(
+                            <div key={index} className="text-center">
+                                <ListGroup>
+                                    <ListGroupItem>
+                                        <h6>Objetivo: {elemento.objetivo}</h6>
+                                        <h6>Descripción: {elemento.descripcion}</h6>
+                                        <h6>Cumplido: {elemento.cumplido ? 'Cumplido' : 'No cumplido'}</h6>
+                                        {elemento.cumplido ?
+                                         <Button
+                                         className='btnBorrarP'
+                                         variant='success'>
+                                            <AiOutlineCheck/>
+                                        </Button> : 
+                                        <Button
+                                        className='btnBorrarP'
+                                         variant='danger'>
+                                            <AiOutlineClose/>
+                                        </Button>}
+                                    <Button
+                                    className='btnBorrarP'
+                                    onClick={() => {toggleCheck(index)}}>
+                                        Cambiar estado
+                                    </Button>
+                                    </ListGroupItem>
+                                </ListGroup>
+                            </div>
+                        )
                     }
+                    )}
+                    </div>
                 </Modal.Body>
             </Modal>
         </div>
