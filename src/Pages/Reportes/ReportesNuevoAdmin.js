@@ -95,6 +95,11 @@ function ReportesNuevoAdmin() {
         setShowModalAlumnos(true);
     }
 
+    const handleDisplayFechas = () => {
+        getFechasEvaluaciones()
+        setShowModalFechasEval(true);
+    }
+
     const handleNuevoObjetivo = () => {
         setTemasSemestre([...temasSemestre, {objetivo: objetivo, descripcion: descripcion}]);
         setObjetivo("");
@@ -306,7 +311,7 @@ function ReportesNuevoAdmin() {
                         setTipo(e.target.value)
                         setShowModalTipo(false)
                         handleDisplayAlumnos()
-                        getFechasEvaluaciones()
+                        handleDisplayFechas()
                         }}>
                         Evaluación de Articulación
                     </Button>
@@ -318,7 +323,7 @@ function ReportesNuevoAdmin() {
                         setTipo(e.target.value)
                         setShowModalTipo(false)
                         handleDisplayAlumnos()
-                        getFechasEvaluaciones()
+                        handleDisplayFechas()
                         }}>
                         Evaluación de Habilidades Preverbales
                     </Button>
@@ -387,7 +392,7 @@ function ReportesNuevoAdmin() {
                     <Modal.Title>¿Con base a cuál registro deseas realizar el reporte?</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {fechasEval.map(values => (
+                    {fechasEval?.map(values => (
                         <div key={values.idFecha}>
                             <Card
                             className="text-center"
