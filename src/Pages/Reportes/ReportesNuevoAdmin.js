@@ -369,7 +369,7 @@ function ReportesNuevoAdmin() {
                     </Card.Body>
                     <Card.Footer>
                         <Button className='btnSeleccion'
-                        onClick={(e) => PdfReporteSemestral(temarioSemestral, administrador, alumno, nombreArchivo, cumplido)}>
+                        onClick={(e) => PdfReporteSemestral(temarioSemestral, detalles, administrador, alumno, nombreArchivo, cumplido)}>
                             Crear Reporte
                             <AiOutlineFilePdf/> 
                         </Button>

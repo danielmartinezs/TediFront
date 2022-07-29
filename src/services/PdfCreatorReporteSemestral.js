@@ -3,11 +3,14 @@ import pdfFonts from 'pdfmake/build/vfs_fonts'
 import axios from 'axios';
 const SUBIR_REPORTE_SEMESTRAL = 'reportes/uploadreportesemestral'
 
-function PdfReporteSemestral(datos, admin, alumno, nombrearchivo, veredicto) {
+function PdfReporteSemestral(datos, detalles, admin, alumno, nombrearchivo, veredicto) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     console.log(datos)
+    console.log(detalles)
     console.log(admin)
     console.log(alumno)
+    console.log(nombrearchivo)
+    console.log(veredicto)
     const filename = nombrearchivo;
     const timestamp = new Date().getTime();
     const reportTitle = [
@@ -31,31 +34,34 @@ function PdfReporteSemestral(datos, admin, alumno, nombrearchivo, veredicto) {
         }
     ];
 
-    const objetivos = datos.map((objective) => {
+    const objetivos = detalles.map((details) => {
         return [
             {
-                text: objective.objetivo,
-                fontSize: 15,
+                text: details.objetivo,
+                fontSize: 11,
                 margin: [15, 20, 0, 45]
             },
             {
-                text: objective.descripcion,
-                fontSize: 15,
+                text: details.descripcion,
+                fontSize: 11,
                 margin: [15, 20, 0, 45]
             },
             {
-                text: objective.cumplido,
-                fontSize: 15,
+                text: details.cumplido,
+                fontSize: 11,
                 margin: [15, 20, 0, 45]
             }
         ]
     });
     
+
+    console.log(objetivos)
+
     const details = [
         {
             table: {
                 headerRows: 1,
-                widths: ['*', '*'],
+                widths: ['*', '*', '*'],
                 body: [
                     [
                         { text: 'Objetivos', style: 'tableHeader' },
@@ -80,14 +86,14 @@ function PdfReporteSemestral(datos, admin, alumno, nombrearchivo, veredicto) {
     };
 
     const subirReporteSemestral = async () => {
-        console.log("subiendo programa semestral")
+        console.log("subiendo reporte semestral")
         try{
             const response = await axios.post(SUBIR_REPORTE_SEMESTRAL, {
                 nombre: filename,
-                semestre: datos[0].periodo,
                 descripcion: JSON.stringify(datos),
+                semestre: datos[0].periodo,
                 alumno: alumno,
-                cumplido: veredicto,
+                complete: veredicto,
             })
             console.log(response);
         } catch(error) {
