@@ -101,6 +101,7 @@ function Respuesta () {
                 setShowA(true)
                 setVariante('success')
                 setMsg(response.data.message)
+                console.log(response.data)
             }
         }catch(error){
             if(!error?.response){
