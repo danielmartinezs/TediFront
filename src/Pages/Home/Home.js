@@ -51,7 +51,7 @@ function Home() {
           <Carousel.Caption>
             <Link to="/PerfilPadre">
             <button className="buttonlink">
-              Perfil
+              Perfil de alumno
             </button>
             </Link>
           </Carousel.Caption>
