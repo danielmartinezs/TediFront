@@ -11,6 +11,7 @@ const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const GET_ADMINISTRADOR_URL = '/profiles/getadmin';
 const GET_SEMESTRE_URL = 'reportes/getsemestre';
 const GET_FECHAS_EVALUACIONES_URL = 'reportes/getfechasalumno';
+const GET_PLAN_SEMESTRAL_URL = 'reportes/getplansemestral';
 
 function ReportesNuevoAdmin() {
 
@@ -21,7 +22,6 @@ function ReportesNuevoAdmin() {
     const [fechaSelect, setFechaSelect] = useState('');
     const [idCuestionario, setIdCuestionario] = useState(0);
     const [tipo, setTipo] = useState();
-    const [semestre, setSemestre] = useState();
     const [nombreArchivo, setNombreArchivo] = useState("");
     const [alumnosList, setAlumnosList] = useState([]);
     const [alumnSearch, setAlumnSearch] = useState([]);
@@ -34,10 +34,14 @@ function ReportesNuevoAdmin() {
     const [descripcion, setDescripcion] = useState("");
     const [descripcionEdit, setDescripcionEdit] = useState("");
     const [temasSemestre, setTemasSemestre] = useState([]);
+    const [temarioSemestral, setTemarioSemestral] = useState([]);
+    const [semestre, setSemestre] = useState();
     const [showModalTipo, setShowModalTipo] = useState(true);
     const [showModalAlumnos, setShowModalAlumnos] = useState(false);
     const [showModalFechasEval, setShowModalFechasEval] = useState(false);
     const [showModalObjetivos, setShowModalObjetivos] = useState(false);
+    const [showModalCheck, setShowModalCheck] = useState(false);
+    const [showModalPlan, setShowModalPlan] = useState(false);
     const [showMDelete, setShowMDelete] = useState(false);
     const [showOffEditO, setShowOffEditO] = useState(false);
     var idAdmin = localStorage.getItem('id');
@@ -72,6 +76,12 @@ function ReportesNuevoAdmin() {
         })
     }
 
+    const getPlanSemestral = () => {
+        axios.get(GET_PLAN_SEMESTRAL_URL+"/"+alumnSelect).then((response) => {
+            setTemarioSemestral(response.data);
+        })
+    }
+
     const filtrar = (terminoBusqueda) => {
         console.log("El termino es "+terminoBusqueda)
         var resultadosBusqueda = alumnosList.filter( (elemento) => {
@@ -101,6 +111,11 @@ function ReportesNuevoAdmin() {
     const handleDisplayFechas = () => {
         getFechasEvaluaciones();
         setShowModalFechasEval(true);
+    }
+
+    const handleDisplayPlanSemestral = () => {
+        getPlanSemestral();
+        setShowModalPlan(true);
     }
 
     const handleNuevoObjetivo = () => {
@@ -288,6 +303,11 @@ function ReportesNuevoAdmin() {
                             <h5>Titular de lenguaje: {administrador}</h5>
                         </ListGroupItem>
                     </ListGroup>
+                    <br/>
+                    <Button
+                    onClick={() => {handleDisplayPlanSemestral()}}>
+                        Elegir plan semestral
+                    </Button>
                     </Card.Body>
                     <Card.Footer>
                         <Button className='btnSeleccion'
@@ -341,7 +361,6 @@ function ReportesNuevoAdmin() {
                         setTipo(e.target.value)
                         setShowModalTipo(false)
                         handleDisplayAlumnos()
-                        //handleDisplayFechas()
                         }}>
                         Evaluación de Articulación
                     </Button>
@@ -353,7 +372,6 @@ function ReportesNuevoAdmin() {
                         setTipo(e.target.value)
                         setShowModalTipo(false)
                         handleDisplayAlumnos()
-                        //handleDisplayFechas()
                         }}>
                         Evaluación de Habilidades Preverbales
                     </Button>
@@ -601,6 +619,93 @@ function ReportesNuevoAdmin() {
                     </Button>
                 </Offcanvas.Body>
             </Offcanvas>
+            {/*MODAL SELECT PLAN*/}
+            <Modal
+            show={showModalPlan}
+            onHide={() => {setShowModalPlan(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Seleccionar plan</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {temarioSemestral.length > 0 ?
+                    <div>
+                        <h6>Objetivos</h6>
+                        {temarioSemestral.map((elemento, index) => {
+                                return(
+                                    <div key={index} className="text-center">
+                                        <ListGroup>
+                                            <ListGroupItem>
+                                                <h6>Semestre: {elemento.periodo}</h6>
+                                            </ListGroupItem>
+                                            <ListGroupItem>
+                                                <h6>Nombre: {elemento.planSemestral} </h6>
+                                            </ListGroupItem>
+                                        </ListGroup>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    :
+                    <div className="text-center">
+                        <h6>El alumno actualmente no cuenta con un plan semestral</h6>
+                    </div>
+                    }
+                </Modal.Body>
+                    
+            </Modal>
+            {/*MODAL CHECKEO DE OBJETIVOS*/}
+            <Modal
+            show={showModalCheck}
+            onHide={() => {setShowModalCheck(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Revisión de plan semestral</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {temarioSemestral.length > 0 ?
+                    <div>
+                        <h6>Objetivos</h6>
+                        {temarioSemestral.map((elemento, index) => {
+                                return(
+                                    <div key={index} className="text-center">
+                                        <ListGroup>
+                                            <ListGroupItem>
+                                                <h6>Objetivo {index+1}</h6>
+                                            </ListGroupItem>
+                                            <ListGroupItem>
+                                                <h6>{elemento.objetivo}</h6>
+                                                <h6>{elemento.descripcion}</h6>
+                                        </ListGroupItem>
+                                        </ListGroup>
+                                    </div>
+                                )
+                            }
+                            )}
+                        <h6>Actividades</h6>
+                        {temarioSemestral.map((elemento, index) => {
+                                return(
+                                    <div key={index} className="text-center">
+                                        <ListGroup>
+                                            <ListGroupItem>
+                                                <h6>Actividad {index+1}</h6>
+                                            </ListGroupItem>
+                                            <ListGroupItem>
+                                                <h6>{elemento.actividad}</h6>
+                                                <h6>{elemento.descripcion}</h6>
+                                        </ListGroupItem>
+                                        </ListGroup>
+                                    </div>
+                                )
+                            }
+                            )}
+                    </div>
+                    :
+                    <div className="text-center">
+                        <h6>El alumno actualmente no cuenta con un plan semestral</h6>
+                    </div>
+                    }
+                </Modal.Body>
+            </Modal>
         </div>
     )
 }
