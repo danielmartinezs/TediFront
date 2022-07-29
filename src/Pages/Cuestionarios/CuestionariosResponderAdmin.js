@@ -454,6 +454,9 @@ function Respuesta () {
             <span>
             Has concluido con el cuestionario {preguntasList[0]?.nombre}
             </span>
+            <span>
+                {tiempoRegistro}
+            </span>
           <Button 
           className='buttonq' 
           onClick={() => {setShowMEdit(true)}}>

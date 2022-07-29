@@ -97,6 +97,7 @@ function ReportesNuevoRegistroAdmin() {
                     </Alert>
                 </div>
                 <h1>Creación de Reportes</h1>
+                {timestamp}
                 {datos && 
                 <div>
                     <Card>
