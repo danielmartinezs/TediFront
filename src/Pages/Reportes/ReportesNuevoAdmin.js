@@ -11,7 +11,7 @@ import "./reportes.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const GET_ADMINISTRADOR_URL = '/profiles/getadmin';
 const GET_SEMESTRE_URL = 'reportes/getsemestre';
-const GET_FECHAS_EVALUACIONES_URL = 'reportes/getfechasalumno';
+const GET_FECHAS_EVALUACIONES_HPV_URL = 'reportes/getfechasalumnohpv';
 const GET_PLAN_SEMESTRAL_URL = 'reportes/getplansemestral';
 
 function ReportesNuevoAdmin() {
@@ -79,7 +79,7 @@ function ReportesNuevoAdmin() {
     }
 
     const getFechasEvaluaciones = () => {
-        axios.get(GET_FECHAS_EVALUACIONES_URL+"/"+alumnSelect).then((response) => {
+        axios.get(GET_FECHAS_EVALUACIONES_HPV_URL+"/"+alumnSelect).then((response) => {
             setFechasEval(response.data);
         })
     }
