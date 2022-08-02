@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/static/css/main.be95036f.css",
+    "main.js": "/static/js/main.8b890080.js",
+    "static/media/img2.png": "/static/media/img2.6f3e1722e1bd2b438ba9.png",
+    "static/media/img1.png": "/static/media/img1.cfd305c4c9c2bf8823ef.png",
+    "static/media/Logo.jpg": "/static/media/Logo.62d0ac8cb5af836f6d01.jpg",
+    "static/media/foto11.png": "/static/media/foto11.c617969e760e03ba583c.png",
+    "static/media/img12.jpg": "/static/media/img12.06914784c1754cb0f4bc.jpg",
+    "static/media/foto8.jpg": "/static/media/foto8.003b010d3f6add50f9c8.jpg",
+    "static/media/ReporteSemestral.pdf": "/static/media/ReporteSemestral.79543d54b139f6145306.pdf",
+    "static/media/foto5.jpg": "/static/media/foto5.dbfe71caf0bcd87fbe29.jpg",
+    "static/media/foto10.png": "/static/media/foto10.dd766c7c6e1e48b1ef03.png",
+    "static/media/foto13.jpg": "/static/media/foto13.33966212b0db27b6922a.jpg",
+    "static/media/foto2.jpg": "/static/media/foto2.54cb4d6645883c47a60e.jpg",
+    "static/media/foto12.jpg": "/static/media/foto12.2c7e766e15dc16d51d6d.jpg",
+    "static/media/foto6.jpg": "/static/media/foto6.da56d251c133704cbb99.jpg",
+    "static/media/foto7.jpg": "/static/media/foto7.9a578ea6fffbeb78920d.jpg",
+    "static/media/LogoT.svg": "/static/media/LogoT.0ce5bbc7ab3140f47d48aea5625c53f9.svg",
+    "index.html": "/index.html",
+    "main.be95036f.css.map": "/static/css/main.be95036f.css.map",
+    "main.8b890080.js.map": "/static/js/main.8b890080.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.be95036f.css",
+    "static/js/main.8b890080.js"
+  ]
+}
