@@ -202,7 +202,7 @@ function ProgresoAlumAdmin() {
                     <div className='admin' key={values.idAlumno}>
                         <div>
                             <Accordion flush>
-                                <AccordionHeader>{values.nombre}</AccordionHeader>
+                                <AccordionHeader>{values.nombre+' '+values.apellido}</AccordionHeader>
                                     <AccordionBody>
                                         <Button
                                         className='btnBancoPreguntas'

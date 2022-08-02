@@ -341,14 +341,6 @@ function Respuesta () {
         handleUploadCuestionario(resultadoPuntaje, respuestas)
     }
 
-    const generarReporte = () => {
-        getMostRecent()
-        setShowA(true);
-        setVariante('success');
-        setMsg(tiempoRegistro+'');
-        
-    }
-
     const renderTooltipSelect = (props) => (
         <Tooltip id="button-tooltip" {...props}>
             Selecciona para cambiar la respuesta
@@ -437,19 +429,11 @@ function Respuesta () {
             <span>
             Has concluido con el cuestionario {preguntasList[0]?.nombre}
             </span>
-            <span>
-                {tiempoRegistro}
-            </span>
           <Button 
           className='buttonq' 
           onClick={() => {setShowMEdit(true)}}>
             Editar Respuestas
           </Button>
-            <Button
-            className='buttonq'
-            onClick={() => {generarReporte()}}>
-                Checar timestamp
-            </Button>
           <Link to={`/ReportesNuevoRegistroAdmin/${tiempoRegistro}`}>
             <Button
             size='lg'

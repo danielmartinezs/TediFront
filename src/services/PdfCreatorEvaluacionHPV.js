@@ -12,7 +12,7 @@ function PdfCreator(datos, admin, qa, nombrearchivo) {
     const timestamp = new Date().getTime();
     const reportTitle = [
         {
-            text: 'Alumno(a): '+datos[0].nombre,
+            text: 'Alumno(a): '+datos[0].nombre+' '+datos[0].apellido,
             fontSize: 15,
             bold: true,
             margin: [15, 20, 0, 45]

@@ -125,7 +125,7 @@ function ReportesNuevoRegistroAdmin() {
                                     <h5>Fecha: {format(parseISO(datos[0].fecha), 'PPPPp', { locale: es })}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    <h5>Alumno: {datos[0].nombre}</h5>
+                                    <h5>Alumno: {datos[0].nombre+' '+datos[0].apellido}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <Button
@@ -204,18 +204,24 @@ function ReportesNuevoRegistroAdmin() {
                                 <ListGroup>
                                     <ListGroupItem>
                                         <h5>{index+1}. {respuesta.pregunta}</h5>
-                                        <h5>Opciones:</h5>
-                                        {respuesta.opciones?.opciones.map((opcion, index) => {
-                                            return (
-                                                <div key={index} className='text-center'>
-                                                    <ListGroup>
-                                                        <ListGroupItem>
-                                                        <h5>{opcion.respuesta}</h5>
-                                                        </ListGroupItem>
-                                                    </ListGroup>
-                                                </div>
-                                            )
-                                        })}
+                                        {respuesta.opciones?.opciones[0].respuesta !== '' ? 
+                                        <div>
+                                            <h5>Opciones:</h5>
+                                            {respuesta.opciones?.opciones.map((opcion, index) => {
+                                                return (
+                                                    <div key={index} className='text-center'>
+                                                        <ListGroup>
+                                                            <ListGroupItem>
+                                                            <h5>{opcion.respuesta}</h5>
+                                                            </ListGroupItem>
+                                                        </ListGroup>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                        :
+                                        <div/>
+                                        }
                                         <h5>Respuesta elegida: {respuesta.value}</h5>
                                     </ListGroupItem>
                                 </ListGroup>

@@ -177,7 +177,7 @@ function PerfilEditarTutor() {
                                 </Card.Header>
                                 <Card.Body>
                                     <Card.Text>
-                                        Tutor de: {values.nombre}
+                                        Tutor de: {values.nombre+' '+values.apellido}
                                     </Card.Text>
                                     <Button
                                     className='btnBancoPreguntas'

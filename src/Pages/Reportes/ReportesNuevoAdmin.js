@@ -91,6 +91,15 @@ function ReportesNuevoAdmin() {
         })
     }
 
+    const findAlumno = (id) => {
+        console.log(id)
+        for(let i = 0; i < alumnosList.length; i++){
+            if(alumnosList[i].idAlumno === id){
+                return(alumnosList[i].nombre + ' ' + alumnosList[i].apellido);
+            }
+        }
+    }
+
     const filtrar = (terminoBusqueda) => {
         console.log("El termino es "+terminoBusqueda)
         var resultadosBusqueda = alumnosList.filter( (elemento) => {
@@ -469,15 +478,15 @@ function ReportesNuevoAdmin() {
                     <AiOutlineSearch/>
                 </button>
                 </div>
-                {alumnSearch && alumnSearch.map(values => (
-                    <div key={values.idAlumno}>
+                {alumnSearch && alumnSearch.map((values, index) => (
+                    <div key={index}>
                         <Card
                         className="text-center"
                         border = "warning"
                         style={{ width: '100%' }}>
                             <Card.Body>
                             <div>
-                                {values.nombre}
+                                {values.nombre+' '+values.apellido}
                                 <br/>
                                 <Button
                                 variant="success"
@@ -495,10 +504,10 @@ function ReportesNuevoAdmin() {
                     {alumnSelect &&        
                     <Button className='btnAct'
                     onClick={() => {
-                        setAlumno(alumnosList[alumnSelect-1]?.nombre)
+                        setAlumno(findAlumno(alumnSelect))
                         setShowModalAlumnos(false)
                         }}>
-                        {alumnosList[alumnSelect-1]?.nombre}
+                        {findAlumno(alumnSelect)}
                     </Button>
                     }
                 </Modal.Footer>

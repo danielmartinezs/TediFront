@@ -36,21 +36,6 @@ function ReportesAdmin() {
 
     return (
         <div>
-            {/* <Card border='warning' className='text-center' style={{display: 'flex'}}>
-                <Card.Header>
-                    <h3>Edición de reportes</h3>
-                </Card.Header>
-                <Card.Body>
-                    <Card.Text>
-                        Edita la información de un reporte en particular
-                    </Card.Text>
-                    <Link to={'/ReportesEdicionAdmin'}>
-                        <Button size='lg' className="btnCrear">
-                            Edición de reportes
-                        </Button>
-                    </Link>
-                </Card.Body>
-            </Card> */}
             <Card border='warning' className='text-center' style={{display: 'flex'}}>
                 <Card.Header>
                     <h3>Creación de reportes</h3>
@@ -66,18 +51,6 @@ function ReportesAdmin() {
                     </Link>
                 </Card.Body>
             </Card>
-            {/* <Button onClick={handleDescargaReporteEA}>
-                descarga PDF Evaluación Articulación
-            </Button>
-            <Button onClick={handleDescargaReporteHPV}>
-                descarga PDF Habilidades Preverbales
-            </Button>
-            <Button onClick={handleDescargaReportePrueba}>
-                descarga PDF Prueba
-            </Button>
-            <Button onClick={ReportesNuevoAdmin}>
-                descarga PDF Prueba FrontEnd
-            </Button> */}
         </div>
     )
 }

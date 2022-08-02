@@ -254,11 +254,11 @@ function ProgresoGrupoAdmin() {
                                       <Button
                                       className='btnBancoPreguntas'
                                       onClick={() => {getHitosList(alumnos.idAlumno)}}>
-                                        Hitos
+                                        Hitos individuales
                                       </Button>
                                       <Link to={`/ProgresoGraphAdmin/${alumnos.idAlumno}`}>
                                         <Button className='btnBancoPreguntas'>
-                                          Gráficas de progreso
+                                          Gráficas de progreso individual
                                         </Button>
                                       </Link>
                                     </div>

@@ -33,6 +33,15 @@ function CuestionariosAdmin() {
         })
     }
 
+    const findAlumno = (id) => {
+        console.log(id)
+        for(let i = 0; i < alumnosList.length; i++){
+            if(alumnosList[i].idAlumno === id){
+                return(alumnosList[i].nombre + ' ' + alumnosList[i].apellido);
+            }
+        }
+    }
+
     const filtrar = (terminoBusqueda) => {
         console.log("El termino es "+terminoBusqueda)
         var resultadosBusqueda = alumnosList.filter( (elemento) => {
@@ -132,7 +141,7 @@ function CuestionariosAdmin() {
                         style={{ width: '100%' }}>
                             <Card.Body>
                             <div>
-                                {values.nombre}
+                                {values.nombre+' '+values.apellido}
                                 <br/>
                                 <Button
                                 variant="success"
@@ -150,7 +159,7 @@ function CuestionariosAdmin() {
                     {alumnSelect &&
                     <Link to={`/CuestionariosResponderAdmin/${alumnSelect}`}>
                         <Button className='btnAct'>
-                            Aplicar cuestionario a {alumnosList[alumnSelect-1]?.nombre}
+                            Aplicar cuestionario a {findAlumno(alumnSelect)}
                         </Button>
                     </Link>
                     }

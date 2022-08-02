@@ -78,6 +78,13 @@ function PerfilEditarAlumno() {
         console.log(values)
         setDetailsPane({isPaneOpen: true});
         setLlave(values.idAlumno);
+        setNombre(values.nombre);
+        setApellido(values.apellido);
+        setFechaNac(values.fechaNacimiento);
+        setFoto(values.foto);
+        setGrupo(values.nombregrupo);
+        setGrupoSelect(values.idGrupo);
+        console.log(semestre)
         console.log(llave)
     }
 
@@ -86,14 +93,14 @@ function PerfilEditarAlumno() {
         setNombre("");
         setApellido("");
         setFechaNac("");
-        setSemestre("");
     }
 
     const handleSubmitEditAlumno = async (e) => {
+        console.log('llave: '+llave)
         e.preventDefault();
         try{
             const response = await axios.post(EDIT_ALUMNO_URL, {
-                idal: alumnosList[llave-1]?.idAlumno,
+                idal: llave,
                 nombrealu: nombre,
                 apellidoalu: apellido,
                 nacimiento: fechanac,
@@ -108,9 +115,9 @@ function PerfilEditarAlumno() {
               setNombre("")
               setApellido("")
               setFechaNac("")
-              setSemestre("")
               setFoto("")
               setFotoPreview("")
+              setDetailsPane({isPaneOpen: false})
           }
         }catch(error){
           setShowA(true)
@@ -139,6 +146,15 @@ function PerfilEditarAlumno() {
         setMsg(response.data.message)
         setDetailsPane({isPaneOpen: false})
         setShowModalBorrar(false)
+    }
+
+    const findAlumno = (id) => {
+        console.log(id)
+        for(let i = 0; i < alumnosList.length; i++){
+            if(alumnosList[i].idAlumno === id){
+                return(i);
+            }
+        }
     }
 
     const filtrar = (terminoBusqueda) => {
@@ -245,7 +261,7 @@ function PerfilEditarAlumno() {
         <SlidingPane
             className='sliding-pane'
             isOpen={detailsPane.isPaneOpen}
-            title={alumnosList[llave-1]?.nombre+' '+alumnosList[llave-1]?.apellido}
+            title={nombre + " " + apellido}
             width={window.innerWidth < 600 ? "100%" : "500px"}
             onRequestClose={closePane}>
             <div className='admin-details__info'>
@@ -277,7 +293,6 @@ function PerfilEditarAlumno() {
                                     placeholder={alumnosList[llave-1]?.nombre}
                                     value={nombre}
                                     onChange={(e) => setNombre(e.target.value)}/>
-                                    {nombre}
                             </Form.Group>
                             <Form.Group controlId="apellido">
                                 <Form.Label>Apellido del alumno</Form.Label>
@@ -286,21 +301,20 @@ function PerfilEditarAlumno() {
                                     placeholder={alumnosList[llave-1]?.apellido}
                                     value={apellido}
                                     onChange={(e) => setApellido(e.target.value)}/>
-                                    {apellido}
                             </Form.Group>
                             <Form.Group>
                             <Form.Label>Fecha de Nacimiento</Form.Label>
                             <br/>
                                 <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
-                                        <DatePicker
-                                        disableFuture
-                                        openTo="year"
-                                        variant="dialog"
-                                        format="yyyy/MM/dd"
-                                        label="Fecha de Nacimiento"
-                                        views={["year", "month", "date"]}
-                                        value={fechanac}
-                                        onChange={setFechaNac}/>
+                                    <DatePicker
+                                    disableFuture
+                                    openTo="year"
+                                    variant="dialog"
+                                    format="yyyy/MM/dd"
+                                    label="Fecha de Nacimiento"
+                                    views={["year", "month", "date"]}
+                                    value={fechanac}
+                                    onChange={setFechaNac}/>
                                 </MuiPickersUtilsProvider>
                             </Form.Group>
                             <br/>
