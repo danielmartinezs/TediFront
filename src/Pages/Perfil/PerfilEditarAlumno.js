@@ -210,7 +210,7 @@ function PerfilEditarAlumno() {
                             border='warning'>
                                 <Card.Header
                                 className='text-center'>
-                                    <Card.Title>{values.nombre}</Card.Title>
+                                    <Card.Title>{values.nombre} {values.apellido}</Card.Title>
                                 </Card.Header>
                                 <Card.Body>
                                     <Button
@@ -245,7 +245,7 @@ function PerfilEditarAlumno() {
         <SlidingPane
             className='sliding-pane'
             isOpen={detailsPane.isPaneOpen}
-            title={alumnosList[llave-1]?.nombre}
+            title={alumnosList[llave-1]?.nombre+' '+alumnosList[llave-1]?.apellido}
             width={window.innerWidth < 600 ? "100%" : "500px"}
             onRequestClose={closePane}>
             <div className='admin-details__info'>
@@ -277,14 +277,16 @@ function PerfilEditarAlumno() {
                                     placeholder={alumnosList[llave-1]?.nombre}
                                     value={nombre}
                                     onChange={(e) => setNombre(e.target.value)}/>
+                                    {nombre}
                             </Form.Group>
                             <Form.Group controlId="apellido">
                                 <Form.Label>Apellido del alumno</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder={alumnosList[llave-1]?.nombre}
+                                    placeholder={alumnosList[llave-1]?.apellido}
                                     value={apellido}
                                     onChange={(e) => setApellido(e.target.value)}/>
+                                    {apellido}
                             </Form.Group>
                             <Form.Group>
                             <Form.Label>Fecha de Nacimiento</Form.Label>
