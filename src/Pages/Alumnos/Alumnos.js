@@ -163,7 +163,7 @@ function Alumnos() {
                     <div className='admin' key={values.idAlumno}>
                         <div>
                             <Accordion flush>
-                                <AccordionHeader>{values.nombre}</AccordionHeader>
+                                <AccordionHeader>{values.nombre+' '+values.apellido}</AccordionHeader>
                                     <AccordionBody>
                                         <ButtonGroup>
                                             <Button className="btnBancoPreguntas" onClick={() => handleNewHito(values.idAlumno)}>Reportar Hito</Button>
