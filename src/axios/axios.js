@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-    baseURL: '82.180.138.154'
+    baseURL: 'https://tedi-integrador.herokuapp.com/'
 });
