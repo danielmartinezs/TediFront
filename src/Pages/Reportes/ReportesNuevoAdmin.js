@@ -11,6 +11,7 @@ import "./reportes.css"
 const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const GET_ADMINISTRADOR_URL = '/profiles/getadmin';
 const GET_SEMESTRE_URL = 'reportes/getsemestre';
+const GET_CUESTIONARIOS_URL = 'questionnaires/getcuestionarios';
 const GET_FECHAS_EVALUACIONES_HPV_URL = 'reportes/getfechasalumnohpv';
 const GET_PLAN_SEMESTRAL_URL = 'reportes/getplansemestral';
 
@@ -22,6 +23,7 @@ function ReportesNuevoAdmin() {
     const [fechasEval, setFechasEval] = useState();
     const [fechaSelect, setFechaSelect] = useState('');
     const [idCuestionario, setIdCuestionario] = useState(0);
+    const [cuestionariosList, setCuestionariosList] = useState([]);
     const [tipo, setTipo] = useState();
     const [nombreArchivo, setNombreArchivo] = useState("");
     const [alumnosList, setAlumnosList] = useState([]);
@@ -57,6 +59,7 @@ function ReportesNuevoAdmin() {
     useEffect(() => {
         getAdministrador();
         getSemestre();
+        getCuestionarios();
     }, [])
 
     const getAdministrador = () => {
@@ -68,6 +71,12 @@ function ReportesNuevoAdmin() {
     const getSemestre = () => {
         axios.get(GET_SEMESTRE_URL).then((response) => {
             setSemestre(response.data)
+        })
+    }
+
+    const getCuestionarios = () => {
+        axios.get(GET_CUESTIONARIOS_URL).then((response) => {
+            setCuestionariosList(response.data)
         })
     }
 
@@ -413,26 +422,54 @@ function ReportesNuevoAdmin() {
                 </ModalHeader>
                 <ModalBody>
                     <div className='text-center'>
-                    <Button
-                    className='btnSeleccion'
-                    value= 'Programa Semestral'
-                    onClick={(e) => {
-                        setTipo(e.target.value)
-                        setShowModalTipo(false)
-                        handleDisplayAlumnos()
-                        }}>
-                        Programa Semestral
-                    </Button>
-                    <Button
-                    className='btnSeleccion'
-                    value= 'Reporte Semestral'
-                    onClick={(e) => {
-                        setTipo(e.target.value)
-                        setShowModalTipo(false)
-                        handleDisplayAlumnos()
-                        }}>
-                        Reporte Semestral
-                    </Button>
+                    <Card>
+                        <Card.Header>
+                            <h3>Programas Semestrales</h3>
+                        </Card.Header>
+                        <Card.Body>
+                            <Button
+                            className='btnSeleccion'
+                            value= 'Programa Semestral'
+                            onClick={(e) => {
+                                setTipo(e.target.value)
+                                setShowModalTipo(false)
+                                handleDisplayAlumnos()
+                                }}>
+                                Programa Semestral
+                            </Button>
+                            <Button
+                            className='btnSeleccion'
+                            value= 'Reporte Semestral'
+                            onClick={(e) => {
+                                setTipo(e.target.value)
+                                setShowModalTipo(false)
+                                handleDisplayAlumnos()
+                                }}>
+                                Reporte Semestral
+                            </Button>
+                        </Card.Body>
+                    </Card>
+                    {/* <Card>
+                        <Card.Header>
+                            <h3>Cuestionarios</h3>
+                        </Card.Header>
+                        <Card.Body>
+                            {cuestionariosList.map((cuestionario, index) => {
+                                return (
+                                    <Button
+                                    className='btnSeleccion'
+                                    value={cuestionario.nombre}
+                                    onClick={(e) => {
+                                        setTipo(e.target.value)
+                                        setShowModalTipo(false)
+                                        handleDisplayAlumnos()
+                                        }}>
+                                        {cuestionario.nombre}
+                                    </Button>
+                                )
+                            })}       
+                        </Card.Body>
+                    </Card> */}
                     <Button
                     className='btnSeleccion'
                     value= 'Evaluación de Articulación'

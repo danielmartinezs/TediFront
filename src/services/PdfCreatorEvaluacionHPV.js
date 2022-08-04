@@ -75,7 +75,7 @@ function PdfCreator(datos, admin, qa, nombrearchivo) {
     }
 
     const pdf = pdfMake.createPdf(docDefinition);  
-    //subirReporte();
+    subirReporte();
     pdf.download(filename);
 }
 

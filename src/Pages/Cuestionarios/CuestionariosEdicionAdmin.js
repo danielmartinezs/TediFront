@@ -394,7 +394,7 @@ function CuestionariosEdicionAdmin() {
             console.log(response)
             setShowA(true)
             setVariante('success')
-            setMsg(response.data.message)
+            setMsg(response.data.message+' Para ver reflejado el cambio, cierra este memsaje')
             establishKey()
             setNewPregunta("");
             setNewRespuesta([{ "respuesta": "" }]);
