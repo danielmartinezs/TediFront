@@ -86,8 +86,17 @@ function ReportesNuevoAdmin() {
         })
     }
 
-    const getFechasEvaluaciones = () => {
+    const getFechasEvaluacionesH = () => {
         axios.get(GET_FECHAS_EVALUACIONES_HPV_URL+"/"+alumnSelect).then((response) => {
+            setFechasEval(response.data);
+        })
+    }
+
+    const getFechasEvaluaciones = () => {
+        axios.post(GET_FECHAS_EVALUACIONES_HPV_URL, {
+            idAlumno: alumnSelect,
+            idCuestionario: idCuestionario
+        }).then((response) => {
             setFechasEval(response.data);
         })
     }
