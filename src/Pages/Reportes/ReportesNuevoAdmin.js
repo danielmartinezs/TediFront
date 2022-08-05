@@ -19,12 +19,12 @@ function ReportesNuevoAdmin() {
 
     const [idEditar, setIdEditar] = useState(0);
     const [idDelete, setIdDelete] = useState(0);
-    const [datos, setDatos] = useState();
     const [fechasEval, setFechasEval] = useState();
     const [fechaSelect, setFechaSelect] = useState('');
     const [idCuestionario, setIdCuestionario] = useState(0);
     const [cuestionariosList, setCuestionariosList] = useState([]);
     const [tipo, setTipo] = useState();
+    const [categoria, setCategoria] = useState();
     const [nombreArchivo, setNombreArchivo] = useState("");
     const [alumnosList, setAlumnosList] = useState([]);
     const [alumnSearch, setAlumnSearch] = useState([]);
@@ -34,7 +34,6 @@ function ReportesNuevoAdmin() {
     const [busqueda, setBusqueda] = useState("");
     const [planSelect, setPlanSelect] = useState();
     const [detalles, setDetalles] = useState();
-    const [toggle, setToggle] = useState(false);
     const [veredicto, setVeredicto] = useState('');
     const [cumplido, setCumplido] = useState('');
     const [objetivo, setObjetivo] = useState("");
@@ -227,12 +226,14 @@ function ReportesNuevoAdmin() {
                     }}>
                     Cambiar alumno
                 </Button>
-                {tipo === 'Evaluación de Articulación' &&
-                <Card>
-                    <Card.Header>
+                {categoria === 'Semestral' &&
+                    <div>
+                    {tipo === 'Programa Semestral' &&
+                    <Card>
+                        <Card.Header>
                         <h3>{tipo}</h3>
-                    </Card.Header>
-                    <Card.Body>
+                        </Card.Header>
+                        <Card.Body>
                         <input
                         value={nombreArchivo}
                         onChange={(e) => setNombreArchivo(e.target.value)}
@@ -247,41 +248,31 @@ function ReportesNuevoAdmin() {
                             <ListGroupItem>
                                 <h5>Titular de lenguaje: {administrador}</h5>
                             </ListGroupItem>
-                            {fechaSelect &&
                             <ListGroupItem>
-                                <h5>Fecha del reporte: {format(parseISO(fechaSelect), 'PPPPp', { locale: es })}</h5>
-                            </ListGroupItem>}
-                            <OverlayTrigger
-                            trigger='focus'
-                            placement="bottom"
-                            overlay={renderTooltipFecha}>
-                                <Button
-                                className='btnCrear'
-                                onClick={() => {handleDisplayFechas()}}>
-                                    Elegir fecha
-                                    <AiOutlineCalendar/>
-                                </Button>
-                            </OverlayTrigger>
+                                <h5>Semestre: {semestre[0]?.periodo}</h5>
+                            </ListGroupItem>
                         </ListGroup>
-                    </Card.Body>
-                    <Card.Footer>
-                        {fechaSelect !== "" &&
-                        <Link to={`/ReportesNuevoRegistroAdmin/${fechaSelect}`}>
-                            <Button
-                            className='btnCrear'>
-                                Generar reporte
-                                <AiOutlineFilePdf/> 
+                        <br/>
+                        <Button
+                        onClick={() => {setShowModalObjetivos(true)}}>
+                            Listado de objetivos
+                        </Button>
+                        </Card.Body>
+                        <Card.Footer>
+                            <Button className='btnSeleccion'
+                            onClick={(e) => PdfProgramaSemestral(temasSemestre, semestre, administrador, alumno, nombreArchivo)}>
+                                Crear Reporte
+                                <AiOutlineFilePdf/>  
                             </Button>
-                        </Link>}
-                    </Card.Footer>
-                </Card>
-                }
-                {tipo === 'Evaluación de Habilidades Preverbales' &&
-                <Card>
-                    <Card.Header>
+                        </Card.Footer>
+                    </Card>
+                    }
+                    {tipo === 'Reporte Semestral' &&
+                    <Card>
+                        <Card.Header>
                         <h3>{tipo}</h3>
-                    </Card.Header>
-                    <Card.Body>
+                        </Card.Header>
+                        <Card.Body>
                         <input
                         value={nombreArchivo}
                         onChange={(e) => setNombreArchivo(e.target.value)}
@@ -296,118 +287,83 @@ function ReportesNuevoAdmin() {
                             <ListGroupItem>
                                 <h5>Titular de lenguaje: {administrador}</h5>
                             </ListGroupItem>
-                            {fechaSelect &&
                             <ListGroupItem>
-                                <h5>Fecha del reporte: {format(parseISO(fechaSelect), 'PPPPp', { locale: es })}</h5>
-                            </ListGroupItem>}
-                            <OverlayTrigger
-                            trigger='focus'
-                            placement="bottom"
-                            overlay={renderTooltipFecha}>
-                                <Button
-                                className='btnCrear'
-                                onClick={() => {handleDisplayFechas()}}>
-                                    Elegir fecha
-                                    <AiOutlineCalendar/>
-                                </Button>
-                            </OverlayTrigger>
+                                <h5>Detalles: {detalles &&JSON.stringify(detalles)} </h5>
+                            </ListGroupItem>
+                            <ListGroupItem>
+                                <h5>Veredicto: {veredicto}</h5>
+                            </ListGroupItem>
+                            <ListGroupItem>
+                                <h5>Estado del objetivo: {cumplido}</h5>
+                            </ListGroupItem>
                         </ListGroup>
-                    </Card.Body>
-                    <Card.Footer>
-                        {fechaSelect !== "" &&
-                        <Link to={`/ReportesNuevoRegistroAdmin/${fechaSelect}`}>
-                            <Button
-                            className='btnCrear'>
-                                Generar reporte
+                        <br/>
+                        <Button
+                        onClick={() => {handleDisplayPlanSemestral()}}>
+                            Elegir plan semestral
+                        </Button>
+                        </Card.Body>
+                        <Card.Footer>
+                            <Button className='btnSeleccion'
+                            onClick={(e) => PdfReporteSemestral(temarioSemestral, detalles, administrador, alumno, nombreArchivo, cumplido)}>
+                                Crear Reporte
                                 <AiOutlineFilePdf/> 
                             </Button>
-                        </Link>}
-                    </Card.Footer>
-                </Card>
+                        </Card.Footer>
+                    </Card>
+                    }
+                    </div>
                 }
-                {tipo === 'Programa Semestral' &&
-                <Card>
-                    <Card.Header>
-                    <h3>{tipo}</h3>
-                    </Card.Header>
-                    <Card.Body>
-                    <input
-                    value={nombreArchivo}
-                    onChange={(e) => setNombreArchivo(e.target.value)}
-                    placeholder='Nombre del archivo'/>
-                    <ListGroup>
-                        <ListGroupItem>
-                            <h5>Nombre del archivo: {nombreArchivo}</h5>
-                        </ListGroupItem>
-                        <ListGroupItem>
-                            <h5>Alumno: {alumno}</h5>
-                        </ListGroupItem>
-                        <ListGroupItem>
-                            <h5>Titular de lenguaje: {administrador}</h5>
-                        </ListGroupItem>
-                        <ListGroupItem>
-                            <h5>Semestre: {semestre[0]?.periodo}</h5>
-                        </ListGroupItem>
-                    </ListGroup>
-                    <br/>
-                    <Button
-                    onClick={() => {setShowModalObjetivos(true)}}>
-                        Listado de objetivos
-                    </Button>
-                    </Card.Body>
-                    <Card.Footer>
-                        <Button className='btnSeleccion'
-                        onClick={(e) => PdfProgramaSemestral(temasSemestre, semestre, administrador, alumno, nombreArchivo)}>
-                            Crear Reporte
-                            <AiOutlineFilePdf/>  
-                        </Button>
-                    </Card.Footer>
-                </Card>
-                }
-                {tipo === 'Reporte Semestral' &&
-                <Card>
-                    <Card.Header>
-                    <h3>{tipo}</h3>
-                    </Card.Header>
-                    <Card.Body>
-                    <input
-                    value={nombreArchivo}
-                    onChange={(e) => setNombreArchivo(e.target.value)}
-                    placeholder='Nombre del archivo'/>
-                    <ListGroup>
-                        <ListGroupItem>
-                            <h5>Nombre del archivo: {nombreArchivo}</h5>
-                        </ListGroupItem>
-                        <ListGroupItem>
-                            <h5>Alumno: {alumno}</h5>
-                        </ListGroupItem>
-                        <ListGroupItem>
-                            <h5>Titular de lenguaje: {administrador}</h5>
-                        </ListGroupItem>
-                        <ListGroupItem>
-                            <h5>Detalles: {detalles &&JSON.stringify(detalles)} </h5>
-                        </ListGroupItem>
-                        <ListGroupItem>
-                            <h5>Veredicto: {veredicto}</h5>
-                        </ListGroupItem>
-                        <ListGroupItem>
-                            <h5>Cumplido: {cumplido}</h5>
-                        </ListGroupItem>
-                    </ListGroup>
-                    <br/>
-                    <Button
-                    onClick={() => {handleDisplayPlanSemestral()}}>
-                        Elegir plan semestral
-                    </Button>
-                    </Card.Body>
-                    <Card.Footer>
-                        <Button className='btnSeleccion'
-                        onClick={(e) => PdfReporteSemestral(temarioSemestral, detalles, administrador, alumno, nombreArchivo, cumplido)}>
-                            Crear Reporte
-                            <AiOutlineFilePdf/> 
-                        </Button>
-                    </Card.Footer>
-                </Card>
+                {categoria === 'Cuestionario' &&
+                    <div>
+                        <Card>
+                        <Card.Header>
+                            <h3>{tipo}</h3>
+                        </Card.Header>
+                        <Card.Body>
+                            <input
+                            value={nombreArchivo}
+                            onChange={(e) => setNombreArchivo(e.target.value)}
+                            placeholder='Nombre del archivo'/>
+                            <ListGroup>
+                                <ListGroupItem>
+                                    <h5>Nombre del archivo: {nombreArchivo}</h5>
+                                </ListGroupItem>
+                                <ListGroupItem>
+                                    <h5>Alumno: {alumno}</h5>
+                                </ListGroupItem>
+                                <ListGroupItem>
+                                    <h5>Titular de lenguaje: {administrador}</h5>
+                                </ListGroupItem>
+                                {fechaSelect &&
+                                <ListGroupItem>
+                                    <h5>Fecha del reporte: {format(parseISO(fechaSelect), 'PPPPp', { locale: es })}</h5>
+                                </ListGroupItem>}
+                                <OverlayTrigger
+                                trigger='focus'
+                                placement="bottom"
+                                overlay={renderTooltipFecha}>
+                                    <Button
+                                    className='btnCrear'
+                                    onClick={() => {handleDisplayFechas()}}>
+                                        Elegir fecha
+                                        <AiOutlineCalendar/>
+                                    </Button>
+                                </OverlayTrigger>
+                            </ListGroup>
+                        </Card.Body>
+                        <Card.Footer>
+                            {fechaSelect !== "" &&
+                            <Link to={`/ReportesNuevoRegistroAdmin/${fechaSelect}`}>
+                                <Button
+                                className='btnCrear'>
+                                    Generar reporte
+                                    <AiOutlineFilePdf/> 
+                                </Button>
+                            </Link>}
+                        </Card.Footer>
+                    </Card>
+                    </div>
                 }
             </div>
             {/*MODAL SELECCION TIPO*/}
@@ -432,6 +388,7 @@ function ReportesNuevoAdmin() {
                             value= 'Programa Semestral'
                             onClick={(e) => {
                                 setTipo(e.target.value)
+                                setCategoria('Semestral')
                                 setShowModalTipo(false)
                                 handleDisplayAlumnos()
                                 }}>
@@ -442,6 +399,7 @@ function ReportesNuevoAdmin() {
                             value= 'Reporte Semestral'
                             onClick={(e) => {
                                 setTipo(e.target.value)
+                                setCategoria('Semestral')
                                 setShowModalTipo(false)
                                 handleDisplayAlumnos()
                                 }}>
@@ -449,7 +407,7 @@ function ReportesNuevoAdmin() {
                             </Button>
                         </Card.Body>
                     </Card>
-                    {/* <Card>
+                    <Card>
                         <Card.Header>
                             <h3>Cuestionarios</h3>
                         </Card.Header>
@@ -461,6 +419,7 @@ function ReportesNuevoAdmin() {
                                     value={cuestionario.nombre}
                                     onClick={(e) => {
                                         setTipo(e.target.value)
+                                        setCategoria('Cuestionario')
                                         setShowModalTipo(false)
                                         handleDisplayAlumnos()
                                         }}>
@@ -469,7 +428,7 @@ function ReportesNuevoAdmin() {
                                 )
                             })}       
                         </Card.Body>
-                    </Card> */}
+                    </Card>
                     <Button
                     className='btnSeleccion'
                     value= 'Evaluación de Articulación'
@@ -789,7 +748,7 @@ function ReportesNuevoAdmin() {
                                     <ListGroupItem>
                                         <h6>Objetivo: {elemento.objetivo}</h6>
                                         <h6>Descripción: {elemento.descripcion}</h6>
-                                        <h6>Cumplido: {elemento.cumplido ? 'Cumplido' : 'No cumplido'}</h6>
+                                        <h6>Estado del objetivo: {elemento.cumplido ? 'Cumplido' : 'No cumplido'}</h6>
                                         {elemento.cumplido ?
                                          <Button
                                          className='btnBorrarP'
