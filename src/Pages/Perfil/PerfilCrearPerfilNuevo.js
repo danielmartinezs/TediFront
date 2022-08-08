@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, Card, ListGroup, ListGroupItem, Modal, Tab, Tabs } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
-import axios from '../../axios/axios';
+import axios from 'axios'
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { DatePicker } from "@material-ui/pickers";

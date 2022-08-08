@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, Offcanvas, Table } from 'react-bootstrap';
 import { AiOutlineCheck, AiOutlineClose, AiOutlineDelete, AiOutlineEdit, AiOutlineLink, AiOutlineRollback, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
 import { BiMessageAltAdd } from 'react-icons/bi'
-import axios from '../../axios/axios';
+import axios from 'axios'
 import "./cuestionarios.css"
 const GET_PREGUNTAS_URL = "/questionnaires/getquestions"
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"

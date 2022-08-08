@@ -4,7 +4,7 @@ import { Alert, Accordion, Button, ButtonGroup, Modal } from 'react-bootstrap';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import { AiOutlineSearch } from 'react-icons/ai';
-import axios from '../../axios/axios';
+import axios from 'axios'
 import Form from 'react-bootstrap/Form';
 import ReactPaginate from 'react-paginate';
 import "./alumnos.css"

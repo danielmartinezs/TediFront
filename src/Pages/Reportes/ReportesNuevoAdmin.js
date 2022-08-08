@@ -2,7 +2,7 @@ import React, { useEffect, useState }from 'react';
 import { Link } from 'react-router-dom';
 import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { AiOutlineCalendar, AiOutlineCheck, AiOutlineClose, AiOutlineDelete, AiOutlineEdit, AiOutlineFilePdf, AiOutlineInfoCircle, AiOutlinePlus, AiOutlineSearch, AiOutlineSelect } from 'react-icons/ai';
-import axios from '../../axios/axios';
+import axios from 'axios'
 import PdfProgramaSemestral from '../../services/PdfCreatorProgramaSemestral'
 import PdfReporteSemestral from '../../services/PdfCreatorReporteSemestral';
 import { format, parseISO } from 'date-fns';

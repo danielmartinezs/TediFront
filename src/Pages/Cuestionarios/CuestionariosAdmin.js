@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom'
 import { Button, Card, Modal } from "react-bootstrap";
 import { AiOutlineCheck, AiOutlineEdit, AiOutlineInfoCircle, AiOutlinePlus, AiOutlineSearch, AiOutlineSelect } from 'react-icons/ai';
-import axios from '../../axios/axios'
+import axios from 'axios'
 import "./cuestionarios.css"
 const GET_CUESTIONARIOS_URL = '/questionnaires/getcuestionarios'
 const GET_ALUMNOS_URL = '/profiles/getalumnos';

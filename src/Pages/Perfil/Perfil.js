@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Alert, Button, ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
 import "react-sliding-pane/dist/react-sliding-pane.css";
-import axios from '../../axios/axios';
+import axios from 'axios'
 import Table from 'react-bootstrap/Table';
 import "./perfil.css";
 const PERFIL_ALUMNO_URL = '/profiles/getalumno';

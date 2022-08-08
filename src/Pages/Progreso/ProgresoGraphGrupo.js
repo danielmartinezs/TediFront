@@ -4,7 +4,7 @@ import { useParams } from 'react-router';
 import { Button, Card, Modal } from 'react-bootstrap';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import GraphChartGroup from '../../components/graphChartGroup'
-import axios from '../../axios/axios';
+import axios from 'axios'
 const GRAFICA_ADMIN_URL = '/graphs/generagraphadmin';
 const GRAFICA_ADMIN_GRUPO_URL = '/graphs/generagraphgrupo';
 

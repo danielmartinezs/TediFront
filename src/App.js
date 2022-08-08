@@ -34,7 +34,10 @@ import PerfilCrearPerfilNuevo from './Pages/Perfil/PerfilCrearPerfilNuevo'
 import PerfilPadre from './Pages/Perfil/PerfilPadre'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PrivateRoute from './components/privateRoute.js';
+import axios from "axios"
 
+axios.defaults.baseURL ="https://backend.tediescolar.xyz/";
+axios.defaults.headers.common["access-control-allow-origin"] = "*";
 
 function App() {
   if(localStorage.getItem('token') === null){

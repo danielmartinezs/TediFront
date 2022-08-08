@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { Accordion, Button, Card, Container, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Row } from'react-bootstrap'
-import axios from '../../axios/axios';
+import axios from 'axios'
 import "./progreso.css";
 import { format, parseISO } from 'date-fns';
 import GraphChart from '../../components/graphChart'

@@ -2,6 +2,7 @@
   "name": "koiigate",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "proxy": "https://fascinating-crumble-61bdb4.netlify.app/",
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
