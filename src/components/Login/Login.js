@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import AuthContext from "../../context/AuthProvider";
-import axios from '../../axios/axios';
+import axios from 'axios'
 import './login.css';
 import  Logo from '../../assets/Logo.jpg';
 import { Alert, Button, OverlayTrigger, ToggleButton, Tooltip } from 'react-bootstrap';

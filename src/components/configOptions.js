@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Alert, Button, Container, Form, Modal, Offcanvas } from 'react-bootstrap'
-import axios from '../axios/axios';
+import axios from 'axios';
 import { DatePicker } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";

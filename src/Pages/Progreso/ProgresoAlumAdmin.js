@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Accordion, Alert, Button, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalTitle, ModalHeader, Offcanvas } from'react-bootstrap'
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
-import axios from '../../axios/axios';
+import axios from 'axios'
 import ReactPaginate from 'react-paginate';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
 import { format, parseISO } from 'date-fns';

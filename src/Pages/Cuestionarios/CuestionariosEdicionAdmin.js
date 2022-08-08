@@ -5,7 +5,7 @@ import { Alert, Button, ButtonGroup, Form, FormControl, ListGroup, ListGroupItem
 import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineQuestionCircle, AiOutlineRollback, AiOutlineSelect, AiOutlineSend, AiOutlineVerticalAlignBottom, AiOutlineVerticalAlignTop } from 'react-icons/ai'
 import { BiMessageAltAdd } from 'react-icons/bi'
 import SlidingPane from 'react-sliding-pane';
-import axios from '../../axios/axios';
+import axios from 'axios'
 const GET_QUESTIONNAIRE_INFO_URL = '/questionnaires/getquestionnaireinfo'
 const GET_RESPUESTAS_URL = "/questionnaires/getanswers"
 const GET_RESPUESTA_URL = '/questionnaires/getanswer'

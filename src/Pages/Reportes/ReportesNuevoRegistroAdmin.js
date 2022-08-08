@@ -2,7 +2,7 @@ import React, { useEffect, useState }from 'react'
 import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, Offcanvas } from 'react-bootstrap'
 import { useParams } from 'react-router-dom';
 import { AiOutlineEdit, AiOutlineFilePdf } from 'react-icons/ai'
-import axios from '../../axios/axios';
+import axios from 'axios'
 import PdfCreator from '../../services/PdfCreatorEvaluacionHPV'
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';

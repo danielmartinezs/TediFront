@@ -3,7 +3,7 @@ import { Alert, Button, Card, Col, Container, Modal, Row } from 'react-bootstrap
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineSearch } from 'react-icons/ai';
 import SlidingPane from 'react-sliding-pane';
 import "react-sliding-pane/dist/react-sliding-pane.css";
-import axios from '../../axios/axios';
+import axios from 'axios'
 import ReactPaginate from 'react-paginate';
 import Form from 'react-bootstrap/Form';
 import "./perfil.css"

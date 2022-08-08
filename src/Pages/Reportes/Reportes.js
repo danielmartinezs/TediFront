@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Accordion, Alert, Button } from 'react-bootstrap'
 import pdf from './ReporteSemestral.pdf'
-import axios from '../../axios/axios';
+import axios from 'axios'
 const GENERA_REPORTE_URL = 'reportes/holamundo';
 
 function Reportes() {

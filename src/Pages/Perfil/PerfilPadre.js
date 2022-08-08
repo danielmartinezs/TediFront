@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Table } from 'react-bootstrap'
 import "react-sliding-pane/dist/react-sliding-pane.css";
-import axios from '../../axios/axios';
+import axios from 'axios'
 import "./perfil.css";
 const PERFIL_ALUMNO_URL = '/profiles/getalumno';
 

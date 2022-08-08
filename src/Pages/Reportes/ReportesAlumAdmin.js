@@ -4,7 +4,7 @@ import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import pdf from './ReporteSemestral.pdf'
 import "react-sliding-pane/dist/react-sliding-pane.css";
-import axios from '../../axios/axios';
+import axios from 'axios'
 const GET_ALUMNOS_URL = '/profiles/getalumnos'
 
 function ReportesAlumnosAdmin() {

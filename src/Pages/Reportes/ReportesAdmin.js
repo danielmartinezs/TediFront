@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Alert, Button, Card } from'react-bootstrap'
 import { Link } from 'react-router-dom'
-import axios from '../../axios/axios';
+import axios from 'axios'
 import ReportesNuevoAdmin from './ReportesNuevoAdmin';
 const GENERA_REPORTE_EVALUACION_ARTICULACION_URL = 'reportes/crearreporteea';
 const GENERA_REPORTE_HABLIDADES_PREVERBALES_URL = 'reportes/crearreportehpv';

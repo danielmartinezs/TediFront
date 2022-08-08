@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, OverlayTrigger, Tooltip } from "react-bootstrap";
 import {  AiOutlineEdit, AiOutlineSend, AiTwotoneStar } from 'react-icons/ai';
 import "./cuestionarios.css";
-import axios from '../../axios/axios'
+import axios from 'axios'
 const GET_QUESTIONNAIRE_INFO_URL = '/questionnaires/getquestionnaireinfo'
 const SUBMIT_QUESTIONNAIRE_URL = '/questionnaires/submitquestionnaire'
 const EDIT_QUESTIONNAIRE_URL = '/questionnaires/editsubmittedquestionnaire'
