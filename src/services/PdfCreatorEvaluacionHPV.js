@@ -19,32 +19,73 @@ function PdfCreator(datos, admin, qa, nombrearchivo) {
         }
     ];
 
-    const respuestas = qa.map((answer) => {
+    let respuestas = qa;
+    console.log(JSON.parse(datos[0].comentarios))
+    for(let i = 0; i<respuestas.length; i++){
+        respuestas[i].comment = JSON.parse(datos[0].comentarios)
+    }
+    console.log(respuestas)
+
+    const comments = JSON.parse(datos[0].comentarios).map((comment) => {
         return [
             {
-                text: answer.id,
+                text: comment.comment,
                 fontSize: 11,
-                margin: [15, 20, 0, 45]
+                margin: [15, 25, 0, 45]
+            }
+        ]
+    });
+
+    console.log(comments)
+
+    for(let i = 0; i<comments.length; i++){
+        console.log(comments[i][0].text)
+        if(comments[i][0].text === ''){
+            console.log('in')
+            comments[i][0].text = 'Sin comentarios'
+        }
+    }
+
+    console.log(comments)
+
+    for(let i = 0; i<respuestas.length; i++){
+        respuestas[i].comment = comments[i]
+    }
+
+    respuestas = qa.map((answer) => {
+        return [
+            {
+                text: answer.id+'. '+answer?.pregunta,
+                fontSize: 11,
+                margin: [15, 25, 0, 45]
             },
             {
                 text: answer.value,
                 fontSize: 11,
-                margin: [15, 20, 0, 45]
+                margin: [15, 25, 0, 45]
+            },
+            {
+                text: answer.comment,
+                fontSize: 11,
+                margin: [15, 25, 0, 45]
             }
         ]
     });
+
+    console.log(respuestas)
 
     const details = [
         {
             table: {
                 headerRows: 1,
-                widths: ['*', '*'],
+                widths: ['*', '*', '*'],
                 body: [
                     [
                         { text: 'Pregunta', style: 'tableHeader' },
-                        { text: 'Respuesta', style: 'tableHeader' }
+                        { text: 'Respuesta', style: 'tableHeader' },
+                        { text: 'Comentarios', style: 'tableHeader'}
                     ],
-                    ...respuestas
+                    ...respuestas,
                 ]
             },
             layout: 'lightHorizontalLines'

@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Card, Table } from 'react-bootstrap'
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from 'axios'
+import { format, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale';
 import "./perfil.css";
 const PERFIL_ALUMNO_URL = '/profiles/getalumno';
+const GET_SEMESTRE_URL = '/reportes/getsemestre';
 
 function PerfilPadre() {
     //crear para sacar los datos del perfil
@@ -18,7 +21,8 @@ function PerfilPadre() {
     var idTutor = localStorage.getItem('id');
     
     useEffect (() => {
-        getAlumno()
+        getAlumno();
+        getSemestre();
     }, [])
 
     const getAlumno = () => {
@@ -27,12 +31,19 @@ function PerfilPadre() {
             console.log(response.data)
     })}
 
+    const getSemestre = () => {
+        axios.get(GET_SEMESTRE_URL).then((response) => {
+            setSemestre(response.data)
+            console.log(response.data)
+        })
+    }
+
     return (
         <div>
             <Card>
                 <Card.Header as="h5">Perfil</Card.Header>
             <Card.Body>
-            <Card.Title><h3>{alumno[0]?.nombre}</h3></Card.Title>
+            <Card.Title><h3>{alumno[0]?.nombre+' '+alumno[0]?.apellido}</h3></Card.Title>
                 <Table bordered>
                     <thead>
                         <tr>
@@ -56,13 +67,13 @@ function PerfilPadre() {
                                 {alumno[0]?.foto}
                             </th>
                             <td>
-                                {alumno[0]?.nombre}
+                                {alumno[0]?.nombre+' '+alumno[0]?.apellido}
                             </td>
                             <td>
-                                {alumno[0]?.anioEscolar}
+                                {semestre[0]?.periodo}
                             </td>
                             <td>
-                                {alumno[0]?.fechaNacimiento}
+                                {format(parseISO(alumno[0]?.fechaNacimiento), 'PPP', { locale: es })}
                             </td>
                         </tr>
                     </tbody>

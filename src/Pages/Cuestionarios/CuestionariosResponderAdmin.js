@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom'
 import { Alert, Button, Card, Form, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Offcanvas, OverlayTrigger, Tooltip } from "react-bootstrap";
-import {  AiOutlineEdit, AiOutlineSend, AiTwotoneStar } from 'react-icons/ai';
+import {  AiOutlineEdit, AiOutlineSend, AiOutlineFilePdf, AiTwotoneStar } from 'react-icons/ai';
 import "./cuestionarios.css";
 import axios from 'axios'
 const GET_QUESTIONNAIRE_INFO_URL = '/questionnaires/getquestionnaireinfo'
@@ -353,6 +353,12 @@ function Respuesta () {
         </Tooltip>
     );
 
+    const renderTooltipGenerar = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Disculpa la inconveniencia, actualmente tenemos un problema con el link de generación de reportes. Por favor resta 4 horas al tiempo (en el apartado T00:00:00.000Z) mostrado en el URL para dar con el reporte que deseas generar
+        </Tooltip>
+    );
+
     if(isSelectedQuestionnaire)
     return (
         <div>
@@ -435,11 +441,15 @@ function Respuesta () {
             Editar Respuestas
           </Button>
           <Link to={`/ReportesNuevoRegistroAdmin/${tiempoRegistro}`}>
-            <Button
-            size='lg'
-            className='buttonq'>
-                Generar reporte
-            </Button>
+            <OverlayTrigger
+            placement='bottom'
+            overlay={renderTooltipGenerar}>
+                <Button
+                className='btnCrear'>
+                    Generar reporte
+                    <AiOutlineFilePdf/>
+                </Button>
+            </OverlayTrigger>
           </Link>
           <Link to={'/Alumnos'}>
             <Button 

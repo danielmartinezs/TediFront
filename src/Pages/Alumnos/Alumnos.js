@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Alert, Accordion, Button, ButtonGroup, Modal } from 'react-bootstrap';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
-import { AiOutlineSearch } from 'react-icons/ai';
+import { AiOutlineSearch, AiOutlineSliders } from 'react-icons/ai';
 import axios from 'axios'
 import Form from 'react-bootstrap/Form';
 import ReactPaginate from 'react-paginate';
@@ -118,6 +118,9 @@ function Alumnos() {
             </div>
             <div>
                 <div className="containerInput">
+                {/* <button>
+                    <AiOutlineSliders/>
+                </button> */}
                 <input
                     className="inputBuscar"
                     value={busqueda}

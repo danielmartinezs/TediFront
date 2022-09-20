@@ -10,30 +10,6 @@ const GENERA_REPORTE_PRUEBA_URL = 'reportes/crearreporteprueba';
 function ReportesAdmin() {
     const [datos, setDatos] = useState();
 
-    const handleDescargaReporteEA = () => {
-        axios.post(GENERA_REPORTE_EVALUACION_ARTICULACION_URL).then((response) => {
-            window.open(response.data, '_blank');
-            console.log(response);
-            setDatos(response.data);
-        })
-    }
-
-    const handleDescargaReporteHPV = () => {
-        axios.post(GENERA_REPORTE_HABLIDADES_PREVERBALES_URL).then((response) => {
-            window.open(response.data, '_blank');
-            console.log(response);
-            setDatos(response.data);
-        })
-    }
-
-    const handleDescargaReportePrueba = () => {
-        axios.post(GENERA_REPORTE_PRUEBA_URL).then((response) => {
-            window.open(response.data, '_blank');
-            console.log(response);
-            setDatos(response.data);
-        })
-    }
-
     return (
         <div>
             <Card border='warning' className='text-center' style={{display: 'flex'}}>

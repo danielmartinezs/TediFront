@@ -15,7 +15,7 @@ function ReportesNuevoRegistroAdmin() {
     const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(0);
     const [idEditar, setIdEditar] = useState(0);
     const [nombreArchivo, setNombreArchivo] = useState("");
-    const [preguntaEdit, setPreguntaEdit] = useState('');
+    const [comentarioEdit, setComentarioEdit] = useState('');
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [administrador, setAdministrador] = useState('');
@@ -73,8 +73,11 @@ function ReportesNuevoRegistroAdmin() {
         })
     }
 
-    const handleEditarPregunta = () => {
-        comentariosList[idEditar].comment = preguntaEdit;
+    const handleEditarComentario = () => {
+        comentariosList[idEditar].comment = comentarioEdit;
+        console.log(datos)
+        datos[0].comentarios = JSON.stringify(comentariosList);
+        setDatos(datos);
         setShowOffEditC(false)
         setShowA(true)
         setVariante('success')
@@ -179,7 +182,7 @@ function ReportesNuevoRegistroAdmin() {
                                     onClick={() => {
                                         setIdEditar(index)
                                         setShowMC(false)
-                                        setPreguntaEdit(comentario.comment)
+                                        setComentarioEdit(comentario.comment)
                                         setShowOffEditC(true)
                                     }}>
                                         <AiOutlineEdit/>
@@ -247,9 +250,9 @@ function ReportesNuevoRegistroAdmin() {
                         <Form.Control 
                         as="textarea" 
                         rows={1}
-                        value={preguntaEdit}
-                        onChange={(e) => setPreguntaEdit(e.target.value)}>
-                            {preguntaEdit}
+                        value={comentarioEdit}
+                        onChange={(e) => setComentarioEdit(e.target.value)}>
+                            {comentarioEdit}
                         </Form.Control>
                     </Form.Group>
                 </Form>
@@ -259,13 +262,13 @@ function ReportesNuevoRegistroAdmin() {
                 onClick={() => {
                 setShowOffEditC(false)
                 setShowMC(true)
-                setPreguntaEdit("")}}>
+                setComentarioEdit("")}}>
                     Cerrar
                 </Button>
                 <Button
                 size='sm'
                 variant="success"
-                onClick={handleEditarPregunta}>
+                onClick={handleEditarComentario}>
                     Guardar
                 </Button>
             </Offcanvas.Body>

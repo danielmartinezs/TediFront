@@ -13,6 +13,7 @@ const GET_ADMINISTRADOR_URL = '/profiles/getadmin';
 const GET_SEMESTRE_URL = 'reportes/getsemestre';
 const GET_CUESTIONARIOS_URL = 'questionnaires/getcuestionarios';
 const GET_FECHAS_EVALUACIONES_HPV_URL = 'reportes/getfechasalumnohpv';
+const GET_FECHAS_EVALUACIONES_URL = 'reportes/especificafechareporte';
 const GET_PLAN_SEMESTRAL_URL = 'reportes/getplansemestral';
 
 function ReportesNuevoAdmin() {
@@ -53,7 +54,6 @@ function ReportesNuevoAdmin() {
     const [showOffEditO, setShowOffEditO] = useState(false);
     const [btnState, setBtnState] = useState(false);
     var idAdmin = localStorage.getItem('id');
-    let stateCheck = btnState ? 'success' : 'danger';
 
     useEffect(() => {
         getAdministrador();
@@ -86,13 +86,16 @@ function ReportesNuevoAdmin() {
         })
     }
 
-    const getFechasEvaluacionesH = () => {
-        axios.get(GET_FECHAS_EVALUACIONES_HPV_URL+"/"+alumnSelect).then((response) => {
+    const getFechasEvaluaciones = () => {
+        axios.post(GET_FECHAS_EVALUACIONES_URL, {
+            idCuestionario: idCuestionario,
+            idAlumno: alumnSelect,
+        }).then((response) => {
             setFechasEval(response.data);
         })
     }
 
-    const getFechasEvaluaciones = () => {
+    const getFechasEvaluacionesH = () => {
         axios.post(GET_FECHAS_EVALUACIONES_HPV_URL, {
             idAlumno: alumnSelect,
             idCuestionario: idCuestionario
@@ -145,6 +148,7 @@ function ReportesNuevoAdmin() {
 
     const handleDisplayFechas = () => {
         getFechasEvaluaciones();
+        //getFechasEvaluacionesH();
         setShowModalFechasEval(true);
     }
 
@@ -212,6 +216,12 @@ function ReportesNuevoAdmin() {
     const renderTooltipFecha = (props) => (
         <Tooltip id="button-tooltip" {...props}>
             Para poder generar este reporte primero debes de elegir una fecha ya existente, en caso de no contar con una no podras generar el reporte.
+        </Tooltip>
+    );
+
+    const renderTooltipGenerar = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Disculpa la inconveniencia, actualmente tenemos un problema con el link de generación de reportes. Por favor resta 4 horas al tiempo (en el apartado T00:00:00.000Z) mostrado en el URL para dar con el reporte que deseas generar
         </Tooltip>
     );
 
@@ -330,14 +340,14 @@ function ReportesNuevoAdmin() {
                             <h3>{tipo}</h3>
                         </Card.Header>
                         <Card.Body>
-                            <input
+                            {/* <input
                             value={nombreArchivo}
                             onChange={(e) => setNombreArchivo(e.target.value)}
-                            placeholder='Nombre del archivo'/>
+                            placeholder='Nombre del archivo'/> */}
                             <ListGroup>
-                                <ListGroupItem>
+                                {/* <ListGroupItem>
                                     <h5>Nombre del archivo: {nombreArchivo}</h5>
-                                </ListGroupItem>
+                                </ListGroupItem> */}
                                 <ListGroupItem>
                                     <h5>Alumno: {alumno}</h5>
                                 </ListGroupItem>
@@ -351,7 +361,7 @@ function ReportesNuevoAdmin() {
                                 <OverlayTrigger
                                 trigger='focus'
                                 placement="bottom"
-                                overlay={renderTooltipFecha}>
+                                overlay={renderTooltipGenerar}>
                                     <Button
                                     className='btnCrear'
                                     onClick={() => {handleDisplayFechas()}}>
@@ -364,12 +374,22 @@ function ReportesNuevoAdmin() {
                         <Card.Footer>
                             {fechaSelect !== "" &&
                             <Link to={`/ReportesNuevoRegistroAdmin/${fechaSelect}`}>
-                                <Button
-                                className='btnCrear'>
-                                    Generar reporte
-                                    <AiOutlineFilePdf/> 
-                                </Button>
+                                <OverlayTrigger
+                                trigger='focus'
+                                placement='bottom'
+                                overlay={renderTooltipGenerar}>
+                                    <Button
+                                    className='btnCrear'>
+                                        Generar reporte
+                                        <AiOutlineFilePdf/> 
+                                    </Button>
+                                </OverlayTrigger>
                             </Link>}
+                            {fechaSelect && 
+                            <ListGroupItem>
+                            <h5>Link: {`/ReportesNuevoRegistroAdmin/${fechaSelect}`}</h5>
+                            <h5>Favor de restarle cuatro horas en el tiempo del URL(después de la T) al momento de hacer click en el botón</h5>
+                            </ListGroupItem>}
                         </Card.Footer>
                     </Card>
                     </div>
@@ -430,6 +450,7 @@ function ReportesNuevoAdmin() {
                                         setTipo(e.target.value)
                                         setCategoria('Cuestionario')
                                         setShowModalTipo(false)
+                                        setIdCuestionario(index+1)
                                         handleDisplayAlumnos()
                                         }}>
                                         {cuestionario.nombre}
@@ -438,27 +459,6 @@ function ReportesNuevoAdmin() {
                             })}       
                         </Card.Body>
                     </Card>
-                    <Button
-                    className='btnSeleccion'
-                    value= 'Evaluación de Articulación'
-                    onClick={(e) => {
-                        setTipo(e.target.value)
-                        setShowModalTipo(false)
-                        handleDisplayAlumnos()
-                        }}>
-                        Evaluación de Articulación
-                    </Button>
-                    <Button
-                    className= 'btnSeleccion'
-                    value= 'Evaluación de Habilidades Preverbales'
-                    onClick={(e) => {
-                        setIdCuestionario(1);
-                        setTipo(e.target.value)
-                        setShowModalTipo(false)
-                        handleDisplayAlumnos()
-                        }}>
-                        Evaluación de Habilidades Preverbales
-                    </Button>
                     </div>
                 </ModalBody>
             </Modal>
@@ -536,7 +536,7 @@ function ReportesNuevoAdmin() {
                             style={{ width: '100%' }}>
                                 <Card.Body>
                                 <div>
-                                    {values.fecha}
+                                    {format(parseISO(values.fecha), 'PPPp', { locale: es })}
                                     <br/>
                                     <Button
                                     variant="success"
