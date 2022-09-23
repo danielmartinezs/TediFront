@@ -22,6 +22,7 @@ function ReportesNuevoAdmin() {
     const [idDelete, setIdDelete] = useState(0);
     const [fechasEval, setFechasEval] = useState();
     const [fechaSelect, setFechaSelect] = useState('');
+    const [timestamp, setTimestamp] = useState('')
     const [idCuestionario, setIdCuestionario] = useState(0);
     const [cuestionariosList, setCuestionariosList] = useState([]);
     const [tipo, setTipo] = useState();
@@ -93,6 +94,15 @@ function ReportesNuevoAdmin() {
         }).then((response) => {
             setFechasEval(response.data);
         })
+    }
+
+    const conversionHorario = (fecha) => {
+        setFechaSelect(fecha)
+        let newtimestamp = 0;
+        newtimestamp = new Date(fecha);
+        newtimestamp.setHours(newtimestamp.getHours()-4);//cambiar a 4 o 5 dependiendo del horario
+        newtimestamp = newtimestamp.toISOString();
+        setTimestamp(newtimestamp)
     }
 
     const getFechasEvaluacionesH = () => {
@@ -219,12 +229,6 @@ function ReportesNuevoAdmin() {
         </Tooltip>
     );
 
-    const renderTooltipGenerar = (props) => (
-        <Tooltip id="button-tooltip" {...props}>
-            Disculpa la inconveniencia, actualmente tenemos un problema con el link de generación de reportes. Por favor resta 4 horas al tiempo (en el apartado T00:00:00.000Z) mostrado en el URL para dar con el reporte que deseas generar
-        </Tooltip>
-    );
-
     return (
         <div>
             <div className='text-center'>
@@ -340,14 +344,7 @@ function ReportesNuevoAdmin() {
                             <h3>{tipo}</h3>
                         </Card.Header>
                         <Card.Body>
-                            {/* <input
-                            value={nombreArchivo}
-                            onChange={(e) => setNombreArchivo(e.target.value)}
-                            placeholder='Nombre del archivo'/> */}
                             <ListGroup>
-                                {/* <ListGroupItem>
-                                    <h5>Nombre del archivo: {nombreArchivo}</h5>
-                                </ListGroupItem> */}
                                 <ListGroupItem>
                                     <h5>Alumno: {alumno}</h5>
                                 </ListGroupItem>
@@ -359,9 +356,8 @@ function ReportesNuevoAdmin() {
                                     <h5>Fecha del reporte: {format(parseISO(fechaSelect), 'PPPPp', { locale: es })}</h5>
                                 </ListGroupItem>}
                                 <OverlayTrigger
-                                trigger='focus'
                                 placement="bottom"
-                                overlay={renderTooltipGenerar}>
+                                overlay={renderTooltipFecha}>
                                     <Button
                                     className='btnCrear'
                                     onClick={() => {handleDisplayFechas()}}>
@@ -373,23 +369,13 @@ function ReportesNuevoAdmin() {
                         </Card.Body>
                         <Card.Footer>
                             {fechaSelect !== "" &&
-                            <Link to={`/ReportesNuevoRegistroAdmin/${fechaSelect}`}>
-                                <OverlayTrigger
-                                trigger='focus'
-                                placement='bottom'
-                                overlay={renderTooltipGenerar}>
-                                    <Button
-                                    className='btnCrear'>
-                                        Generar reporte
-                                        <AiOutlineFilePdf/> 
-                                    </Button>
-                                </OverlayTrigger>
+                            <Link to={`/ReportesNuevoRegistroAdmin/${timestamp}`}>
+                                <Button
+                                className='btnCrear'>
+                                    Generar reporte
+                                    <AiOutlineFilePdf/> 
+                                </Button>
                             </Link>}
-                            {fechaSelect && 
-                            <ListGroupItem>
-                            <h5>Link: {`/ReportesNuevoRegistroAdmin/${fechaSelect}`}</h5>
-                            <h5>Favor de restarle cuatro horas en el tiempo del URL(después de la T) al momento de hacer click en el botón</h5>
-                            </ListGroupItem>}
                         </Card.Footer>
                     </Card>
                     </div>
@@ -541,7 +527,7 @@ function ReportesNuevoAdmin() {
                                     <Button
                                     variant="success"
                                     onClick={() => {
-                                        setFechaSelect(values.fecha)
+                                        conversionHorario(values.fecha)
                                         setShowModalFechasEval(false)
                                         }}>
                                         <AiOutlineSelect/>

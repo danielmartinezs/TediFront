@@ -29,6 +29,7 @@ function Respuesta () {
     const [descripcion, setDescripcion] = useState("");
     const [comment, setComment] = useState("");
     const [tiempoRegistro, setTiempoRegistro] = useState();
+    const [timestamp, setTimestamp] = useState();
     const [llaveCambio, setLlaveCambio] = useState(0);
     const [msg, setMsg] = useState("");
     const [variante, setVariante] = useState('');
@@ -67,13 +68,6 @@ function Respuesta () {
         })
     }
 
-    const getMostRecent = () => {
-        axios.get(GET_RECENT_ENTRY_URL+"/"+idAlumno).then((response) => {
-            console.log(response)
-            setTiempoRegistro(response.data[0].ultimoregistro)
-        })
-    }
-
     const formatQuestions = () => {
         const opc = preguntasList.map((lis) => JSON.parse(JSON.parse(JSON.stringify(lis.opciones))));
         setFormattedAnswers(opc)
@@ -103,6 +97,8 @@ function Respuesta () {
                 setMsg("Las respuestas han sido registradas correctamente")
                 console.log(response.data)
                 setTiempoRegistro(response.data.message)
+                setTimestamp(response.data.message)
+                conversionHorario(response.data.message)
             }
         }catch(error){
             if(!error?.response){
@@ -184,6 +180,14 @@ function Respuesta () {
             setVariante('danger');
           }
         }
+    }
+
+    const conversionHorario = (fecha) => {
+        let newtimestamp = 0;
+        newtimestamp = new Date(fecha);
+        newtimestamp.setHours(newtimestamp.getHours()-4);//cambiar a 4 o 5 dependiendo del horario
+        newtimestamp = newtimestamp.toISOString();
+        setTimestamp(newtimestamp)
     }
 
     const calcularPuntaje = () => {
@@ -353,12 +357,6 @@ function Respuesta () {
         </Tooltip>
     );
 
-    const renderTooltipGenerar = (props) => (
-        <Tooltip id="button-tooltip" {...props}>
-            Disculpa la inconveniencia, actualmente tenemos un problema con el link de generación de reportes. Por favor resta 4 horas al tiempo (en el apartado T00:00:00.000Z) mostrado en el URL para dar con el reporte que deseas generar
-        </Tooltip>
-    );
-
     if(isSelectedQuestionnaire)
     return (
         <div>
@@ -440,16 +438,12 @@ function Respuesta () {
           onClick={() => {setShowMEdit(true)}}>
             Editar Respuestas
           </Button>
-          <Link to={`/ReportesNuevoRegistroAdmin/${tiempoRegistro}`}>
-            <OverlayTrigger
-            placement='bottom'
-            overlay={renderTooltipGenerar}>
+          <Link to={`/ReportesNuevoRegistroAdmin/${timestamp}`}>
                 <Button
                 className='btnCrear'>
                     Generar reporte
                     <AiOutlineFilePdf/>
                 </Button>
-            </OverlayTrigger>
           </Link>
           <Link to={'/Alumnos'}>
             <Button 

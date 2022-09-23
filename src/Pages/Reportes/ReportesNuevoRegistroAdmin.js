@@ -214,9 +214,16 @@ function ReportesNuevoRegistroAdmin() {
                                                 return (
                                                     <div key={index} className='text-center'>
                                                         <ListGroup>
-                                                            <ListGroupItem>
-                                                            <h5>{opcion.respuesta}</h5>
+                                                            {opcion.respuesta === respuesta.value ?
+                                                            <ListGroupItem
+                                                            className='respuestaCorrecta'>
+                                                                <h3>Repuesta elegida: {opcion.respuesta}</h3>
                                                             </ListGroupItem>
+                                                            :    
+                                                            <ListGroupItem>
+                                                                <h5>{opcion.respuesta}</h5>
+                                                            </ListGroupItem>                                                        
+                                                            }
                                                         </ListGroup>
                                                     </div>
                                                 )
@@ -225,7 +232,6 @@ function ReportesNuevoRegistroAdmin() {
                                         :
                                         <div/>
                                         }
-                                        <h5>Respuesta elegida: {respuesta.value}</h5>
                                     </ListGroupItem>
                                 </ListGroup>
                             </div>

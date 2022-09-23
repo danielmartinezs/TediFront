@@ -249,6 +249,7 @@ function ProgresoAlumAdmin() {
                         <ListGroup>
                             <ListGroupItem>
                                 <h3>{values.descripcion}</h3>
+                                {console.log(values.fecha)}
                                 {format(parseISO(values.fecha), 'PPPPp', { locale: es })}
                                 <br/>
                                 <Button
@@ -363,6 +364,7 @@ function ProgresoAlumAdmin() {
                             value={descripcion}
                             onChange={(e) => setDescripcion(e.target.value)}>
                                 {descripcion}
+                                {console.log(timestamp)}
                             </Form.Control>
                         </Form.Group>
                         <Form.Label>Fecha de registro</Form.Label>

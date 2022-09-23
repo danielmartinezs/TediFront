@@ -52,10 +52,10 @@ function PdfCreator(datos, admin, qa, nombrearchivo) {
         respuestas[i].comment = comments[i]
     }
 
-    respuestas = qa.map((answer) => {
+    respuestas = qa.map((answer, index) => {
         return [
             {
-                text: answer.id+'. '+answer?.pregunta,
+                text: (index+1)+'. '+answer?.pregunta,
                 fontSize: 11,
                 margin: [15, 25, 0, 45]
             },

@@ -45,6 +45,7 @@ function PerfilEditarTutor() {
         console.log(values)
         setDetailsPane({isPaneOpen: true});
         setLlave(values.idTutor);
+        setNombre(values.usuario);
         console.log(llave)
     }
 
@@ -223,7 +224,7 @@ function PerfilEditarTutor() {
                             <Form.Label>Nombre del tutor</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder={tutoresList[llave-1]?.usuario}
+                                placeholder={nombre}
                                 value={nombre}
                                 onChange={(e) => setNombre(e.target.value)}/>
                         </Form.Group>

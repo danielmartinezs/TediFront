@@ -15,19 +15,7 @@ function PdfReporteSemestral(datos, detalles, admin, alumno, nombrearchivo, vere
     const timestamp = new Date().getTime();
     const reportTitle = [
         {
-            text: 'Alumno(a): '+alumno,
-            fontSize: 11,
-            bold: true,
-            margin: [15, 20, 0, 45]
-        },
-        {
-            text: admin,
-            fontSize: 11,
-            bold: true,
-            margin: [15, 20, 0, 45]
-        },
-        {
-            text: 'Programa Semestral'+datos[0].planSemestral,
+            text: 'Alumno(a): '+alumno+'\n'+'Titular de lenguaje: '+admin+'\n'+'Programa Semestral: '+datos[0].planSemestral,
             fontSize: 11,
             bold: true,
             margin: [15, 20, 0, 45]

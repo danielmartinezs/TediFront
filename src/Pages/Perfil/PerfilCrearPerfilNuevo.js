@@ -205,7 +205,7 @@ function CreatePerfil() {
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Contraseña debe tener un dígito, una letra minuscula, una letra mayúscula, un caracter especial, y una longitud de más de 8 caracteres"
+                  placeholder="Contraseña debe tener un dígito, una letra minúscula, una letra mayúscula, un caracter especial, y una longitud de más de 8 caracteres"
                   value={passwordTutor}
                   maxLength= "250"
                   minLength={8}
@@ -373,7 +373,7 @@ function CreatePerfil() {
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Contraseña debe tener un dígito, una letra minuscula, una letra mayúscula, un caracter especial, y una longitud de más de 8 caracteres"
+                    placeholder="Contraseña debe tener un dígito, una letra minúscula, una letra mayúscula, un caracter especial, y una longitud de más de 8 caracteres"
                     value={password}
                     maxLength= "250"
                     minLength={8}
