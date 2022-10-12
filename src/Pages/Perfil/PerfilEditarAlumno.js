@@ -58,8 +58,6 @@ function PerfilEditarAlumno() {
             setAlumnosList(response.data)
             setAlumnosPag((response.data).slice(pageVisisted, pageVisisted + alumnosPerPage))
         })
-        setFechaNac(alumnosList[llave-1]?.fechaNacimiento)
-        setGrupo(alumnosList[llave-1]?.nombregrupo)
     }
 
     const getGruposList = async () => {
@@ -76,16 +74,16 @@ function PerfilEditarAlumno() {
 
     const openPane = (values) => {
         console.log(values)
-        setDetailsPane({isPaneOpen: true});
         setLlave(values.idAlumno);
         setNombre(values.nombre);
         setApellido(values.apellido);
         setFechaNac(values.fechaNacimiento);
-        setFoto(values.foto);
+        setFoto(values.fotografia);
         setGrupo(values.nombregrupo);
         setGrupoSelect(values.idGrupo);
         console.log(semestre)
-        console.log(llave)
+        console.log('id: '+values.idAlumno)
+        setDetailsPane({isPaneOpen: true});
     }
 
     const closePane = () => {
@@ -162,7 +160,7 @@ function PerfilEditarAlumno() {
             if(terminoBusqueda === ""){
                 return;
             }
-            else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()) || elemento.apellido.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
             {
                 return elemento;
             }
@@ -273,18 +271,17 @@ function PerfilEditarAlumno() {
                         <img 
                         className='admin-details__img'
                         src={fotoPreview ?? (alumnosList[llave-1]?.fotografia)}/>
+                        <br/>
                         <Form.Group 
-                        controlId="formFileSm" 
-                        className="custom-file-upload">
+                        controlId="formFileSm">
                             <Form.Control
-                                type="file"
-                                size="sm"
-                                accept='image/*'
+                                type="text"
+                                placeholder={alumnosList[llave-1]?.fotografia}
+                                value={foto}
                                 onChange={(e) => {
-                                    setFoto(e.target.files[0])
-                                    setFotoPreview(URL.createObjectURL(e.target.files[0]))
-                                }}
-                            />
+                                    setFoto(e.target.value)
+                                    //setFotoPreview(URL.createObjectURL(e.target.files[0]))
+                                }}/>
                         </Form.Group>
                         <Form.Group controlId="nombre">
                                 <Form.Label>Nombre del alumno</Form.Label>
@@ -305,6 +302,7 @@ function PerfilEditarAlumno() {
                             <Form.Group>
                             <Form.Label>Fecha de Nacimiento</Form.Label>
                             <br/>
+                                {console.log(fechanac)}
                                 <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
                                     <DatePicker
                                     disableFuture

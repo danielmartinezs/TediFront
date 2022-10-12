@@ -106,7 +106,6 @@ function PerfilEditarTutor() {
     }
 
     const filtrar = (terminoBusqueda) => {
-        console.log("El termino es "+terminoBusqueda)
         var resultadosBusqueda = tutoresList.filter( (elemento) => {
             if(terminoBusqueda === ""){
                 return;
@@ -211,7 +210,7 @@ function PerfilEditarTutor() {
             <SlidingPane
             className='sliding-pane'
             isOpen={detailsPane.isPaneOpen}
-            title={tutoresList[llave-1]?.usuario}
+            title={nombre}
             width={window.innerWidth < 600 ? "100%" : "500px"}
             onRequestClose={closePane}>
                 <div className='admin-details__info'>

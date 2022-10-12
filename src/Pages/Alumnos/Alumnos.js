@@ -78,7 +78,7 @@ function Alumnos() {
             if(terminoBusqueda === ""){
                 return;
             }
-            else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
+            else if(elemento.nombre.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()) || elemento.apellido.toString().toLowerCase().includes(terminoBusqueda.toLowerCase()))
             {
                 return elemento;
             }

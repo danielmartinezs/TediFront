@@ -226,18 +226,15 @@ function CreatePerfil() {
               <br/>
               <h3>Información del Alumno</h3>
               <br/>
-                <img
-                  className='newAlumnoImg'
-                  src={picPreview}/>
                 <Form.Group controlId="formFileSm" className="mb-3">
                   <Form.Label>Sube foto</Form.Label>
                   <Form.Control
-                    type="file"
-                    size="sm"
-                    accept="image/*"
+                    type="text"
+                    placeholder="Ingresa el URL donde se encuentra la foto"
+                    value={pic}
                     onChange={(e) => {
                       setPic(e.target.value)
-                      setPicPreview(URL.createObjectURL(e.target.files[0]))
+                      //setPicPreview(URL.createObjectURL(e.target.files[0]))
                     }}
                   ></Form.Control>
                 </Form.Group>
