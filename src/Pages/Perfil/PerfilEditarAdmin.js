@@ -79,6 +79,7 @@ function PerfilEditarAdmin() {
               setNombre("")
               setContrasenia("")
               setConfPassword("")
+              setDetailsPane({isPaneOpen: false});
           }
         }catch(error){
             setShowA(true)
