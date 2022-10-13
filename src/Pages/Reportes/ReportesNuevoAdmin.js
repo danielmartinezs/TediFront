@@ -12,7 +12,6 @@ const GET_ALUMNOS_URL = '/profiles/getalumnos';
 const GET_ADMINISTRADOR_URL = '/profiles/getadmin';
 const GET_SEMESTRE_URL = 'reportes/getsemestre';
 const GET_CUESTIONARIOS_URL = 'questionnaires/getcuestionarios';
-const GET_FECHAS_EVALUACIONES_HPV_URL = 'reportes/getfechasalumnohpv';
 const GET_FECHAS_EVALUACIONES_URL = 'reportes/especificafechareporte';
 const GET_PLAN_SEMESTRAL_URL = 'reportes/getplansemestral';
 
@@ -45,6 +44,9 @@ function ReportesNuevoAdmin() {
     const [temasSemestre, setTemasSemestre] = useState([]);
     const [temarioSemestral, setTemarioSemestral] = useState([]);
     const [semestre, setSemestre] = useState();
+    const [msg, setMsg] = useState('');
+    const [variante, setVariante] = useState('');
+    const [show, setShow] = useState(false);
     const [showModalTipo, setShowModalTipo] = useState(true);
     const [showModalAlumnos, setShowModalAlumnos] = useState(false);
     const [showModalFechasEval, setShowModalFechasEval] = useState(false);
@@ -103,15 +105,6 @@ function ReportesNuevoAdmin() {
         newtimestamp.setHours(newtimestamp.getHours()-4);//cambiar a 4 o 5 dependiendo del horario
         newtimestamp = newtimestamp.toISOString();
         setTimestamp(newtimestamp)
-    }
-
-    const getFechasEvaluacionesH = () => {
-        axios.post(GET_FECHAS_EVALUACIONES_HPV_URL, {
-            idAlumno: alumnSelect,
-            idCuestionario: idCuestionario
-        }).then((response) => {
-            setFechasEval(response.data);
-        })
     }
 
     const getPlanSemestral = () => {
@@ -231,6 +224,17 @@ function ReportesNuevoAdmin() {
 
     return (
         <div>
+            <div className='alertas'>
+              <Alert 
+              show={show}
+              variant={variante}
+              onClose={() => setShow(false)}
+              dismissible>
+                <Alert.Heading>
+                  {msg}
+                </Alert.Heading>
+              </Alert>
+            </div>
             <div className='text-center'>
                 <h1>Creación de Reportes</h1>
                 <Button
@@ -283,7 +287,9 @@ function ReportesNuevoAdmin() {
                         </Card.Body>
                         <Card.Footer>
                             <Button className='btnSeleccion'
-                            onClick={(e) => PdfProgramaSemestral(temasSemestre, semestre, administrador, alumno, nombreArchivo)}>
+                            onClick={(e) => {
+                                PdfProgramaSemestral(temasSemestre, semestre, administrador, alumnSelect, alumno, nombreArchivo)
+                                }}>
                                 Crear Reporte
                                 <AiOutlineFilePdf/>  
                             </Button>
@@ -328,7 +334,7 @@ function ReportesNuevoAdmin() {
                         </Card.Body>
                         <Card.Footer>
                             <Button className='btnSeleccion'
-                            onClick={(e) => PdfReporteSemestral(temarioSemestral, detalles, administrador, alumno, nombreArchivo, cumplido)}>
+                            onClick={(e) => PdfReporteSemestral(temarioSemestral, detalles, administrador, alumnSelect, alumno, nombreArchivo, cumplido)}>
                                 Crear Reporte
                                 <AiOutlineFilePdf/> 
                             </Button>

@@ -3,16 +3,14 @@ import pdfFonts from 'pdfmake/build/vfs_fonts'
 import axios from 'axios';
 const SUBIR_REPORTE_SEMESTRAL = 'reportes/uploadreportesemestral'
 
-function PdfReporteSemestral(datos, detalles, admin, alumno, nombrearchivo, veredicto) {
+function PdfReporteSemestral(datos, detalles, admin, idalumno, alumno, nombrearchivo, veredicto) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
-    console.log(datos)
-    console.log(detalles)
-    console.log(admin)
-    console.log(alumno)
-    console.log(nombrearchivo)
-    console.log(veredicto)
     const filename = nombrearchivo;
     const timestamp = new Date().getTime();
+    let verbool = 0;
+    if(veredicto === "Se cumplieron todos los objetivos"){
+        verbool = 1;
+    }
     const reportTitle = [
         {
             text: 'Alumno(a): '+alumno+'\n'+'Titular de lenguaje: '+admin+'\n'+'Programa Semestral: '+datos[0].planSemestral,
@@ -74,14 +72,14 @@ function PdfReporteSemestral(datos, detalles, admin, alumno, nombrearchivo, vere
     };
 
     const subirReporteSemestral = async () => {
+        console.log(verbool)
         console.log("subiendo reporte semestral")
         try{
             const response = await axios.post(SUBIR_REPORTE_SEMESTRAL, {
-                nombre: filename,
                 descripcion: JSON.stringify(datos),
-                semestre: datos[0].periodo,
-                alumno: alumno,
-                complete: veredicto,
+                semestre: datos[0].idSemestre,
+                alumno: datos[0].idAlumno,
+                complete: verbool,
             })
             console.log(response);
         } catch(error) {
