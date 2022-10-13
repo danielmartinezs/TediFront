@@ -102,7 +102,6 @@ function PerfilEditarAlumno() {
                 nombrealu: nombre,
                 apellidoalu: apellido,
                 nacimiento: fechanac,
-                schoolmester: semestre,
                 foto: foto,
                 grupo: grupoSelect
             })
@@ -268,9 +267,9 @@ function PerfilEditarAlumno() {
                         className="form"
                         onSubmit={handleSubmitEditAlumno}>
                         <h3>Editar información</h3>
-                        <img 
+                        {/* <img 
                         className='admin-details__img'
-                        src={fotoPreview ?? (alumnosList[llave-1]?.fotografia)}/>
+                        src={fotoPreview ?? (alumnosList[llave-1]?.fotografia)}/> */}
                         <br/>
                         <Form.Group 
                         controlId="formFileSm">

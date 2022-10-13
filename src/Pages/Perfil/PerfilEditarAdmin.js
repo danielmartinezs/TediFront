@@ -38,6 +38,7 @@ function PerfilEditarAdmin() {
     const openPane = (values) => {
         setDetailsPane({isPaneOpen: true});
         setLlave(values.idAdministrador);
+        setNombre(values.usuario);
     }
 
     const closePane = () => {
@@ -59,6 +60,10 @@ function PerfilEditarAdmin() {
 
     const handleSubmitEdit = async (e) => {
         e.preventDefault();
+        console.log(llave)
+        console.log(nombre)
+        console.log(contrasenia)
+        console.log(confpassword)
         try{
             const response = await axios.post(EDIT_ADMINS_URL, {
                 idadmin: llave,
@@ -168,7 +173,7 @@ function PerfilEditarAdmin() {
             <SlidingPane
                 className='sliding-pane'
                 isOpen={detailsPane.isPaneOpen}
-                title={adminList[llave-1]?.usuario}
+                title={nombre}
                 width={window.innerWidth < 600 ? "100%" : "500px"}
                 onRequestClose={closePane}>
                 <div className='admin-details__info'>

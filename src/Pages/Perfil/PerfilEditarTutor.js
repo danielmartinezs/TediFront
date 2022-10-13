@@ -58,6 +58,9 @@ function PerfilEditarTutor() {
 
     const handleSubmitEditTutor = async (e) => {
         e.preventDefault();
+        console.log(nombre)
+        console.log(contrasenia)
+        console.log(confpassword)
         try{
             const response = await axios.post(EDIT_TUTOR_URL, {
                 idtut: llave,
