@@ -77,7 +77,7 @@ function PerfilEditarAlumno() {
         setLlave(values.idAlumno);
         setNombre(values.nombre);
         setApellido(values.apellido);
-        setFechaNac(values.fechaNacimiento);
+        setFechaNac(values.fechaNacimiento.split( "T" )[0]);
         setFoto(values.fotografia);
         setGrupo(values.nombregrupo);
         setGrupoSelect(values.idGrupo);
