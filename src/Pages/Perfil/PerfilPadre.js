@@ -14,7 +14,7 @@ function PerfilPadre() {
     const [show, setShow] = useState(false);
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
-    const [fechaNacimiento, setFechaNacimiento] = useState("");
+    const [fechaNacimiento, setFechaNacimiento] = useState();
     const [semestre, setSemestre] = useState("");
     const [foto, setFoto] = useState();
     const [alumno, setAlumno] = useState([]);
@@ -29,6 +29,7 @@ function PerfilPadre() {
         axios.get(PERFIL_ALUMNO_URL+"/"+idTutor).then((response) => {
             setAlumno(response.data)
             console.log(response.data)
+            setFechaNacimiento((response.data[0].fechaNacimiento).split( "T" )[0])
     })}
 
     const getSemestre = () => {
@@ -73,7 +74,7 @@ function PerfilPadre() {
                                 {semestre[0]?.periodo}
                             </td>
                             <td>
-                                {format(parseISO(alumno[0]?.fechaNacimiento), 'PPP', { locale: es })}
+                                {format(parseISO(fechaNacimiento), 'PPP', { locale: es })}
                             </td>
                         </tr>
                     </tbody>
