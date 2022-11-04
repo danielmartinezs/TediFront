@@ -65,7 +65,7 @@ function Progreso () {
       if(showNoN){
         return (
             <div className='text-center'>
-            <h1>Progreso de {alumno[0]?.nombre}</h1>
+            <h1>Progreso de {alumno[0]?.nombre+" "+alumno[0]?.apellido}</h1>
                 <Card>
                     
                     <Card.Header as="h5">
@@ -83,20 +83,20 @@ function Progreso () {
 
         return (
             <div className='text-center'>
-                <h1>Progreso de {alumno[0]?.nombre}</h1>
+                <h1>Progreso de {alumno[0]?.nombre+" "+alumno[0]?.apellido}</h1>
                     <Card>
                         <Card.Header as="h5">
                             <Button 
                             className='btnVerHitos'
                             onClick={getHitosList}>
-                                Visualizar hitos de {alumno[0]?.nombre}
+                                Visualizar hitos de {alumno[0]?.nombre+" "+alumno[0]?.apellido}
                             </Button>
                         </Card.Header>
                         <Card.Header as="h5">
                             <Button
                             className='btnVerHitos'
                             onClick={revealGraphNoN}>
-                                Visualizar gráfica de puntajes de {alumno[0]?.nombre}
+                                Visualizar gráfica de puntajes de {alumno[0]?.nombre+" "+alumno[0]?.apellido}
                                 <VscGraph />
                             </Button>
                         </Card.Header>

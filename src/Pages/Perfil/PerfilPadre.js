@@ -2,15 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { Card, Table } from 'react-bootstrap'
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from 'axios'
-import { format, parseISO } from 'date-fns';
+import { format, parse, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import "./perfil.css";
 const PERFIL_ALUMNO_URL = '/profiles/getalumno';
 const GET_SEMESTRE_URL = '/reportes/getsemestre';
 
 function PerfilPadre() {
-    //crear para sacar los datos del perfil
-    // sacar de fila
     const [show, setShow] = useState(false);
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
@@ -29,7 +27,7 @@ function PerfilPadre() {
         axios.get(PERFIL_ALUMNO_URL+"/"+idTutor).then((response) => {
             setAlumno(response.data)
             console.log(response.data)
-            setFechaNacimiento((response.data[0].fechaNacimiento).split( "T" )[0])
+            setFechaNacimiento(response.data[0].fechaNacimiento.split("T")[0])
     })}
 
     const getSemestre = () => {
@@ -42,7 +40,6 @@ function PerfilPadre() {
     return (
         <div>
             <Card>
-                <Card.Header as="h5">Perfil</Card.Header>
             <Card.Body>
             <Card.Title><h3>{alumno[0]?.nombre+' '+alumno[0]?.apellido}</h3></Card.Title>
                 <Table bordered>
@@ -74,7 +71,7 @@ function PerfilPadre() {
                                 {semestre[0]?.periodo}
                             </td>
                             <td>
-                                {format(parseISO(fechaNacimiento), 'PPP', { locale: es })}
+                                {fechaNacimiento}
                             </td>
                         </tr>
                     </tbody>
