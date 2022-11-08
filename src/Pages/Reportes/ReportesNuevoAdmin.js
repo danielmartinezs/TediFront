@@ -102,7 +102,7 @@ function ReportesNuevoAdmin() {
         setFechaSelect(fecha)
         let newtimestamp = 0;
         newtimestamp = new Date(fecha);
-        newtimestamp.setHours(newtimestamp.getHours()-4);//cambiar a 4 o 5 dependiendo del horario
+        newtimestamp.setHours(newtimestamp.getHours()-6);//cambiar a 4 o 5 o 6 dependiendo del horario
         newtimestamp = newtimestamp.toISOString();
         setTimestamp(newtimestamp)
     }
@@ -281,12 +281,14 @@ function ReportesNuevoAdmin() {
                         </ListGroup>
                         <br/>
                         <Button
+                        className='btnEditarRespuesta'
                         onClick={() => {setShowModalObjetivos(true)}}>
                             Listado de objetivos
                         </Button>
                         </Card.Body>
                         <Card.Footer>
-                            <Button className='btnSeleccion'
+                            <Button
+                            className='btnEditarRespuesta'
                             onClick={(e) => {
                                 PdfProgramaSemestral(temasSemestre, semestre, administrador, alumnSelect, alumno, nombreArchivo)
                                 }}>
@@ -328,12 +330,14 @@ function ReportesNuevoAdmin() {
                         </ListGroup>
                         <br/>
                         <Button
+                        className='btnEditarRespuesta'
                         onClick={() => {handleDisplayPlanSemestral()}}>
                             Elegir plan semestral
                         </Button>
                         </Card.Body>
                         <Card.Footer>
-                            <Button className='btnSeleccion'
+                            <Button
+                            className='btnEditarRespuesta'
                             onClick={(e) => PdfReporteSemestral(temarioSemestral, detalles, administrador, alumnSelect, alumno, nombreArchivo, cumplido)}>
                                 Crear Reporte
                                 <AiOutlineFilePdf/> 
@@ -405,7 +409,7 @@ function ReportesNuevoAdmin() {
                         </Card.Header>
                         <Card.Body>
                             <Button
-                            className='btnSeleccion'
+                            className='btnEditarRespuesta'
                             value= 'Programa Semestral'
                             onClick={(e) => {
                                 setTipo(e.target.value)
@@ -416,7 +420,7 @@ function ReportesNuevoAdmin() {
                                 Programa Semestral
                             </Button>
                             <Button
-                            className='btnSeleccion'
+                            className='btnEditarRespuesta'
                             value= 'Reporte Semestral'
                             onClick={(e) => {
                                 setTipo(e.target.value)
@@ -436,7 +440,7 @@ function ReportesNuevoAdmin() {
                             {cuestionariosList.map((cuestionario, index) => {
                                 return (
                                     <Button
-                                    className='btnSeleccion'
+                                    className='btnEditarRespuesta'
                                     value={cuestionario.nombre}
                                     onClick={(e) => {
                                         setTipo(e.target.value)
@@ -499,7 +503,8 @@ function ReportesNuevoAdmin() {
                 </Modal.Body>
                 <Modal.Footer>
                     {alumnSelect &&        
-                    <Button className='btnAct'
+                    <Button
+                    className='btnAct'
                     onClick={() => {
                         setAlumno(findAlumno(alumnSelect))
                         setShowModalAlumnos(false)
@@ -571,7 +576,7 @@ function ReportesNuevoAdmin() {
                 placeholder='Descirpción del objetivo'
                 />
                 <Button 
-                className='btnSeleccion'
+                className='btnAct'
                 onClick={() => {handleNuevoObjetivo()}}
                 >
                     Agregar Objetivo
@@ -616,7 +621,7 @@ function ReportesNuevoAdmin() {
                     }
                     )}
                     <Button
-                    className='btnSeleccion'
+                    className='btnEditarRespuesta'
                     onClick={() => {
                         setShowModalObjetivos(false)
                     }}>

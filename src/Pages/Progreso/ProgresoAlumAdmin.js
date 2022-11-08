@@ -75,11 +75,11 @@ function ProgresoAlumAdmin() {
         let newtimestamp = 0;
         if(new Date (timestamp).getTime() === new Date (hitosList[index].fecha).getTime()){
             newtimestamp = new Date((hitosList[index].fecha));
-            newtimestamp.setHours(newtimestamp.getHours()-4);//cambiar a 4 o 5 dependiendo del horario
+            newtimestamp.setHours(newtimestamp.getHours()-6);//cambiar a 4 o 5 o 6 dependiendo del horario
             newtimestamp = newtimestamp.toISOString();
         }
         else{
-            newtimestamp = new Date(timestamp.setHours(timestamp.getHours()-4)).toISOString();//cambiar a 4 o 5 dependeindo del horario
+            newtimestamp = new Date(timestamp.setHours(timestamp.getHours()-6)).toISOString();//cambiar a 4 o 5 o 6 dependeindo del horario
         }
         try{
             const response = await axios.post(EDIT_HITO_URL, {

@@ -1,14 +1,10 @@
 import React, { useState } from 'react'
 import { Alert, Button, Card } from'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { AiOutlineFilePdf, AiOutlineUpload } from 'react-icons/ai' 
 import axios from 'axios'
-import ReportesNuevoAdmin from './ReportesNuevoAdmin';
-const GENERA_REPORTE_EVALUACION_ARTICULACION_URL = 'reportes/crearreporteea';
-const GENERA_REPORTE_HABLIDADES_PREVERBALES_URL = 'reportes/crearreportehpv';
-const GENERA_REPORTE_PRUEBA_URL = 'reportes/crearreporteprueba';
 
 function ReportesAdmin() {
-    const [datos, setDatos] = useState();
 
     return (
         <div>
@@ -22,7 +18,22 @@ function ReportesAdmin() {
                     </Card.Text>
                     <Link to={'/ReportesNuevoAdmin'}>
                         <Button size='lg' className="btnCrear">
-                            Creación de reportes
+                            Crear reporte
+                            <AiOutlineFilePdf/>
+                        </Button>
+                    </Link>
+                </Card.Body>
+                <Card.Header>
+                    <h3>Publicación de reportes</h3>
+                </Card.Header>
+                <Card.Body>
+                    <Card.Text>
+                        Decide si los reportes generados son aptos para publicarse
+                    </Card.Text>
+                    <Link to={'/ReportesAlumAdmin'}>
+                        <Button size='lg' className="btnCrear">
+                            Publicar reporte
+                            <AiOutlineUpload/>
                         </Button>
                     </Link>
                 </Card.Body>

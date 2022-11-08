@@ -35,7 +35,7 @@ function HomeAdmin() {
             alt="Image Two"
           />
           <Carousel.Caption>
-            <Link to="/CuestionariosCreacionAdmin">
+            <Link to="/CuestionariosAdmin">
             <button className="buttonlink">
               Cuestionarios
             </button>

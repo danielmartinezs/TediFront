@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
-import { Accordion, Button, Card, Container, ListGroup, ListGroupItem, Modal, ModalBody, ModalHeader, ModalTitle, Row } from'react-bootstrap'
+import { Button, Card, ListGroup, ListGroupItem, Modal } from'react-bootstrap'
 import axios from 'axios'
 import "./progreso.css";
 import { format, parseISO } from 'date-fns';
@@ -106,12 +105,12 @@ function Progreso () {
                 show={showMHito}
                 scrollable
                 onHide={() => setShowMHito(false)}>
-                    <ModalHeader closeButton>
-                        <ModalTitle>
+                    <Modal.Header closeButton>
+                        <Modal.Title>
                             Hitos del alumno:
-                        </ModalTitle>
-                    </ModalHeader>
-                    <ModalBody>
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
                         {hitosList.map((values, index) => (
                             <div key={values.idHito}>
                             <ListGroup>
@@ -124,7 +123,7 @@ function Progreso () {
                             </div>
                         ))
                         }
-                    </ModalBody>
+                    </Modal.Body>
                 </Modal>
         </div>
     )

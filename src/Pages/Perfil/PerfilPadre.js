@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Table } from 'react-bootstrap'
-import "react-sliding-pane/dist/react-sliding-pane.css";
 import axios from 'axios'
-import { format, parse, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';
 import "./perfil.css";
 const PERFIL_ALUMNO_URL = '/profiles/getalumno';
 const GET_SEMESTRE_URL = '/reportes/getsemestre';
@@ -13,7 +10,7 @@ function PerfilPadre() {
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
     const [fechaNacimiento, setFechaNacimiento] = useState();
-    const [semestre, setSemestre] = useState("");
+    const [semestre, setSemestre] = useState([]);
     const [foto, setFoto] = useState();
     const [alumno, setAlumno] = useState([]);
     var idTutor = localStorage.getItem('id');

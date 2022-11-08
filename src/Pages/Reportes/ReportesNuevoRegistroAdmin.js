@@ -9,6 +9,7 @@ import { es } from 'date-fns/locale';
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairedetails'
 const GET_ADMINISTRADOR_URL = '/profiles/getadmin'
 const DATOS_REPORTE_URL = 'reportes/getdatosreporte';
+const GET_SEMESTRE_URL = 'reportes/getsemestre';
 
 function ReportesNuevoRegistroAdmin() {
     const [datos, setDatos] = useState();
@@ -21,6 +22,7 @@ function ReportesNuevoRegistroAdmin() {
     const [administrador, setAdministrador] = useState('');
     const [respuestasList, setRespuestasList] = useState([]);
     const [comentariosList, setComentariosList] = useState([]);
+    const [semestre, setSemestre] = useState([]);
     const [showA, setShowA] = useState(false);
     const [showMC, setShowMC] = useState(false);
     const [showMQA, setShowMQA] = useState(false);
@@ -31,6 +33,7 @@ function ReportesNuevoRegistroAdmin() {
     useEffect(() => {
         getDatos();
         getAdministrador();
+        getSemestre();
     }, [])
 
     const getQuestionnairesDetails = () => {
@@ -43,6 +46,12 @@ function ReportesNuevoRegistroAdmin() {
     const getAdministrador = () => {
         axios.get(GET_ADMINISTRADOR_URL+"/"+idAdmin).then((response) => {
             setAdministrador(response.data[0].usuario)
+        })
+    }
+
+    const getSemestre = () => {
+        axios.get(GET_SEMESTRE_URL).then((response) => {
+            setSemestre(response.data)
         })
     }
 
@@ -113,22 +122,25 @@ function ReportesNuevoRegistroAdmin() {
                             placeholder='Nombre del archivo'/>
                             <ListGroup>
                                 <ListGroupItem>
+                                    <h5>Semestre: {semestre[0]?.periodo}</h5>
+                                </ListGroupItem>
+                                <ListGroupItem>
                                     <h5>Nombre del archivo: {nombreArchivo}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    <h5>Cuestionario: {datos[0].titulo}</h5>
+                                    <h5>Cuestionario: {datos[0]?.titulo}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    <h5>Materia: {datos[0].materia}</h5>
+                                    <h5>Materia: {datos[0]?.materia}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <h5>Evaluador: {administrador}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    <h5>Fecha: {format(parseISO(datos[0].fecha), 'PPPPp', { locale: es })}</h5>
+                                    <h5>Fecha: {format(parseISO(datos[0]?.fecha), 'PPPPp', { locale: es })}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    <h5>Alumno: {datos[0].nombre+' '+datos[0].apellido}</h5>
+                                    <h5>Alumno: {datos[0]?.nombre+' '+datos[0]?.apellido}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <Button
@@ -154,7 +166,7 @@ function ReportesNuevoRegistroAdmin() {
             </div>
             <Button
             className='btnEditarRespuesta'
-            onClick={(e) => PdfCreator(datos, administrador, respuestasList, nombreArchivo)}>
+            onClick={(e) => PdfCreator(datos, semestre, administrador, respuestasList, nombreArchivo)}>
                 Crear Reporte
                 <AiOutlineFilePdf/>
             </Button>

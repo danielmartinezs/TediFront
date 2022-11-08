@@ -185,7 +185,7 @@ function Respuesta () {
     const conversionHorario = (fecha) => {
         let newtimestamp = 0;
         newtimestamp = new Date(fecha);
-        newtimestamp.setHours(newtimestamp.getHours()-4);//cambiar a 4 o 5 dependiendo del horario
+        newtimestamp.setHours(newtimestamp.getHours()-6);//cambiar a 4 o 5 o 6 dependiendo del horario
         newtimestamp = newtimestamp.toISOString();
         setTimestamp(newtimestamp)
     }

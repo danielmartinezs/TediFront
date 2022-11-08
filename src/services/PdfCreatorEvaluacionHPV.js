@@ -1,15 +1,15 @@
 import pdfMake from 'pdfmake/build/pdfmake'
 import pdfFonts from 'pdfmake/build/vfs_fonts'
 import axios from 'axios';
-const SUBIR_REPORTE = 'reportes/uploadreporte'
+const SUBIR_REPORTE = 'reportes/uploadreportehpv'
 
-function PdfCreator(datos, admin, qa, nombrearchivo) {
+function PdfCreator(datos, semestre, admin, qa, nombrearchivo) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     console.log(datos)
+    console.log(semestre)
     console.log(admin)
     console.log(qa)
     const filename = nombrearchivo;
-    const timestamp = new Date().getTime();
     const reportTitle = [
         {
             text: 'Alumno(a): '+datos[0].nombre+' '+datos[0].apellido,
@@ -106,8 +106,9 @@ function PdfCreator(datos, admin, qa, nombrearchivo) {
         try{
             const response = await axios.post(SUBIR_REPORTE, {
                 nombre: filename,
-                fc: timestamp,
-                fm: timestamp
+                idc: datos[0].idCuestionario,
+                ida: datos[0].idAlumno,
+                ids: semestre[0].idSemestre
             })
             console.log(response);
         } catch(error) {

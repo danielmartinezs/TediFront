@@ -933,7 +933,7 @@ function CuestionariosEdicionAdmin() {
                         <Form>
                             <Form.Group
                             className="mb-3"
-                            controlId="newHito">
+                            controlId="newPregunta">
                                 <Form.Label>Pregunta</Form.Label>
                                 <Form.Control 
                                 as="textarea" 
