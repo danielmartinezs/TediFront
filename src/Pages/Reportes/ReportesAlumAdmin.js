@@ -288,6 +288,7 @@ function ReportesAlumnosAdmin() {
         </Modal>
         {/*MODAL PUBLICAR REPORTE*/}
         <Modal
+        size='lg'
         show={showMReport}
         onHide={() => {setShowMReport(false)}}>
             <Modal.Header closeButton>
@@ -310,7 +311,7 @@ function ReportesAlumnosAdmin() {
                                     </ListGroupItem>
                                 </div>:
                                 <ListGroupItem>
-                                    <h5>{report?.ruta}</h5>
+                                    <h6>{report?.ruta}</h6>
                                     <Button
                                     className="btnEditarCuestionario"
                                     variant='success'

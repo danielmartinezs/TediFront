@@ -233,7 +233,7 @@ function PerfilEditarTutor() {
                         <Form.Group controlId="password">
                             <Form.Label>Contraseña</Form.Label>
                             <Form.Control
-                                type="password"
+                                type="text"
                                 placeholder="Escriba la contraseña"
                                 value={contrasenia}
                                 onChange={(e) => setContrasenia(e.target.value)}/>
@@ -241,7 +241,7 @@ function PerfilEditarTutor() {
                         <Form.Group controlId="confirmpassword">
                             <Form.Label>Repetir Contraseña</Form.Label>
                             <Form.Control
-                            type="password"
+                            type="text"
                             placeholder="Escriba la contraseña"
                             value={confpassword}
                             onChange={(e) => setConfPassword(e.target.value)}/>
