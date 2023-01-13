@@ -9,7 +9,7 @@ import { es } from 'date-fns/locale';
 const GET_QUESTIONNAIRES_DETAILS_URL = '/questionnaires/getquestionnairedetails'
 const GET_ADMINISTRADOR_URL = '/profiles/getadmin'
 const DATOS_REPORTE_URL = 'reportes/getdatosreporte';
-const GET_SEMESTRE_URL = 'reportes/getsemestre';
+const GET_SEMESTRES_URL = 'reportes/getsemestres';
 
 function ReportesNuevoRegistroAdmin() {
     const [datos, setDatos] = useState();
@@ -22,7 +22,7 @@ function ReportesNuevoRegistroAdmin() {
     const [administrador, setAdministrador] = useState('');
     const [respuestasList, setRespuestasList] = useState([]);
     const [comentariosList, setComentariosList] = useState([]);
-    const [semestre, setSemestre] = useState([]);
+    const [semestres, setSemestres] = useState([]);
     const [showA, setShowA] = useState(false);
     const [showMC, setShowMC] = useState(false);
     const [showMQA, setShowMQA] = useState(false);
@@ -33,7 +33,7 @@ function ReportesNuevoRegistroAdmin() {
     useEffect(() => {
         getDatos();
         getAdministrador();
-        getSemestre();
+        getSemestres();
     }, [])
 
     const getQuestionnairesDetails = () => {
@@ -49,9 +49,10 @@ function ReportesNuevoRegistroAdmin() {
         })
     }
 
-    const getSemestre = () => {
-        axios.get(GET_SEMESTRE_URL).then((response) => {
-            setSemestre(response.data)
+    const getSemestres = () => {
+        axios.get(GET_SEMESTRES_URL).then((response) => {
+            setSemestres(response.data)
+            console.log(response.data)
         })
     }
 
@@ -94,6 +95,19 @@ function ReportesNuevoRegistroAdmin() {
         setShowMC(false)
     }
 
+    const checkSemestre = (fecha) => {
+        for(var i = 0; i<semestres.length; i++){
+            let start = semestres[i].fechaInicio;
+            console.log(start)
+            let end = semestres[i].fechaFin;
+            console.log(end)
+            if((fecha >= start && fecha <= end) === true){
+                console.log("in")
+                return i;
+            }
+        }
+    }
+
     return (
         <div>
             <div className='text-center'>
@@ -122,7 +136,8 @@ function ReportesNuevoRegistroAdmin() {
                             placeholder='Nombre del archivo'/>
                             <ListGroup>
                                 <ListGroupItem>
-                                    <h5>Semestre: {semestre[0]?.periodo}</h5>
+                                    {console.log(checkSemestre(timestamp))}
+                                    <h5>Semestre: {semestres[checkSemestre(timestamp)]?.periodo}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <h5>Nombre del archivo: {nombreArchivo}</h5>
@@ -166,7 +181,7 @@ function ReportesNuevoRegistroAdmin() {
             </div>
             <Button
             className='btnEditarRespuesta'
-            onClick={(e) => PdfCreator(datos, semestre, administrador, respuestasList, nombreArchivo)}>
+            onClick={(e) => PdfCreator(datos, semestres[checkSemestre(timestamp)], administrador, respuestasList, nombreArchivo)}>
                 Crear Reporte
                 <AiOutlineFilePdf/>
             </Button>

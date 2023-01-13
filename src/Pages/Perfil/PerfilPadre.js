@@ -25,6 +25,7 @@ function PerfilPadre() {
             setAlumno(response.data)
             console.log(response.data)
             setFechaNacimiento(response.data[0].fechaNacimiento.split("T")[0])
+            setFoto(response.data[0].foto)
     })}
 
     const getSemestre = () => {
@@ -39,6 +40,10 @@ function PerfilPadre() {
             <Card>
             <Card.Body>
             <Card.Title><h3>{alumno[0]?.nombre+' '+alumno[0]?.apellido}</h3></Card.Title>
+            {/* <img
+            alt='drive image'
+            className='admin-details__img'
+            src={alumno[0]?.fotografia}/> */}
                 <Table bordered>
                     <thead>
                         <tr>
@@ -59,7 +64,10 @@ function PerfilPadre() {
                     <tbody>
                         <tr>
                             <th scope="row">
-                                {alumno[0]?.foto}
+                                <img 
+                                alt='drive image'
+                                className='admin-details__img'
+                                src={alumno[0]?.fotografia}/>
                             </th>
                             <td>
                                 {alumno[0]?.nombre+' '+alumno[0]?.apellido}

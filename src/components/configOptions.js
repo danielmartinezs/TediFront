@@ -6,6 +6,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { es } from 'date-fns/locale'
 const GET_SEMESTRE_URL = 'reportes/getsemestre';
+const NUEVO_SEMESTRE_URL = 'reportes/newsemestre';
 
 export const ConfigOptions = () => {
 
@@ -42,10 +43,14 @@ export const ConfigOptions = () => {
 
     const handleSubmitNewSemestre = async (e) => {
         e.preventDefault()
+        console.log(periodo)
+        console.log(anio)
+        console.log(fechaFin)
+        console.log(fechaInicio)
         try{
-            const response = await axios.post('reportes/newsemestre', {
+            const response = await axios.post(NUEVO_SEMESTRE_URL, {
                 periodo: periodo,
-                año: anio,
+                anio: anio,
                 fechaInicio: fechaInicio,
                 fechaFin: fechaFin
             })

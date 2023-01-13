@@ -103,7 +103,7 @@ function PerfilEditarTutor() {
         const response = await axios.post(DELETE_TUTOR_URL+"/"+llave)
         setShowA(true)
         setVariante('success')
-        setMsg(response.data.message)
+        setMsg("Tutor/Alumno borrado exitosamente!")
         setDetailsPane({isPaneOpen: false})
         setShowModalBorrar(false)
     }

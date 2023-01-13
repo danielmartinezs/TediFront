@@ -12,6 +12,13 @@ function PerfilSeleccionAdmin() {
         <div className='text-center'>
             <h1>Control de cuentas</h1>
             <div>
+            <Link to={'/PerfilCrearPerfilNuevo'}>
+              <Button size='lg' className="btnCrearNuevo">
+                Crear Perfil Nuevo
+                <AiOutlineUserAdd/>
+              </Button>
+            </Link>
+            <br/>
             <Card border="primary" className="text-center" style={{ display:'flex' }}>
             <Card.Img variant="top" src={foto8} />
               <Card.Header>
@@ -63,13 +70,6 @@ function PerfilSeleccionAdmin() {
                 </Link>
               </Card.Body>
             </Card>
-            <br/>
-            <Link to={'/PerfilCrearPerfilNuevo'}>
-              <Button size='lg' className="btnCrearNuevo">
-                Crear Perfil Nuevo
-                <AiOutlineUserAdd/>
-              </Button>
-            </Link>
             </div>
         </div>
     )

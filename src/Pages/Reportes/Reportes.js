@@ -6,6 +6,7 @@ import { es } from 'date-fns/locale';
 import axios from 'axios'
 const PERFIL_ALUMNO_URL = '/profiles/getalumno';
 const GET_SEMESTRE_URL = '/reportes/getsemestre';
+const GET_SEMESTRES_URL = '/reportes/getsemestres';
 const GET_REPORTES_ALUMNO_D_URL = 'reportes/getreportesalumnodisp';
 
 function Reportes() {
@@ -14,14 +15,16 @@ function Reportes() {
     const [alumno, setAlumno] = useState([]);
     const [reportesList, setReportesList] = useState([]);
     const [semestre, setSemestre] = useState("");
-    const [rutaSelect, setRutaSelect] = useState("");
+    const [semestres, setSemestres] = useState([]);
     const [semestreSelect, setSemestreSelect] = useState(0);
+    const [rutaSelect, setRutaSelect] = useState("");
     const [showMReportes, setShowMReportes] = useState(false);
     var idTutor= localStorage.getItem('id');
     
     useEffect (() => {
         getAlumno();
         getSemestre();
+        getSemestres();
     }, [])
 
     const getAlumno = () => {
@@ -35,6 +38,13 @@ function Reportes() {
     const getSemestre = () => {
         axios.get(GET_SEMESTRE_URL).then((response) => {
             setSemestre(response.data)
+            console.log(response.data)
+        })
+    }
+
+    const getSemestres = () => {
+        axios.get(GET_SEMESTRES_URL).then((response) => {
+            setSemestres(response.data)
             console.log(response.data)
         })
     }
@@ -57,9 +67,9 @@ function Reportes() {
     return (
         <div className='text-center'>
             <h1>Reportes de {alumno[0]?.nombre+" "+alumno[0]?.apellido}</h1>
-            {semestre?.length > 0 ? 
+            {semestres?.length > 0 ? 
                 <div>
-                    {semestre.map(semester => (
+                    {semestres.map(semester => (
                     <div key={semester.idSemestre}>
                     <Card
                     className="text-center"
@@ -89,7 +99,9 @@ function Reportes() {
         <Modal
         show={showMReportes}
         scrollable={true}
-        onHide={() => {setShowMReportes(false)}}>
+        onHide={() => {
+            setShowMReportes(false)
+            setRutaSelect("")}}>
             <Modal.Header closeButton>
                 <Modal.Title>¿Qué reporte deseas visualizar?</Modal.Title>
             </Modal.Header>

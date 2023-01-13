@@ -140,7 +140,7 @@ function PerfilEditarAlumno() {
         const response = await axios.post(DELETE_TUTOR_URL+"/"+llave)
         setShowA(true)
         setVariante('success')
-        setMsg(response.data.message)
+        setMsg("Tutor/Alumno borrado exitosamente!")
         setDetailsPane({isPaneOpen: false})
         setShowModalBorrar(false)
     }
@@ -267,15 +267,22 @@ function PerfilEditarAlumno() {
                         className="form"
                         onSubmit={handleSubmitEditAlumno}>
                         <h3>Editar información</h3>
-                        {/* <img 
+                        {
+                        foto !== "" ?
+                        <img 
+                        alt='drive image'
                         className='admin-details__img'
-                        src={fotoPreview ?? (alumnosList[llave-1]?.fotografia)}/> */}
+                        src={foto}/>
+                        :
+                        <h3>Alumno sin foto</h3>
+                        }
                         <br/>
                         <Form.Group 
                         controlId="formFileSm">
+                            <Form.Label>Foto del alumno</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder={alumnosList[llave-1]?.fotografia}
+                                placeholder="Ingresa el URL donde se enceuntra la imagen"
                                 value={foto}
                                 onChange={(e) => {
                                     setFoto(e.target.value)

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Button, Card, ListGroup, ListGroupItem, Modal, Tab, Tabs } from 'react-bootstrap';
+import { Alert, Button, Card, ListGroup, ListGroupItem, Modal, Offcanvas, Tab, Tabs } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios'
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -20,8 +20,8 @@ function CreatePerfil() {
     const [apellidoAlumno, setApellidoAlumno] = useState("");
     const [nombreAdmin, setNombreAdmin] = useState("");
     const [apellidoAdmin, setApellidoAdmin] = useState("");
-    const [pic, setPic] = useState();
-    const [picPreview, setPicPreview] = useState();
+    const [pic, setPic] = useState("");
+    const [picPreview, setPicPreview] = useState(false);
     const [password, setPassword] = useState("");
     const [passwordTutor, setPasswordTutor] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,6 +34,8 @@ function CreatePerfil() {
     const [msg, setMsg] = useState('');
     const [variante, setVariante] = useState('');
     const [showModalGrupos, setShowModalGrupos] = useState(false);
+    const [showModalFoto, setShowModalFoto] = useState(false);
+    const [showOffFoto, setShowOffFoto] = useState(false);
     const [showA, setShowA] = useState(false);
     
     useEffect(() => {
@@ -175,7 +177,7 @@ function CreatePerfil() {
         </Alert>
       </div>
       <Tabs justify variant="pills" defaultActiveKey="tutor" id="crearperfilnuevo">
-        <Tab eventKey="tutor" title="Tutor" className="content">
+        <Tab eventKey="tutor" title="Tutor y Alumno" className="content">
           <Form 
           className="form"
           onSubmit={handleSubmitTA}>
@@ -226,18 +228,25 @@ function CreatePerfil() {
               <br/>
               <h3>Información del Alumno</h3>
               <br/>
-                <Form.Group controlId="formFileSm" className="mb-3">
-                  <Form.Label>Sube foto</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Ingresa el URL donde se encuentra la foto"
-                    value={pic}
-                    onChange={(e) => {
-                      setPic(e.target.value)
-                      //setPicPreview(URL.createObjectURL(e.target.files[0]))
-                    }}
-                  ></Form.Control>
+                <Form.Group controlId="foto">
+                    <Button
+                    className="btnBancoPreguntas"
+                    onClick={() => {setShowModalFoto(true)}}>
+                      Foto del alumno
+                    </Button>
+                    <br/>
                 </Form.Group>
+                <br/>
+                <Form.Label>Foto del alumno:</Form.Label>
+                {pic !== '' ?
+                <div>   
+                <h3>{pic}</h3>
+                </div> 
+                :
+                <div>   
+                <h3>Alumno sin foto</h3>
+                </div> 
+                }
                 <Form.Group controlId="nombre">
                     <Form.Label>Nombre del alumno</Form.Label>
                     <Form.Control
@@ -336,12 +345,113 @@ function CreatePerfil() {
               </Card>
             </Modal.Body>
           </Modal>
+          {/*MODAL FOTO */}
+          <Modal
+          show={showModalFoto}
+          scrollable
+          onHide={() => {
+            setShowModalFoto(false)
+            setPicPreview(false)}}>
+            <Modal.Header
+            closeButton>
+              <Modal.Title><h3>Foto del alumno</h3></Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Card className="text-center">
+                <Card.Body>
+                {pic === '' ? 
+                <div>
+                  <h4>
+                    Actualmente no se tiene una foto del alumno, da click en el botón para ingresar la foto del alumno
+                  </h4>
+                  <br/>
+                  <Button
+                  variant="success"
+                  className="btnEditarRespuesta"
+                  onClick={() => {
+                    setShowOffFoto(true)
+                    setShowModalFoto(false)
+                  //setPicPreview(!picPreview)
+                  }}>
+                    Ingresar foto desde Google Drive
+                  </Button>
+                  <Button
+                  variant="danger"
+                  className="btnEditarRespuesta"
+                  onClick={() => {
+                  setPicPreview(false)
+                  setShowModalFoto(false)
+                  }}>
+                    Saltar paso
+                  </Button>
+                </div>
+                : 
+                <div>
+                <h3>
+                  La foto se encuentra en:
+                  <br/>
+                  {pic}
+                </h3>
+                <Button
+                variant="success"
+                className="btnEditarRespuesta"
+                onClick={() => {
+                  setShowOffFoto(true)
+                  setShowModalFoto(false)
+                }}>
+                  Editar registro
+                </Button>
+                </div>
+                }
+                </Card.Body>
+              </Card>
+            </Modal.Body>
+          </Modal>
+          {/*OFFCANVAS REGISTRO FOTO*/}
+          <Offcanvas 
+            show={showOffFoto} 
+            placement={'bottom'}
+            onHide={() => setShowOffFoto(false)}>
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title>Registro de foto del alumno</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Form>
+                <Form.Group
+                  className="mb-3"
+                  controlId="newNombreC">
+                  <Form.Label>Ingresa el URL donde se encuentra la foto</Form.Label>
+                    <Form.Control 
+                    as="textarea"
+                    value={pic}
+                    onChange={(e) => setPic(e.target.value)}>
+                      {pic}
+                    </Form.Control>
+                </Form.Group>
+                <Button 
+                  size='sm'
+                  variant="danger"
+                  onClick={() => {
+                    setShowOffFoto(false)
+                    setPic("")}}>
+                    Cerrar
+                  </Button>
+                  <Button
+                  size='sm'
+                  variant="success"
+                  onClick={() => {
+                    setShowOffFoto(false)}}>
+                    Guardar
+                  </Button>
+              </Form>
+            </Offcanvas.Body>
+          </Offcanvas>
       </Tab>
       <Tab 
-            eventKey="admin" 
-            title="Administrador" 
-            className="content">
-            <Form 
+        eventKey="admin" 
+        title="Administrador" 
+        className="content">
+          <Form 
             className="form" 
             onSubmit={handleSubmitA}>
               <h3>Información del Administrador</h3>
@@ -396,8 +506,8 @@ function CreatePerfil() {
                   Crear
                   <AiOutlineUserAdd/>
               </Button>
-            </Form>
-        </Tab>
+          </Form>
+      </Tab>
     </Tabs>
       </div>
   );
