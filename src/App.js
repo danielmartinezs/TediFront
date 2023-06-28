@@ -36,7 +36,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import PrivateRoute from './components/privateRoute.js';
 import axios from "axios"
 
-axios.defaults.baseURL ="https://backend.tediescolar.xyz/";
+axios.defaults.baseURL ="https://backend.tediescolar.org/";
 axios.defaults.headers.common["access-control-allow-origin"] = "*";
 
 function App() {
